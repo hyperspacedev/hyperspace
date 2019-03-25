@@ -1,14 +1,19 @@
 {
-  "name": "hyperspace-v1",
-  "version": "0.1.0",
+  "name": "hyperspace",
+  "version": "1.0.0",
   "private": true,
-  "dependencies": {
+  "devDependencies": {
+    "@material-ui/core": "^3.9.2",
+    "@material-ui/icons": "^3.0.2",
     "@types/jest": "24.0.11",
     "@types/node": "11.11.6",
     "@types/react": "16.8.8",
     "@types/react-dom": "16.8.3",
+    "@types/react-router-dom": "^4.3.1",
+    "megalodon": "latest",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
+    "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
     "typescript": "3.3.4000"
   },
