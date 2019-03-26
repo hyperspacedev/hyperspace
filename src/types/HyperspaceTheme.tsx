@@ -83,3 +83,11 @@ export const kingTheme: HyperspaceTheme = {
         secondary: amber
     }
 }
+
+export const dragonTheme: HyperspaceTheme = {
+    name: "Dragon",
+    palette: {
+        primary: purple,
+        secondary: purple
+    }
+}
