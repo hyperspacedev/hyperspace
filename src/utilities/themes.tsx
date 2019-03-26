@@ -21,6 +21,7 @@ export function setHyperspaceTheme(theme: HyperspaceTheme): Theme {
               '"Segoe UI Emoji"',
               '"Segoe UI Symbol"',
             ].join(','),
+            useNextVariants: true,
           },
         palette: {
             primary: theme.palette.primary,

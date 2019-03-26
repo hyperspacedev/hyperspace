@@ -1,26 +1,24 @@
 import React, { Component } from 'react';
-import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
+import {MuiThemeProvider, CssBaseline, withStyles, Typography } from '@material-ui/core';
 import { setHyperspaceTheme } from './utilities/themes';
 import { defaultTheme } from './types/HyperspaceTheme';
-import { Typography, MuiThemeProvider } from '@material-ui/core';
+import AppLayout from './components/AppLayout';
+import {styles} from './App.styles';
 
 const theme = setHyperspaceTheme(defaultTheme);
 
-const styles = (theme: Theme) => createStyles({
-  root: {
-    width: '100%'
-  }
-});
-
 class App extends Component<any, any> {
+
   render() {
     const { classes } = this.props;
     return (
       <MuiThemeProvider theme={theme}>
-        <div className={classes.root}>
-          <Typography variant="h4">Bing!</Typography>
+        <CssBaseline/>
+        <AppLayout/>
+        <div className={classes.content}>
+          <Typography variant="h3">Welcome to Hyperspace</Typography>
           <br/>
-          <Typography variant="body1" paragraph> Thus the app should be ready to be deployed at any moment.</Typography>
+          <Typography paragraph>Here is where routed content should go so that it fits inside of AppLayout.</Typography>
         </div>
       </MuiThemeProvider>
     );
