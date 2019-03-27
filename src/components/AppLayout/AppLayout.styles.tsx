@@ -55,7 +55,7 @@ export const styles = (theme: Theme) => createStyles({
         backgroundColor: fade(theme.palette.common.white, 0.25)
       },
       width: '100%',
-      marginLeft: theme.spacing.unit * 2,
+      marginLeft: theme.spacing.unit,
       marginRight: theme.spacing.unit,
       [theme.breakpoints.up('md')]: {
         marginLeft: theme.spacing.unit * 6,

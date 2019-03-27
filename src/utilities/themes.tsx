@@ -1,5 +1,6 @@
 import { createMuiTheme, Theme } from '@material-ui/core';
 import { HyperspaceTheme } from '../types/HyperspaceTheme';
+import { getUserDefaultBool } from './settings';
 
 /**
  * Creates a Material-UI theme from a selected Hyperspace theme palette.
@@ -25,7 +26,8 @@ export function setHyperspaceTheme(theme: HyperspaceTheme): Theme {
           },
         palette: {
             primary: theme.palette.primary,
-            secondary: theme.palette.secondary
+            secondary: theme.palette.secondary,
+            type: getUserDefaultBool('darkModeEnabled')? "dark": "light"
         }
     })
 }

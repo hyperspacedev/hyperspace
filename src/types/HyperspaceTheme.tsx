@@ -5,6 +5,7 @@ import { deepPurple, red, lightGreen, yellow, purple, deepOrange, indigo, lightB
  * Basic theme colors for Hyperspace.
  */
 export type HyperspaceTheme = {
+    key: string;
     name: string;
     palette: {
         primary: Color;
@@ -13,6 +14,7 @@ export type HyperspaceTheme = {
 }
 
 export const defaultTheme: HyperspaceTheme = {
+    key: "defaultTheme",
     name: "Hypergod (Default)",
     palette: {
         primary: deepPurple,
@@ -21,6 +23,7 @@ export const defaultTheme: HyperspaceTheme = {
 }
 
 export const gardenerTheme: HyperspaceTheme = {
+    key: "gardnerTheme",
     name: "Gardener",
     palette: {
         primary: lightGreen,
@@ -29,6 +32,7 @@ export const gardenerTheme: HyperspaceTheme = {
 }
 
 export const teacherTheme: HyperspaceTheme = {
+    key: "teacherTheme",
     name: "Teacher",
     palette: {
         primary: purple,
@@ -37,6 +41,7 @@ export const teacherTheme: HyperspaceTheme = {
 }
 
 export const jokerTheme: HyperspaceTheme = {
+    key: "jokerTheme",
     name: "Joker",
     palette: {
         primary: indigo,
@@ -45,6 +50,7 @@ export const jokerTheme: HyperspaceTheme = {
 }
 
 export const brotherTheme: HyperspaceTheme = {
+    key: "brotherTheme",
     name: "Brother",
     palette: {
         primary: red,
@@ -53,6 +59,7 @@ export const brotherTheme: HyperspaceTheme = {
 }
 
 export const guardTheme: HyperspaceTheme = {
+    key: "guardTheme",
     name: "Guard",
     palette: {
         primary: blue,
@@ -61,6 +68,7 @@ export const guardTheme: HyperspaceTheme = {
 }
 
 export const scientistTheme: HyperspaceTheme = {
+    key: "scientistTheme",
     name: "Scientist",
     palette: {
         primary: amber,
@@ -69,6 +77,7 @@ export const scientistTheme: HyperspaceTheme = {
 }
 
 export const entertainerTheme: HyperspaceTheme = {
+    key: "entertainerTheme",
     name: "Entertainer",
     palette: {
         primary: pink,
@@ -77,6 +86,7 @@ export const entertainerTheme: HyperspaceTheme = {
 }
 
 export const kingTheme: HyperspaceTheme = {
+    key: "kingTheme",
     name: "King",
     palette: {
         primary: deepPurple,
@@ -85,9 +95,12 @@ export const kingTheme: HyperspaceTheme = {
 }
 
 export const dragonTheme: HyperspaceTheme = {
+    key: "dragonTheme",
     name: "Dragon",
     palette: {
         primary: purple,
         secondary: purple
     }
 }
+
+export const themes = [defaultTheme, gardenerTheme, teacherTheme, jokerTheme, brotherTheme, guardTheme, scientistTheme, entertainerTheme, kingTheme, dragonTheme]
