@@ -19,6 +19,13 @@ class App extends Component<any, any> {
         <Route exact path="/"/>
         <Route path="/home"/>
         <Route path="/local"/>
+        <Route path="/public"/>
+        <Route path="/messages"/>
+        <Route path="/notifications"/>
+        <Route path="/profile"/>
+        <Route path="/conversation"/>
+        <Route path="/settings"/>
+        <Route path="/about"/>
       </MuiThemeProvider>
     );
   }
