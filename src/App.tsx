@@ -4,6 +4,7 @@ import { setHyperspaceTheme } from './utilities/themes';
 import { defaultTheme } from './types/HyperspaceTheme';
 import AppLayout from './components/AppLayout';
 import {styles} from './App.styles';
+import {Route} from 'react-router-dom';
 
 const theme = setHyperspaceTheme(defaultTheme);
 
@@ -15,11 +16,9 @@ class App extends Component<any, any> {
       <MuiThemeProvider theme={theme}>
         <CssBaseline/>
         <AppLayout/>
-        <div className={classes.content}>
-          <Typography variant="h3">Welcome to Hyperspace</Typography>
-          <br/>
-          <Typography paragraph>Here is where routed content should go so that it fits inside of AppLayout.</Typography>
-        </div>
+        <Route exact path="/"/>
+        <Route path="/home"/>
+        <Route path="/local"/>
       </MuiThemeProvider>
     );
   }

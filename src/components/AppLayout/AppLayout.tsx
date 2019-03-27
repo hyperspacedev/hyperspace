@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItem, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, Theme, createStyles, withStyles } from '@material-ui/core';
+import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItem, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, withStyles } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -13,10 +13,21 @@ import InfoIcon from '@material-ui/icons/Info';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {styles} from './AppLayout.styles';
+import { Link } from 'react-router-dom';
+import { ListItemProps } from '@material-ui/core/ListItem';
 
 interface IAppLayoutState {
     drawerOpenOnMobile: boolean;
 }
+
+interface ILinkableListItemProps extends ListItemProps {
+  to: string;
+  replace?: boolean;
+}
+
+const LinkableListItem = (props: ILinkableListItemProps) => (
+  <ListItem {...props} component={Link as any}/>
+)
 
 export class AppLayout extends Component<any, IAppLayoutState> {
     constructor(props: any) {
@@ -58,57 +69,57 @@ export class AppLayout extends Component<any, IAppLayoutState> {
           <div>
               <List>
                 <div className={classes.drawerDisplayMobile}>
-                  <ListItem button key="profile-mobile">
+                  <LinkableListItem button key="profile-mobile" to="/profile">
                     <ListItemAvatar>
                       <Avatar alt="You" src="https://preview.redd.it/9a5zntent0g21.jpg?width=960&crop=smart&auto=webp&s=5668a0a2d3cb52e43a302aa3d0902ae0704c9dc1"/>
                     </ListItemAvatar>
                     <ListItemText primary="Asriel Dreemurr" secondary="@asriel@dreemurr.io"/>
-                  </ListItem>
-                  <ListItem button key="notifications-mobile">
+                  </LinkableListItem>
+                  <LinkableListItem button key="notifications-mobile" to="/notifications">
                     <ListItemIcon><NotificationsIcon/></ListItemIcon>
                     <ListItemText primary="Notifications"/>
-                  </ListItem>
-                  <ListItem button key="messages-mobile">
+                  </LinkableListItem>
+                  <LinkableListItem button key="messages-mobile" to="/messages">
                     <ListItemIcon><MailIcon/></ListItemIcon>
                     <ListItemText primary="Messages"/>
-                  </ListItem>
-                  <ListItem button key="acctSwitch-module">
+                  </LinkableListItem>
+                  <LinkableListItem button key="acctSwitch-module" to="/switchacct">
                     <ListItemIcon><SupervisedUserCircleIcon/></ListItemIcon>
                     <ListItemText primary="Switch account"/>
-                  </ListItem>
-                  <ListItem button key="acctLogout-mobile">
+                  </LinkableListItem>
+                  <LinkableListItem button key="acctLogout-mobile" to="/logout">
                     <ListItemIcon><ExitToAppIcon/></ListItemIcon>
                     <ListItemText primary="Log out"/>
-                  </ListItem>
+                  </LinkableListItem>
                   <Divider/>
                 </div>
                 <ListSubheader>Timelines</ListSubheader>
-                <ListItem button key="home">
+                <LinkableListItem button key="home" to="/home">
                   <ListItemIcon><HomeIcon/></ListItemIcon>
                   <ListItemText primary="Home"/>
-                </ListItem>
-                <ListItem button key="local">
+                </LinkableListItem>
+                <LinkableListItem button key="local" to="/local">
                   <ListItemIcon><DomainIcon/></ListItemIcon>
                   <ListItemText primary="Local"/>
-                </ListItem>
-                <ListItem button key="public">
+                </LinkableListItem>
+                <LinkableListItem button key="public" to="/public">
                   <ListItemIcon><PublicIcon/></ListItemIcon>
                   <ListItemText primary="Public"/>
-                </ListItem>
+                </LinkableListItem>
                 <Divider/>
                 <ListSubheader>More</ListSubheader>
-                <ListItem button key="recommended">
+                <LinkableListItem button key="recommended" to="/recommended">
                   <ListItemIcon><GroupIcon/></ListItemIcon>
                   <ListItemText primary="Who to follow"/>
-                </ListItem>
-                <ListItem button key="settings">
+                </LinkableListItem>
+                <LinkableListItem button key="settings" to="/settings">
                   <ListItemIcon><SettingsIcon/></ListItemIcon>
                   <ListItemText primary="Settings"/>
-                </ListItem>
-                <ListItem button key="info">
+                </LinkableListItem>
+                <LinkableListItem button key="info" to="/about">
                   <ListItemIcon><InfoIcon/></ListItemIcon>
                   <ListItemText primary="About"/>
-                </ListItem>
+                </LinkableListItem>
               </List>
           </div>
           );
