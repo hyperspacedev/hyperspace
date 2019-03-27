@@ -93,7 +93,7 @@ export const styles = (theme: Theme) => createStyles({
       },
     },
     appBarAcctMenuIcon: {
-      backgroundColor: theme.palette.secondary.main
+      backgroundColor: theme.palette.primary.dark
     },
     drawer: {
       [theme.breakpoints.up('sm')]: {

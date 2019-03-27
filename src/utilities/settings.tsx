@@ -37,7 +37,6 @@ export function setUserDefaultBool(key: string, value: boolean) {
  * Gets the user's default theme or the default theme
  */
 export function getUserDefaultTheme() {
-    console.log(localStorage.getItem('theme'));
     let returnTheme = defaultTheme;
     themes.forEach((theme) => {
         if(theme.key === localStorage.getItem('theme')) {

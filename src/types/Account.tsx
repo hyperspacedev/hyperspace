@@ -25,3 +25,9 @@ export type Account = {
     fields: [Field];
     bot: boolean | null;
 }
+
+export type UAccount = {
+    acct: string;
+    display_name: string;
+    avatar_static: string;
+}

@@ -18,8 +18,27 @@ import DomainIcon from '@material-ui/icons/Domain';
 import ChatIcon from '@material-ui/icons/Chat';
 import PersonIcon from '@material-ui/icons/Person';
 import {styles} from './PageLayout.styles';
+import {getCurrentInstanceData} from '../utilities/instances';
+import {Instance} from '../types/Instance';
 
-class AboutPage extends Component<any, any> {
+interface IAboutPageState  {
+    instance: Instance;
+}
+
+class AboutPage extends Component<any, IAboutPageState> {
+
+    constructor(props: any) {
+        super(props);
+
+        let instance = getCurrentInstanceData();
+        instance.then((resp: any) => {
+            let data: Instance = resp.data;
+            console.log("From response: " + data);
+            this.setState({
+                instance: data
+            });
+        })
+    }
 
     render() {
         const { classes } = this.props;
@@ -34,7 +53,7 @@ class AboutPage extends Component<any, any> {
                                     <DomainIcon/>
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="Instance location (URL)" secondary="dreemurr.io"/>
+                            <ListItemText primary="Instance location (URL)" secondary={this.state ? this.state.instance.uri: "Couldn't determine location"}/>
                             <ListItemSecondaryAction>
                                 <IconButton>
                                     <OpenInNewIcon/>
@@ -43,9 +62,12 @@ class AboutPage extends Component<any, any> {
                         </ListItem>
                         <ListItem>
                             <ListItemAvatar>
-                                <Avatar alt="Instance admin" src="https://preview.redd.it/wkdcm71za0i21.jpg?auto=webp&s=a59ce15710bf3bf5ab74bcce9d86055fd97c6102"/>
+                                <Avatar alt="Instance admin" src={this.state? this.state.instance.contact_account.avatar_static: ""}/>
                             </ListItemAvatar>
-                            <ListItemText primary="Instance admin" secondary="Toriel (@toriel)"/>
+                            <ListItemText primary="Instance admin" secondary={
+                                this.state ? `${this.state.instance.contact_account.display_name} (@${this.state.instance.contact_account.acct})`:
+                                "Couldn't determine admin"
+                            }/>
                             <ListItemSecondaryAction>
                                 <IconButton>
                                     <ChatIcon/>

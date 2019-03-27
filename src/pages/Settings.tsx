@@ -106,10 +106,10 @@ class SettingsPage extends Component<any, ISettingsState> {
                     </RadioGroup>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.toggleThemeDialog} color="primary">
+                    <Button onClick={this.toggleThemeDialog} color="default">
                         Cancel
                     </Button>
-                    <Button onClick={this.changeTheme} color="primary">
+                    <Button onClick={this.changeTheme} color="secondary">
                         Ok
                     </Button>
                 </DialogActions>

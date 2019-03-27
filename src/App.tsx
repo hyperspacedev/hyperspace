@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {MuiThemeProvider, CssBaseline, withStyles, Typography } from '@material-ui/core';
 import { setHyperspaceTheme, darkMode } from './utilities/themes';
-import { defaultTheme } from './types/HyperspaceTheme';
 import AppLayout from './components/AppLayout';
 import {styles} from './App.styles';
 import {Route} from 'react-router-dom';
@@ -10,7 +9,7 @@ import Settings from './pages/Settings';
 import { getUserDefaultBool, getUserDefaultTheme } from './utilities/settings';
 
 let theme = setHyperspaceTheme(getUserDefaultTheme());
-console.log(theme);
+
 class App extends Component<any, any> {
 
   constructor(props: any) {

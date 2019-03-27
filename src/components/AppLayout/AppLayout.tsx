@@ -15,9 +15,12 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {styles} from './AppLayout.styles';
 import { Link } from 'react-router-dom';
 import { ListItemProps } from '@material-ui/core/ListItem';
+import { getCurrentUserData } from '../../utilities/accounts';
+import { UAccount } from '../../types/Account';
 
 interface IAppLayoutState {
     drawerOpenOnMobile: boolean;
+    currentUser: UAccount;
 }
 
 interface ILinkableListItemProps extends ListItemProps {
@@ -34,7 +37,8 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         super(props);
     
         this.state = {
-          drawerOpenOnMobile: false
+          drawerOpenOnMobile: false,
+          currentUser: getCurrentUserData()
         }
     
         this.toggleDrawerOnMobile = this.toggleDrawerOnMobile.bind(this);
@@ -71,9 +75,9 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                 <div className={classes.drawerDisplayMobile}>
                   <LinkableListItem button key="profile-mobile" to="/profile">
                     <ListItemAvatar>
-                      <Avatar alt="You" src="https://preview.redd.it/9a5zntent0g21.jpg?width=960&crop=smart&auto=webp&s=5668a0a2d3cb52e43a302aa3d0902ae0704c9dc1"/>
+                      <Avatar alt="You" src={this.state.currentUser.avatar_static}/>
                     </ListItemAvatar>
-                    <ListItemText primary="Asriel Dreemurr" secondary="@asriel@dreemurr.io"/>
+                    <ListItemText primary={this.state.currentUser.display_name} secondary={this.state.currentUser.acct}/>
                   </LinkableListItem>
                   <LinkableListItem button key="notifications-mobile" to="/notifications">
                     <ListItemIcon><NotificationsIcon/></ListItemIcon>
@@ -166,7 +170,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                     <MailIcon/>
                   </IconButton>
                   <IconButton>
-                    <Avatar className={classes.appBarAcctMenuIcon} alt="You" src="https://preview.redd.it/9a5zntent0g21.jpg?width=960&crop=smart&auto=webp&s=5668a0a2d3cb52e43a302aa3d0902ae0704c9dc1"/>
+                    <Avatar className={classes.appBarAcctMenuIcon} alt="You" src={this.state.currentUser.avatar_static}/>
                   </IconButton>
               </div>
             </Toolbar>
