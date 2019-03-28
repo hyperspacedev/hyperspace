@@ -21,6 +21,7 @@ import {
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import {styles} from './PageLayout.styles';
 import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefaultTheme} from '../utilities/settings';
+import {canSendNotifications, browserSupportsNotificationRequests} from '../utilities/notifications';
 import {themes} from '../types/HyperspaceTheme';
 
 interface ISettingsState {
@@ -38,7 +39,7 @@ class SettingsPage extends Component<any, ISettingsState> {
 
         this.state = {
             darkModeEnabled: getUserDefaultBool('darkModeEnabled'),
-            pushNotificationsEnabled: getUserDefaultBool('enablePushNotifications'),
+            pushNotificationsEnabled: canSendNotifications(),
             deleteNotificationsOnRead: getUserDefaultBool('clearNotificationsOnRead'),
             selectThemeName: getUserDefaultTheme().key,
             themeDialogOpen: false
@@ -145,15 +146,29 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
-                            <ListItemText primary="Enable push notifications"/>
+                            <ListItemText 
+                                primary="Enable push notifications"
+                                secondary={
+                                    browserSupportsNotificationRequests()?
+                                    "":
+                                    "Notifications aren't supported in this browser."
+                                }
+                            />
                             <ListItemSecondaryAction>
-                                <Switch checked={this.state.pushNotificationsEnabled} onChange={this.togglePushNotifications}/>
+                                <Switch 
+                                    checked={this.state.pushNotificationsEnabled} 
+                                    onChange={this.togglePushNotifications}
+                                    disabled={!browserSupportsNotificationRequests()}
+                                />
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
                             <ListItemText primary="Clear on read" secondary="Delete a notification once you read it"/>
                             <ListItemSecondaryAction>
-                                <Switch checked={this.state.deleteNotificationsOnRead} onChange={this.toggleClearNotifsOnRead}/>
+                                <Switch 
+                                    checked={this.state.deleteNotificationsOnRead} 
+                                    onChange={this.toggleClearNotifsOnRead}
+                                />
                             </ListItemSecondaryAction>
                         </ListItem>
                     </List>
@@ -165,7 +180,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                         <ListItem>
                             <ListItemText primary="Configure on Mastodon" secondary="Configure your account settings on Mastodon"/>
                             <ListItemSecondaryAction>
-                                <IconButton>
+                                <IconButton href={(localStorage.getItem("baseurl") as string) + "/settings/preferences"} target="_blank" rel="noreferrer">
                                     <OpenInNewIcon/>
                                 </IconButton>
                             </ListItemSecondaryAction>
