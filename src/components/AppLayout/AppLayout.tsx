@@ -53,7 +53,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         if (process.env.NODE_ENV === "development") {
           return (
             <div className={classes.titleBarRoot}>
-              <Typography className={classes.titleBarText}>Careful: you're running Hyperspace in developer mode.</Typography>
+              <Typography className={classes.titleBarText}>Careful: you're running in developer mode.</Typography>
             </div>
           );
         } else if ((navigator.userAgent.includes("Hyperspace") || navigator.userAgent.includes("Electron")) && navigator.userAgent.includes("Macintosh")) {

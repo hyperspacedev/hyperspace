@@ -7,6 +7,7 @@ import {Route} from 'react-router-dom';
 import AboutPage from './pages/About';
 import Settings from './pages/Settings';
 import { getUserDefaultBool, getUserDefaultTheme } from './utilities/settings';
+import ProfilePage from './pages/ProfilePage';
 
 let theme = setHyperspaceTheme(getUserDefaultTheme());
 
@@ -37,7 +38,7 @@ class App extends Component<any, any> {
         <Route path="/public"/>
         <Route path="/messages"/>
         <Route path="/notifications"/>
-        <Route path="/profile/:profileId"/>
+        <Route path="/profile/:profileId" component={ProfilePage}/>
         <Route path="/conversation/:conversationId"/>
         <Route path="/settings" component={Settings}/>
         <Route path="/about" component={AboutPage}/>

@@ -4,8 +4,10 @@ import App from './App';
 import { HashRouter } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import {createUserDefaults} from './utilities/settings';
+import {refreshUserAccountData} from './utilities/accounts';
 
 createUserDefaults();
+refreshUserAccountData(); 
 
 ReactDOM.render(
     <HashRouter>
