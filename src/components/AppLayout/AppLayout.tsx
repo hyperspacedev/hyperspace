@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItem, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, withStyles } from '@material-ui/core';
+import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItem, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, withStyles, Menu, MenuItem, ClickAwayListener } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -13,35 +13,33 @@ import InfoIcon from '@material-ui/icons/Info';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {styles} from './AppLayout.styles';
-import { Link } from 'react-router-dom';
-import { ListItemProps } from '@material-ui/core/ListItem';
-import { getCurrentUserData } from '../../utilities/accounts';
 import { UAccount } from '../../types/Account';
+import {LinkableListItem, LinkableIconButton} from '../../interfaces/overrides';
 
 interface IAppLayoutState {
+    acctMenuOpen: boolean;
     drawerOpenOnMobile: boolean;
     currentUser: UAccount;
 }
 
-interface ILinkableListItemProps extends ListItemProps {
-  to: string;
-  replace?: boolean;
-}
-
-const LinkableListItem = (props: ILinkableListItemProps) => (
-  <ListItem {...props} component={Link as any}/>
-)
-
 export class AppLayout extends Component<any, IAppLayoutState> {
     constructor(props: any) {
         super(props);
+
+        let accountData = JSON.parse(localStorage.getItem('account') as string);
     
         this.state = {
           drawerOpenOnMobile: false,
-          currentUser: getCurrentUserData()
+          acctMenuOpen: false,
+          currentUser: accountData
         }
     
         this.toggleDrawerOnMobile = this.toggleDrawerOnMobile.bind(this);
+        this.toggleAcctMenu = this.toggleAcctMenu.bind(this);
+      }
+
+      toggleAcctMenu() {
+        this.setState({ acctMenuOpen: !this.state.acctMenuOpen });
       }
 
       toggleDrawerOnMobile() {
@@ -73,7 +71,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
           <div>
               <List>
                 <div className={classes.drawerDisplayMobile}>
-                  <LinkableListItem button key="profile-mobile" to="/profile">
+                  <LinkableListItem button key="profile-mobile" to={`/profile/${this.state.currentUser.id}`}>
                     <ListItemAvatar>
                       <Avatar alt="You" src={this.state.currentUser.avatar_static}/>
                     </ListItemAvatar>
@@ -163,15 +161,33 @@ export class AppLayout extends Component<any, IAppLayoutState> {
               </div>
               <div className={classes.appBarFlexGrow}/>
               <div className={classes.appBarActionButtons}>
-                  <IconButton color="inherit">
+                  <LinkableIconButton color="inherit" to="/notifications">
                     <NotificationsIcon/>
-                  </IconButton>
-                  <IconButton color="inherit">
+                  </LinkableIconButton>
+                  <LinkableIconButton color="inherit" to="/messages">
                     <MailIcon/>
-                  </IconButton>
-                  <IconButton>
+                  </LinkableIconButton>
+                  <IconButton id="acctMenuBtn" onClick={this.toggleAcctMenu}>
                     <Avatar className={classes.appBarAcctMenuIcon} alt="You" src={this.state.currentUser.avatar_static}/>
                   </IconButton>
+                  <Menu
+                    id="acct-menu"
+                    anchorEl={document.getElementById("acctMenuBtn")}
+                    open={this.state.acctMenuOpen}
+                    className={classes.acctMenu}
+                  >
+                    <ClickAwayListener onClickAway={this.toggleAcctMenu}>
+                      <LinkableListItem to={`/profile/${this.state.currentUser.id}`}>
+                        <ListItemAvatar>
+                          <Avatar alt="You" src={this.state.currentUser.avatar_static}/>
+                        </ListItemAvatar>
+                        <ListItemText primary={this.state.currentUser.display_name} secondary={this.state.currentUser.acct}/>
+                      </LinkableListItem>
+                      <Divider/>
+                      <MenuItem>Switch account</MenuItem>
+                      <MenuItem>Log out</MenuItem>
+                    </ClickAwayListener>
+                  </Menu>
               </div>
             </Toolbar>
           </AppBar>

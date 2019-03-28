@@ -27,6 +27,7 @@ export type Account = {
 }
 
 export type UAccount = {
+    id: string;
     acct: string;
     display_name: string;
     avatar_static: string;

@@ -95,6 +95,9 @@ export const styles = (theme: Theme) => createStyles({
     appBarAcctMenuIcon: {
       backgroundColor: theme.palette.primary.dark
     },
+    acctMenu: {
+      
+    },
     drawer: {
       [theme.breakpoints.up('sm')]: {
         width: 250,

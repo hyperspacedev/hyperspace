@@ -18,25 +18,26 @@ import DomainIcon from '@material-ui/icons/Domain';
 import ChatIcon from '@material-ui/icons/Chat';
 import PersonIcon from '@material-ui/icons/Person';
 import {styles} from './PageLayout.styles';
-import {getCurrentInstanceData} from '../utilities/instances';
 import {Instance} from '../types/Instance';
+import {LinkableIconButton} from '../interfaces/overrides';
+import Mastodon from 'megalodon';
 
 interface IAboutPageState  {
-    instance: Instance;
+    instance: Instance | any;
 }
 
 class AboutPage extends Component<any, IAboutPageState> {
 
     constructor(props: any) {
         super(props);
+    }
 
-        let instance = getCurrentInstanceData();
-        instance.then((resp: any) => {
-            let data: Instance = resp.data;
-            console.log("From response: " + data);
+    componentWillMount() {
+        let client = new Mastodon(localStorage.getItem('account_token') as string, localStorage.getItem('baseurl') + "/api/v1");
+        client.get('/instance').then((resp: any) => {
             this.setState({
-                instance: data
-            });
+                instance: resp.data
+            })
         })
     }
 
@@ -53,9 +54,9 @@ class AboutPage extends Component<any, IAboutPageState> {
                                     <DomainIcon/>
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="Instance location (URL)" secondary={this.state ? this.state.instance.uri: "Couldn't determine location"}/>
+                            <ListItemText primary="Instance location (URL)" secondary={this.state ? this.state.instance.uri: "Loading..."}/>
                             <ListItemSecondaryAction>
-                                <IconButton>
+                                <IconButton href={localStorage.getItem("baseurl") as string} target="_blank" rel="noreferrer">
                                     <OpenInNewIcon/>
                                 </IconButton>
                             </ListItemSecondaryAction>
@@ -66,15 +67,15 @@ class AboutPage extends Component<any, IAboutPageState> {
                             </ListItemAvatar>
                             <ListItemText primary="Instance admin" secondary={
                                 this.state ? `${this.state.instance.contact_account.display_name} (@${this.state.instance.contact_account.acct})`:
-                                "Couldn't determine admin"
+                                "Loading..."
                             }/>
                             <ListItemSecondaryAction>
                                 <IconButton>
                                     <ChatIcon/>
                                 </IconButton>
-                                <IconButton>
+                                <LinkableIconButton to={`/profile/${this.state? this.state.instance.contact_account.id: 0}`}>
                                     <PersonIcon/>
-                                </IconButton>
+                                </LinkableIconButton>
                             </ListItemSecondaryAction>
                         </ListItem>
                     </List>

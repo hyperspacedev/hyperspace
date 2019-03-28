@@ -37,8 +37,8 @@ class App extends Component<any, any> {
         <Route path="/public"/>
         <Route path="/messages"/>
         <Route path="/notifications"/>
-        <Route path="/profile"/>
-        <Route path="/conversation"/>
+        <Route path="/profile/:profileId"/>
+        <Route path="/conversation/:conversationId"/>
         <Route path="/settings" component={Settings}/>
         <Route path="/about" component={AboutPage}/>
       </MuiThemeProvider>
