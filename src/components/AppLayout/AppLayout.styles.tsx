@@ -6,7 +6,6 @@ export const styles = (theme: Theme) => createStyles({
     root: {
       width: '100%',
       display: 'flex',
-      height: '100%'
     },
     stickyArea: {
       position: 'fixed',

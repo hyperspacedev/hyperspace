@@ -33,7 +33,7 @@ class AboutPage extends Component<any, IAboutPageState> {
     }
 
     componentWillMount() {
-        let client = new Mastodon(localStorage.getItem('account_token') as string, localStorage.getItem('baseurl') + "/api/v1");
+        let client = new Mastodon(localStorage.getItem('access_token') as string, localStorage.getItem('baseurl') + "/api/v1");
         client.get('/instance').then((resp: any) => {
             this.setState({
                 instance: resp.data

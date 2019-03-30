@@ -17,6 +17,26 @@ export const styles = (theme: Theme) => createStyles({
         paddingRight: theme.spacing.unit * 24
       },
     },
+    pageLayoutMaxConstraints: {
+      marginTop: 72,
+      flexGrow: 1,
+      paddingTop: theme.spacing.unit * 2,
+      padding: theme.spacing.unit,
+      [theme.breakpoints.up('md')]: {
+        marginLeft: 250,
+        marginTop: 88,
+        padding: theme.spacing.unit * 3,
+        paddingLeft: theme.spacing.unit * 16,
+        paddingRight: theme.spacing.unit * 16,
+      },
+      [theme.breakpoints.up('lg')]: {
+        marginLeft: 250,
+        marginTop: 88,
+        padding: theme.spacing.unit * 3,
+        paddingLeft: theme.spacing.unit * 40,
+        paddingRight: theme.spacing.unit * 40,
+      },
+    },
     pageLayoutMinimalConstraints: {
       flexGrow: 1,
       [theme.breakpoints.up('md')]: {
@@ -25,7 +45,7 @@ export const styles = (theme: Theme) => createStyles({
     },
     pageHeroBackground: {
       position: 'relative',
-      height: '100%',
+      height: 'intrinsic',
       backgroundColor: theme.palette.primary.dark,
       width: '100%',
       color: theme.palette.common.white,
@@ -90,9 +110,14 @@ export const styles = (theme: Theme) => createStyles({
       paddingLeft: theme.spacing.unit * 4,
       paddingRight: theme.spacing.unit * 4,
       paddingTop: theme.spacing.unit * 4,
+      paddingBottom: theme.spacing.unit * 2,
       [theme.breakpoints.up('md')]: {
-        paddingLeft: theme.spacing.unit * 24,
-        paddingRight: theme.spacing.unit * 24
+        paddingLeft: theme.spacing.unit * 32,
+        paddingRight: theme.spacing.unit * 32
       },
+    },
+    errorCard: {
+      padding: theme.spacing.unit * 4,
+      backgroundColor: theme.palette.error.main,
     }
   });

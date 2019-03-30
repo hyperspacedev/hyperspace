@@ -177,15 +177,17 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                     className={classes.acctMenu}
                   >
                     <ClickAwayListener onClickAway={this.toggleAcctMenu}>
-                      <LinkableListItem to={`/profile/${this.state.currentUser.id}`}>
-                        <ListItemAvatar>
-                          <Avatar alt="You" src={this.state.currentUser.avatar_static}/>
-                        </ListItemAvatar>
-                        <ListItemText primary={this.state.currentUser.display_name} secondary={this.state.currentUser.acct}/>
-                      </LinkableListItem>
-                      <Divider/>
-                      <MenuItem>Switch account</MenuItem>
-                      <MenuItem>Log out</MenuItem>
+                      <div>
+                        <LinkableListItem to={`/profile/${this.state.currentUser.id}`}>
+                            <ListItemAvatar>
+                              <Avatar alt="You" src={this.state.currentUser.avatar_static}/>
+                            </ListItemAvatar>
+                            <ListItemText primary={this.state.currentUser.display_name} secondary={this.state.currentUser.acct}/>
+                        </LinkableListItem>
+                        <Divider/>
+                        <MenuItem>Switch account</MenuItem>
+                        <MenuItem>Log out</MenuItem>                      
+                      </div>
                     </ClickAwayListener>
                   </Menu>
               </div>

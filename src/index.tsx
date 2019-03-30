@@ -5,15 +5,24 @@ import { HashRouter } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import {createUserDefaults} from './utilities/settings';
 import {refreshUserAccountData} from './utilities/accounts';
+import {SnackbarProvider} from 'notistack';
 
 createUserDefaults();
 refreshUserAccountData(); 
 
 ReactDOM.render(
     <HashRouter>
-        <App />
+        <SnackbarProvider
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+            }}
+        >
+            <App />
+        </SnackbarProvider>
     </HashRouter>, 
 document.getElementById('root'));
+
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

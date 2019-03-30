@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {MuiThemeProvider, CssBaseline, withStyles, Typography } from '@material-ui/core';
+import {MuiThemeProvider, CssBaseline, withStyles } from '@material-ui/core';
 import { setHyperspaceTheme, darkMode } from './utilities/themes';
 import AppLayout from './components/AppLayout';
 import {styles} from './App.styles';
@@ -8,10 +8,15 @@ import AboutPage from './pages/About';
 import Settings from './pages/Settings';
 import { getUserDefaultBool, getUserDefaultTheme } from './utilities/settings';
 import ProfilePage from './pages/ProfilePage';
+import HomePage from './pages/Home';
+import {withSnackbar} from 'notistack';
+import {ProfileRoute} from './interfaces/overrides';
 
 let theme = setHyperspaceTheme(getUserDefaultTheme());
 
 class App extends Component<any, any> {
+
+  offline: any;
 
   constructor(props: any) {
     super(props);
@@ -28,17 +33,18 @@ class App extends Component<any, any> {
 
   render() {
     const { classes } = this.props;
+    
     return (
       <MuiThemeProvider theme={this.state.theme}>
         <CssBaseline/>
         <AppLayout/>
-        <Route exact path="/"/>
-        <Route path="/home"/>
+        <Route exact path="/" component={HomePage}/>
+        <Route path="/home" component={HomePage}/>
         <Route path="/local"/>
         <Route path="/public"/>
         <Route path="/messages"/>
         <Route path="/notifications"/>
-        <Route path="/profile/:profileId" component={ProfilePage}/>
+        <Route path="/profile/:profileId" render={props => <ProfilePage {...props}></ProfilePage>}/>
         <Route path="/conversation/:conversationId"/>
         <Route path="/settings" component={Settings}/>
         <Route path="/about" component={AboutPage}/>
@@ -47,4 +53,4 @@ class App extends Component<any, any> {
   }
 }
 
-export default withStyles(styles)(App);
+export default withStyles(styles)(withSnackbar(App));
