@@ -136,6 +136,9 @@ export const styles = (theme: Theme) => createStyles({
       textAlign: 'center',
       [theme.breakpoints.up('md')]: {
         marginRight: '55%'
+      },
+      [theme.breakpoints.up('xl')]: {
+        marginRight: '50%'
       }
     },
     pageTopChip: {

@@ -105,7 +105,7 @@ class PublicPage extends Component<any, IPublicPageState> {
     loadMoreTimelinePieces() {
         this.setState({ viewDidLoad: false, viewIsLoading: true})
         if (this.state.posts) {
-            this.client.get('/timelines/home', { max_id: this.state.posts[this.state.posts.length - 1].id, limit: 20 }).then((resp: any) => {
+            this.client.get('/timelines/public', { max_id: this.state.posts[this.state.posts.length - 1].id, limit: 20 }).then((resp: any) => {
                 let newPosts: [Status] = resp.data;
                 let posts = this.state.posts as [Status];
                 newPosts.forEach((post: Status) => {
