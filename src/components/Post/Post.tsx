@@ -12,8 +12,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import GroupIcon from '@material-ui/icons/Group';
 import ForumIcon from '@material-ui/icons/Forum';
 import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import {styles} from './Post.styles';
 import { Status } from '../../types/Status';
+import { Tag } from '../../types/Tag';
 import { Mention } from '../../types/Mention';
 import { Visibility } from '../../types/Visibility';
 import moment from 'moment';
@@ -61,6 +63,15 @@ export class Post extends React.Component<any, IPostState> {
         const { classes } = this.props;
         const oldContent = document.createElement('div');
         oldContent.innerHTML = status.content;
+
+        let anchors = oldContent.getElementsByTagName("a");
+
+        Array.prototype.forEach.call(anchors, (link: HTMLAnchorElement) => {
+            if (link.className.includes("mention") || link.className.includes("hashtag")) {
+                link.removeAttribute("href");
+            }
+        });
+
         if (status.emojis !== undefined && status.emojis.length > 0) {
             status.emojis.forEach((emoji: MastodonEmoji) => {
                 let regexp = new RegExp(':' + emoji.shortcode + ':', 'g');
@@ -77,7 +88,7 @@ export class Post extends React.Component<any, IPostState> {
                         <CardActionArea href={status.card.url} target="_blank" rel="noreferrer">
                             <CardContent>
                                 <Typography gutterBottom variant="h6" component="h2">{status.card.title}</Typography>
-                                <Typography>{status.card.description}</Typography>
+                                <Typography>{status.card.description || "No description provided. Click with caution."}</Typography>
                             </CardContent>
                             {
                                 status.card.image?
@@ -124,17 +135,6 @@ export class Post extends React.Component<any, IPostState> {
         if (of !== null) {
             return (
                 <CardContent className={classes.postContent}>
-                    <LinkableChip
-                        avatar={
-                            <Avatar alt={of.account.acct} src={of.account.avatar_static}/>
-                        }
-                        className={classes.postReblogChip}
-                        label={`@${of.account.username} posted:`}
-                        key={of.id + "_reblog_chip_" + of.account.id}
-                        to={`/profile/${of.account.id}`}
-                        replace={true}
-                        clickable
-                    />
                     {of.sensitive? this.getSensitiveContent(of.spoiler_text, of): this.materializeContent(of)}
                 </CardContent>
             );
@@ -143,13 +143,25 @@ export class Post extends React.Component<any, IPostState> {
         }
     }
 
+    getReblogAuthors(post: Status) {
+        if (post.reblog) {
+            let author = post.reblog.account;
+            return `${author.display_name || author.username} (@${author.acct}) 🔄 ${post.account.display_name || post.account.username}`
+        } else {
+            let author = post.account;
+            return `${author.display_name || author.username} (@${author.acct})`
+        }
+
+    }
+
     getMentions(mention: [Mention]) {
+        const { classes } = this.props;
         if (mention.length > 0) {
             return (
                 <CardContent>
                     <Typography variant="caption">Mentions</Typography>
                     {
-                        this.state.post.mentions.map((person: Mention) => {
+                        mention.map((person: Mention) => {
                             return <LinkableChip
                                         avatar={
                                             <Avatar>
@@ -159,6 +171,36 @@ export class Post extends React.Component<any, IPostState> {
                                         label={person.username}
                                         key={this.state.post.id + "_mention_" + person.id}
                                         to={`/profile/${person.id}`}
+                                        className={classes.postMention}
+                                        clickable
+                                    />
+                        })
+                    }
+                </CardContent>
+            )
+        } else {
+            return null;
+        }
+    }
+
+    getTags(tags: [Tag]) {
+        const { classes } = this.props;
+        if (tags.length > 0) {
+            return (
+                <CardContent>
+                    <Typography variant="caption">Tags</Typography>
+                    {
+                        tags.map((tag: Tag) => {
+                            return <LinkableChip
+                                        avatar={
+                                            <Avatar>
+                                                <LocalOfferIcon/>
+                                            </Avatar>
+                                        }
+                                        label={tag.name}
+                                        key={this.state.post.id + "_tag_" + tag.name}
+                                        to={`/search?tag=${tag.name}`}
+                                        className={classes.postMention}
                                         clickable
                                     />
                         })
@@ -245,76 +287,79 @@ export class Post extends React.Component<any, IPostState> {
 
     render() {
         const { classes } = this.props;
+        const post = this.state.post;
         return (
             <Zoom in={true}>
             <Card className={classes.post}>
-                <CardHeader avatar={<Avatar src={this.state.post.account.avatar_static} />} action={
-                <IconButton key={`${this.state.post.id}_submenu`} id={`${this.state.post.id}_submenu`} onClick={() => this.togglePostMenu()}>
+                <CardHeader avatar={
+                    <Avatar src={
+                        post.reblog? post.reblog.account.avatar_static: post.account.avatar_static
+                    } />
+                } action={
+                <IconButton key={`${post.id}_submenu`} id={`${post.id}_submenu`} onClick={() => this.togglePostMenu()}>
                     <MoreVertIcon />
                 </IconButton>} 
-                title={
-                    `${this.state.post.account.display_name || this.state.post.account.username} (@${this.state.post.account.acct})`
-                } subheader={moment(this.state.post.created_at).format("MMMM Do YYYY [at] h:mm A")} />
+                title={this.getReblogAuthors(post)} subheader={moment(post.created_at).format("MMMM Do YYYY [at] h:mm A")} />
                     {
-                        this.state.post.reblog? this.getReblogOfPost(this.state.post.reblog): null
+                        post.reblog? this.getReblogOfPost(post.reblog): null
                     }
                     {
-                        this.state.post.sensitive? this.getSensitiveContent(this.state.post.spoiler_text, this.state.post):
+                        post.sensitive? this.getSensitiveContent(post.spoiler_text, post):
                         <CardContent className={classes.postContent}>
-                            {this.state.post.reblog? null: this.materializeContent(this.state.post)}
+                            {post.reblog? null: this.materializeContent(post)}
                         </CardContent>
                     }
                     {
-                        this.getMentions(this.state.post.mentions)
+                        post.reblog && post.reblog.mentions.length > 0? this.getMentions(post.reblog.mentions): this.getMentions(post.mentions)
                     }
                     {
-                        this.state.post.reblog && this.state.post.reblog.mentions.length > 0? this.getMentions(this.state.post.reblog.mentions): <span/>
+                        post.reblog && post.reblog.tags.length > 0? this.getTags(post.reblog.tags): this.getTags(post.tags)
                     }
                 <CardActions>
                     <Tooltip title="Reply">
-                        <LinkableIconButton to={`/compose?reply=${this.state.post.id}`}>
+                        <LinkableIconButton to={`/compose?reply=${post.id}`}>
                             <ReplyIcon/>
                         </LinkableIconButton>
                     </Tooltip>
-                        <Typography>{this.state.post.replies_count}</Typography>
+                        <Typography>{post.replies_count}</Typography>
                     <Tooltip title="Favorite">
-                        <IconButton onClick={() => this.toggleFavorited(this.state.post)}>
-                            <FavoriteIcon className={this.state.post.favourited? classes.postDidAction: ''}/>
+                        <IconButton onClick={() => this.toggleFavorited(post)}>
+                            <FavoriteIcon className={post.favourited? classes.postDidAction: ''}/>
                         </IconButton>
                     </Tooltip>
-                        <Typography>{this.state.post.favourites_count}</Typography>
+                        <Typography>{post.favourites_count}</Typography>
                     <Tooltip title="Boost">
-                        <IconButton onClick={() => this.toggleReblogged(this.state.post)}>
-                            <AutorenewIcon className={this.state.post.reblogged? classes.postDidAction: ''}/>
+                        <IconButton onClick={() => this.toggleReblogged(post)}>
+                            <AutorenewIcon className={post.reblogged? classes.postDidAction: ''}/>
                         </IconButton>
                     </Tooltip>
-                        <Typography>{this.state.post.reblogs_count}</Typography>
+                        <Typography>{post.reblogs_count}</Typography>
                     <Tooltip title="View thread">
-                        <LinkableIconButton to={`/conversation/${this.state.post.id}`}>
+                        <LinkableIconButton to={`/conversation/${post.id}`}>
                             <ForumIcon />
                         </LinkableIconButton>
                     </Tooltip>
                     <Tooltip title="Open in Web">
-                        <IconButton href={this.getMastodonUrl(this.state.post)} rel="noreferrer" target="_blank">
+                        <IconButton href={this.getMastodonUrl(post)} rel="noreferrer" target="_blank">
                             <OpenInNewIcon />
                         </IconButton>
                     </Tooltip>
                     <div className={classes.postFlexGrow} />
                     <div className={classes.postTypeIconDiv}>
-                        {this.showVisibilityIcon(this.state.post.visibility)}
+                        {this.showVisibilityIcon(post.visibility)}
                     </div>
                 </CardActions>
                 <Menu
                     id="postmenu"
-                    anchorEl={document.getElementById(`${this.state.post.id}_submenu`)}
+                    anchorEl={document.getElementById(`${post.id}_submenu`)}
                     open={this.state.menuIsOpen}
                     onClose={() => this.togglePostMenu()}
                 >
                     <ShareMenu config={{
                         params: {
-                            title: `@${this.state.post.account.username} posted on Mastodon: `,
-                            text: this.state.post.content,
-                            url: this.getMastodonUrl(this.state.post),
+                            title: `@${post.account.username} posted on Mastodon: `,
+                            text: post.content,
+                            url: this.getMastodonUrl(post),
                         },
                         onShareSuccess: () => this.props.enqueueSnackbar("Post shared!", {variant: 'success'}),
                         onShareError: (error: Error) => {
@@ -322,9 +367,13 @@ export class Post extends React.Component<any, IPostState> {
                                 this.props.enqueueSnackbar(`Couldn't share post: ${error.name}`, {variant: 'error'})
                         },
                     }}/>
-                    <LinkableMenuItem to={`/profile/${this.state.post.account.id}`}>View author profile</LinkableMenuItem>
                     {
-                        this.state.post.account.id == JSON.parse(localStorage.getItem('account') as string).id?
+                        post.reblog?
+                        <LinkableMenuItem to={`/profile/${post.reblog.account.id}`}>View author profile</LinkableMenuItem>: null
+                    }
+                    <LinkableMenuItem to={`/profile/${post.account.id}`}>View reblogger profile</LinkableMenuItem>
+                    {
+                        post.account.id == JSON.parse(localStorage.getItem('account') as string).id?
                         <div>
                             <Divider/>
                             <MenuItem>Delete</MenuItem>

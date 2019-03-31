@@ -33,6 +33,13 @@ export const styles = (theme: Theme) => createStyles({
         marginLeft: 250,
         marginTop: 88,
         padding: theme.spacing.unit * 3,
+        paddingLeft: theme.spacing.unit * 32,
+        paddingRight: theme.spacing.unit * 32,
+      },
+      [theme.breakpoints.up('xl')]: {
+        marginLeft: 250,
+        marginTop: 88,
+        padding: theme.spacing.unit * 3,
         paddingLeft: theme.spacing.unit * 40,
         paddingRight: theme.spacing.unit * 40,
       },
@@ -119,5 +126,19 @@ export const styles = (theme: Theme) => createStyles({
     errorCard: {
       padding: theme.spacing.unit * 4,
       backgroundColor: theme.palette.error.main,
+    },
+    pageTopChipContainer: {
+      zIndex: 24,
+      position: "fixed",
+      width: '100%'
+    },
+    pageTopChips: {
+      textAlign: 'center',
+      [theme.breakpoints.up('md')]: {
+        marginRight: '55%'
+      }
+    },
+    pageTopChip: {
+      boxShadow: theme.shadows[10]
     }
   });

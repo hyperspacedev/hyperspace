@@ -5,6 +5,7 @@ import { Link, Route } from "react-router-dom";
 import Chip, { ChipProps } from '@material-ui/core/Chip';
 import { MenuItemProps } from '@material-ui/core/MenuItem';
 import { MenuItem } from '@material-ui/core';
+import Button, { ButtonProps } from '@material-ui/core/Button';
 
 export interface ILinkableListItemProps extends ListItemProps {
     to: string;
@@ -26,6 +27,11 @@ export interface ILinkableMenuItemProps extends MenuItemProps {
     replace?: boolean;
 }
 
+export interface ILinkableButtonProps extends ButtonProps {
+    to: string;
+    replace?: boolean;
+}
+
 export const LinkableListItem = (props: ILinkableListItemProps) => (
     <ListItem {...props} component={Link as any}/>
   )
@@ -42,8 +48,13 @@ export const LinkableMenuItem = (props: ILinkableMenuItemProps) => (
     <MenuItem {...props} component={Link as any}/>
   )
 
+export const LinkableButton = (props: ILinkableButtonProps) => (
+    <Button {...props} component={Link as any}/>
+)
+
 export const ProfileRoute = (rest: any, component: Component) => (
     <Route {...rest} render={props => (
         <Component {...props}/>
     )}/>
   )
+  

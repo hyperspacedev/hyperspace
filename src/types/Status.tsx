@@ -5,6 +5,7 @@ import { Attachment } from './Attachment';
 import { Mention } from './Mention';
 import { Poll } from './Poll';
 import { Card } from './Card';
+import { Tag } from './Tag';
 
 /**
  * Basic type for a status on Mastodon
@@ -31,7 +32,7 @@ export type Status = {
     visibility: Visibility;
     media_attachments: [Attachment];
     mentions: [Mention];
-    tags: any;
+    tags: [Tag];
     card: Card | null;
     poll: Poll | null;
     application: any;

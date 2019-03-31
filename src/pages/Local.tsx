@@ -7,7 +7,7 @@ import Mastodon from 'megalodon';
 import {withSnackbar} from 'notistack';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 
-interface IHomePageState {
+interface ILocalPageState {
     posts?: [Status];
     backlogPosts?: [Status] | null;
     viewIsLoading: boolean;
@@ -17,7 +17,7 @@ interface IHomePageState {
 }
 
 
-class HomePage extends Component<any, IHomePageState> {
+class LocalPage extends Component<any, ILocalPageState> {
 
     client: Mastodon;
     streamListener: any;
@@ -35,10 +35,10 @@ class HomePage extends Component<any, IHomePageState> {
     }
 
     componentWillMount() {
-        this.streamListener = this.client.stream('/streaming/user');
+        this.streamListener = this.client.stream('/streaming/local');
 
         this.streamListener.on('connect', () => {
-            this.client.get('/timelines/home', {limit: 40}).then((resp: any) => {
+            this.client.get('/timelines/public', {limit: 40, local: true}).then((resp: any) => {
                 let statuses: [Status] = resp.data;
                 this.setState({
                     posts: statuses,
@@ -186,4 +186,4 @@ class HomePage extends Component<any, IHomePageState> {
     }
 }
 
-export default withStyles(styles)(withSnackbar(HomePage));
+export default withStyles(styles)(withSnackbar(LocalPage));

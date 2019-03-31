@@ -10,6 +10,7 @@ export const styles = (theme: Theme) => createStyles({
       '&:hover': {
         backgroundColor: theme.palette.secondary.light
       },
+      backgroundColor: theme.palette.secondary.main,
       marginBottom: theme.spacing.unit
     },
     postContent: {
@@ -21,6 +22,16 @@ export const styles = (theme: Theme) => createStyles({
         '&:hover': {
           textDecoration: 'underline'
         },
+        '&.u-url.mention': {
+          textDecoration: 'none',
+          color: 'inherit',
+          fontWeight: 'bold'
+        },
+        '&.mention.hashtag': {
+          textDecoration: 'none',
+          color: 'inherit',
+          fontWeight: 'bold'
+        }
       }
     },
     postCard: {
@@ -54,5 +65,9 @@ export const styles = (theme: Theme) => createStyles({
     },
     postDidAction: {
       color: theme.palette.secondary.main
+    },
+    postMention: {
+      marginRight: theme.spacing.unit,
+      marginBottom: theme.spacing.unit
     }
 });

@@ -3,12 +3,15 @@ import {withStyles, Typography, Avatar, Divider, Button, CircularProgress, Paper
 import {styles} from './PageLayout.styles';
 import Mastodon from 'megalodon';
 import { Account } from '../types/Account';
-import { Status} from '../types/Status';
+import { Status } from '../types/Status';
+import { Relationship } from '../types/Relationship';
 import Post from '../components/Post';
 import {withSnackbar} from 'notistack';
+import { LinkableButton } from '../interfaces/overrides';
 
 interface IProfilePageState {
     account?: Account;
+    relationship?: Relationship;
     posts?: [Status];
     viewIsLoading: boolean;
     viewDidLoad?: boolean;
@@ -31,8 +34,8 @@ class ProfilePage extends Component<any, IProfilePageState> {
         }
     }
 
-    componentWillReceiveProps(props: any) {
-        this.client.get(`/accounts/${props.match.params.profileId}`).then((resp: any) => {
+    getAccountData(id: string) {
+        this.client.get(`/accounts/${id}`).then((resp: any) => {
             let profile: Account = resp.data;
 
             const div = document.createElement('div');
@@ -48,9 +51,8 @@ class ProfilePage extends Component<any, IProfilePageState> {
                 viewDidError: true,
                 viewDidErrorCode: error.message
             })
-        })
-
-        this.client.get(`/accounts/${props.match.params.profileId}/statuses`).then((resp: any) => {
+        });
+        this.client.get(`/accounts/${id}/statuses`).then((resp: any) => {
             this.setState({
                 posts: resp.data,
                 viewIsLoading: false,
@@ -63,44 +65,30 @@ class ProfilePage extends Component<any, IProfilePageState> {
                 viewDidError: true,
                 viewDidErrorCode: err.message
             })
-        })
-        window.scrollTo(0, 0)
+        });
+    }
+
+    componentWillReceiveProps(props: any) {
+        this.getAccountData(props.match.params.profileId);
+        window.scrollTo(0, 0);
     }
 
     componentWillMount() {
         const { match: { params }} = this.props;
-        this.client.get(`/accounts/${params.profileId}`).then((resp: any) => {
-            let profile: Account = resp.data;
+        this.getAccountData(params.profileId);
+    }
 
-            const div = document.createElement('div');
-            div.innerHTML = profile.note;
-            profile.note = div.textContent || div.innerText || "";
-
-            this.setState({
-                account: profile
-            })
+    componentDidMount() {
+        this.client.get("/accounts/relationships", {id: [this.props.match.params.profileId]}).then((resp: any) => {
+            let relationship: Relationship = resp.data;
+            this.setState({ relationship });
         }).catch((error: Error) => {
             this.setState({
                 viewIsLoading: false,
                 viewDidError: true,
                 viewDidErrorCode: error.message
             })
-        })
-
-        this.client.get(`/accounts/${params.profileId}/statuses`).then((resp: any) => {
-            this.setState({
-                posts: resp.data,
-                viewIsLoading: false,
-                viewDidLoad: true,
-                viewDidError: false
-            })
-        }).catch( (err: Error) => {
-            this.setState({
-                viewIsLoading: false,
-                viewDidError: true,
-                viewDidErrorCode: err.message
-            })
-        })
+        });
     }
 
     statElement(classes: any, stat: 'following' | 'followers' | 'posts') {
@@ -156,7 +144,6 @@ class ProfilePage extends Component<any, IProfilePageState> {
 
     render() {
         const { classes } = this.props;
-
         return(
             <div className={classes.pageLayoutMinimalConstraints}>
                 <div className={classes.pageHeroBackground}>
@@ -173,9 +160,14 @@ class ProfilePage extends Component<any, IProfilePageState> {
                             {this.statElement(classes, 'posts')}
                         </div>
                         <Divider/>
-                        <Button variant="contained" color="primary" className={classes.pageProfileFollowButton}>Follow</Button>
-                        <Button variant="contained" className={classes.pageProfileFollowButton}>Mention</Button>
-                        <Button variant="contained" className={classes.pageProfileFollowButton}>Block</Button>
+                        {
+                            this.state.account && this.state.relationship?
+                            <div>
+                                <Button variant="contained" color="primary" className={classes.pageProfileFollowButton}>{this.state.relationship? "Unfollow": "Follow"}</Button>
+                                <LinkableButton to={`/compose?mention=${this.state.account.acct}`} variant="contained" className={classes.pageProfileFollowButton}>Mention</LinkableButton>
+                                <Button variant="contained" className={classes.pageProfileFollowButton}>{this.state.relationship.blocking? "Unblock": "Block"}</Button>
+                            </div>: null
+                        }
                     </div>
                 </div>
                 <div className={classes.pageContentLayoutConstraints}>

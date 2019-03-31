@@ -9,9 +9,9 @@ import Settings from './pages/Settings';
 import { getUserDefaultBool, getUserDefaultTheme } from './utilities/settings';
 import ProfilePage from './pages/ProfilePage';
 import HomePage from './pages/Home';
+import LocalPage from './pages/Local';
+import PublicPage from './pages/Public';
 import {withSnackbar} from 'notistack';
-import {ProfileRoute} from './interfaces/overrides';
-
 let theme = setHyperspaceTheme(getUserDefaultTheme());
 
 class App extends Component<any, any> {
@@ -40,8 +40,8 @@ class App extends Component<any, any> {
         <AppLayout/>
         <Route exact path="/" component={HomePage}/>
         <Route path="/home" component={HomePage}/>
-        <Route path="/local"/>
-        <Route path="/public"/>
+        <Route path="/local" component={LocalPage}/>
+        <Route path="/public" component={PublicPage}/>
         <Route path="/messages"/>
         <Route path="/notifications"/>
         <Route path="/profile/:profileId" render={props => <ProfilePage {...props}></ProfilePage>}/>
