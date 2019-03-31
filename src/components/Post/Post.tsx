@@ -79,35 +79,37 @@ export class Post extends React.Component<any, IPostState> {
             })
         }
         return (
-            <div className={classes.mediaContainer}>
-                <Typography paragraph dangerouslySetInnerHTML={{__html: oldContent.innerHTML}}/>
-                {
-                    status.card?
-                    <div className={classes.postCard}>
-                        <Divider/>
-                        <CardActionArea href={status.card.url} target="_blank" rel="noreferrer">
-                            <CardContent>
-                                <Typography gutterBottom variant="h6" component="h2">{status.card.title}</Typography>
-                                <Typography>{status.card.description || "No description provided. Click with caution."}</Typography>
-                            </CardContent>
-                            {
-                                status.card.image?
-                                <CardMedia className={classes.postMedia} image={status.card.image}/>: <span/>
-                            }
-                            <CardContent>
-                                <Typography>{status.card.provider_url|| status.card.author_url || status.card.author_url}</Typography>
-                            </CardContent>
-                        </CardActionArea>
-                        <Divider/>
-                    </div>:
-                    <span/>
-                }
-                {
-                    status.media_attachments.length > 0?
-                    <AttachmentComponent media={status.media_attachments}/>:
-                    <span/>
-                }
-            </div>
+            <CardContent className={classes.postContent}>
+                <div className={classes.mediaContainer}>
+                    <Typography paragraph dangerouslySetInnerHTML={{__html: oldContent.innerHTML}}/>
+                    {
+                        status.card?
+                        <div className={classes.postCard}>
+                            <Divider/>
+                            <CardActionArea href={status.card.url} target="_blank" rel="noreferrer">
+                                <CardContent>
+                                    <Typography gutterBottom variant="h6" component="h2">{status.card.title}</Typography>
+                                    <Typography>{status.card.description || "No description provided. Click with caution."}</Typography>
+                                </CardContent>
+                                {
+                                    status.card.image?
+                                    <CardMedia className={classes.postMedia} image={status.card.image}/>: <span/>
+                                }
+                                <CardContent>
+                                    <Typography>{status.card.provider_url|| status.card.author_url || status.card.author_url}</Typography>
+                                </CardContent>
+                            </CardActionArea>
+                            <Divider/>
+                        </div>:
+                        <span/>
+                    }
+                    {
+                        status.media_attachments.length > 0?
+                        <AttachmentComponent media={status.media_attachments}/>:
+                        <span/>
+                    }
+                </div>
+            </CardContent>
         );
     }
 
@@ -119,11 +121,11 @@ export class Post extends React.Component<any, IPostState> {
             icon = <WarningIcon className={classes.postWarningIcon}/>;
         }
         return (
-            <ExpansionPanel>
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
-                    {icon}<Typography className={classes.heading}>{warningText}</Typography>
+            <ExpansionPanel className={spoiler_text.includes("NSFW")? classes.nsfwCard: classes.spoilerCard} color="inherit">
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>} color="inherit">
+                    {icon}<Typography className={classes.heading} color="inherit">{warningText}</Typography>
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails className={classes.postContent}>
+                <ExpansionPanelDetails className={classes.postContent} color="inherit">
                     {this.materializeContent(content)}
                 </ExpansionPanelDetails>
             </ExpansionPanel>
@@ -134,9 +136,7 @@ export class Post extends React.Component<any, IPostState> {
         const { classes } = this.props;
         if (of !== null) {
             return (
-                <CardContent className={classes.postContent}>
-                    {of.sensitive? this.getSensitiveContent(of.spoiler_text, of): this.materializeContent(of)}
-                </CardContent>
+                of.sensitive? this.getSensitiveContent(of.spoiler_text, of): this.materializeContent(of)
             );
         } else {
             return null;
@@ -305,9 +305,7 @@ export class Post extends React.Component<any, IPostState> {
                     }
                     {
                         post.sensitive? this.getSensitiveContent(post.spoiler_text, post):
-                        <CardContent className={classes.postContent}>
-                            {post.reblog? null: this.materializeContent(post)}
-                        </CardContent>
+                            post.reblog? null: this.materializeContent(post)
                     }
                     {
                         post.reblog && post.reblog.mentions.length > 0? this.getMentions(post.reblog.mentions): this.getMentions(post.mentions)
@@ -321,19 +319,35 @@ export class Post extends React.Component<any, IPostState> {
                             <ReplyIcon/>
                         </LinkableIconButton>
                     </Tooltip>
-                        <Typography>{post.replies_count}</Typography>
+                        <Typography>{post.reblog? post.reblog.replies_count: post.replies_count}</Typography>
                     <Tooltip title="Favorite">
                         <IconButton onClick={() => this.toggleFavorited(post)}>
-                            <FavoriteIcon className={post.favourited? classes.postDidAction: ''}/>
+                            <FavoriteIcon className={
+                                post.reblog? 
+                                    post.reblog.favourited? 
+                                        classes.postDidAction: 
+                                        '': 
+                                    post.favourited? 
+                                        classes.postDidAction: 
+                                        ''
+                            }/>
                         </IconButton>
                     </Tooltip>
-                        <Typography>{post.favourites_count}</Typography>
+                        <Typography>{post.reblog? post.reblog.favourites_count: post.favourites_count}</Typography>
                     <Tooltip title="Boost">
                         <IconButton onClick={() => this.toggleReblogged(post)}>
-                            <AutorenewIcon className={post.reblogged? classes.postDidAction: ''}/>
+                            <AutorenewIcon className={
+                                post.reblog? 
+                                    post.reblog.reblogged? 
+                                        classes.postDidAction: 
+                                        '': 
+                                    post.reblogged? 
+                                        classes.postDidAction: 
+                                        ''
+                            }/>
                         </IconButton>
                     </Tooltip>
-                        <Typography>{post.reblogs_count}</Typography>
+                        <Typography>{post.reblog? post.reblog.reblogs_count: post.reblogs_count}</Typography>
                     <Tooltip title="View thread">
                         <LinkableIconButton to={`/conversation/${post.id}`}>
                             <ForumIcon />

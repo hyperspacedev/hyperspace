@@ -27,7 +27,6 @@ import {themes} from '../types/HyperspaceTheme';
 interface ISettingsState {
     darkModeEnabled: boolean;
     pushNotificationsEnabled: boolean;
-    deleteNotificationsOnRead: boolean;
     selectThemeName: string;
     themeDialogOpen: boolean;
 }
@@ -40,14 +39,12 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.state = {
             darkModeEnabled: getUserDefaultBool('darkModeEnabled'),
             pushNotificationsEnabled: canSendNotifications(),
-            deleteNotificationsOnRead: getUserDefaultBool('clearNotificationsOnRead'),
             selectThemeName: getUserDefaultTheme().key,
             themeDialogOpen: false
         }
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
         this.togglePushNotifications = this.togglePushNotifications.bind(this);
-        this.toggleClearNotifsOnRead = this.toggleClearNotifsOnRead.bind(this);
         this.toggleThemeDialog = this.toggleThemeDialog.bind(this);
         this.changeThemeName = this.changeThemeName.bind(this);
         this.changeTheme = this.changeTheme.bind(this);
@@ -62,11 +59,6 @@ class SettingsPage extends Component<any, ISettingsState> {
     togglePushNotifications() {
         this.setState({ pushNotificationsEnabled: !this.state.pushNotificationsEnabled });
         setUserDefaultBool('enablePushNotifications', !this.state.pushNotificationsEnabled);
-    }
-
-    toggleClearNotifsOnRead() {
-        this.setState({ deleteNotificationsOnRead: !this.state.deleteNotificationsOnRead });
-        setUserDefaultBool('clearNotificationsOnRead', !this.state.deleteNotificationsOnRead);
     }
 
     toggleThemeDialog() {
@@ -159,15 +151,6 @@ class SettingsPage extends Component<any, ISettingsState> {
                                     checked={this.state.pushNotificationsEnabled} 
                                     onChange={this.togglePushNotifications}
                                     disabled={!browserSupportsNotificationRequests()}
-                                />
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText primary="Clear on read" secondary="Delete a notification once you read it"/>
-                            <ListItemSecondaryAction>
-                                <Switch 
-                                    checked={this.state.deleteNotificationsOnRead} 
-                                    onChange={this.toggleClearNotifsOnRead}
                                 />
                             </ListItemSecondaryAction>
                         </ListItem>

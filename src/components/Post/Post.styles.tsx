@@ -61,7 +61,7 @@ export const styles = (theme: Theme) => createStyles({
     },
     postWarningIcon: {
       marginRight: theme.spacing.unit,
-      color: theme.palette.grey[700]
+      color: "inherit"
     },
     postDidAction: {
       color: theme.palette.secondary.main
@@ -69,5 +69,8 @@ export const styles = (theme: Theme) => createStyles({
     postMention: {
       marginRight: theme.spacing.unit,
       marginBottom: theme.spacing.unit
+    },
+    nsfwCard: {
+      backgroundColor: theme.palette.error.main
     }
 });

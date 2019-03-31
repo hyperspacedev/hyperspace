@@ -140,5 +140,15 @@ export const styles = (theme: Theme) => createStyles({
     },
     pageTopChip: {
       boxShadow: theme.shadows[10]
+    },
+    clearAllButton: {
+      zIndex: 3,
+      position: 'absolute',
+      right: 24,
+      top: 100,
+      [theme.breakpoints.up('md')]: {
+        top: 116,
+        right: theme.spacing.unit * 24,
+      }
     }
   });

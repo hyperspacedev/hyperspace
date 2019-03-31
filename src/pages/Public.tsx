@@ -145,7 +145,7 @@ class PublicPage extends Component<any, IPublicPageState> {
                                             <ArrowUpwardIcon/>
                                         </Avatar>
                                     }
-                                    label={`View ${this.state.backlogPosts.length} new posts`}
+                                    label={`View ${this.state.backlogPosts.length} new post${this.state.backlogPosts.length > 1? "s": ""}`}
                                     color="primary"
                                     className={classes.pageTopChip}
                                     onClick={() => this.insertBacklog()}

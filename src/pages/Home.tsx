@@ -145,7 +145,7 @@ class HomePage extends Component<any, IHomePageState> {
                                             <ArrowUpwardIcon/>
                                         </Avatar>
                                     }
-                                    label={`View ${this.state.backlogPosts.length} new posts`}
+                                    label={`View ${this.state.backlogPosts.length} new post${this.state.backlogPosts.length > 1? "s": ""}`}
                                     color="primary"
                                     className={classes.pageTopChip}
                                     onClick={() => this.insertBacklog()}
@@ -157,9 +157,9 @@ class HomePage extends Component<any, IHomePageState> {
                 }
                 { this.state.posts?
                     <div>
-                        {this.state.posts.map((post: Status) => {
+                        { this.state.posts.map((post: Status) => {
                             return <Post key={post.id} post={post} client={this.client}/>
-                        })}
+                        }) }
                         <br/>
                         {
                             this.state.viewDidLoad && !this.state.viewDidError? <div style={{textAlign: "center"}} onClick={() => this.loadMoreTimelinePieces()}><Button variant="contained">Load more</Button></div>: null
