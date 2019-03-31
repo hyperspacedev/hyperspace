@@ -199,7 +199,7 @@ export class Post extends React.Component<any, IPostState> {
                                         }
                                         label={tag.name}
                                         key={this.state.post.id + "_tag_" + tag.name}
-                                        to={`/search?tag=${tag.name}`}
+                                        to={`/search?query=${tag.name}&type=tag`}
                                         className={classes.postMention}
                                         clickable
                                     />
