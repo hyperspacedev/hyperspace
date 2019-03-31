@@ -226,7 +226,7 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                         Delete
                         </Button>
                     </DialogActions>
-                    </Dialog>
+                </Dialog>
             </div>
         );
     }

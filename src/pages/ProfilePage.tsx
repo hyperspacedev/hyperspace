@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {withStyles, Typography, Avatar, Divider, Button, CircularProgress, Paper} from '@material-ui/core';
+import {withStyles, Typography, Avatar, Divider, Button, CircularProgress, Paper, Tooltip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions} from '@material-ui/core';
 import {styles} from './PageLayout.styles';
 import Mastodon from 'megalodon';
 import { Account } from '../types/Account';
@@ -17,6 +17,7 @@ interface IProfilePageState {
     viewDidLoad?: boolean;
     viewDidError?: boolean;
     viewDidErrorCode?: string;
+    blockDialogOpen: boolean;
 }
 
 class ProfilePage extends Component<any, IProfilePageState> {
@@ -30,8 +31,16 @@ class ProfilePage extends Component<any, IProfilePageState> {
         this.client = new Mastodon(localStorage.getItem('access_token') as string, localStorage.getItem('baseurl') + "/api/v1");
 
         this.state = {
-            viewIsLoading: true
+            viewIsLoading: true,
+            blockDialogOpen: false
         }
+    }
+
+    toggleBlockDialog() {
+        if (this.state.relationship && !this.state.relationship.blocking)
+            this.setState({ blockDialogOpen: !this.state.blockDialogOpen })
+        else
+            this.toggleBlock()
     }
 
     getAccountData(id: string) {
@@ -52,6 +61,7 @@ class ProfilePage extends Component<any, IProfilePageState> {
                 viewDidErrorCode: error.message
             })
         });
+        this.getRelationships();
         this.client.get(`/accounts/${id}/statuses`).then((resp: any) => {
             this.setState({
                 posts: resp.data,
@@ -78,9 +88,9 @@ class ProfilePage extends Component<any, IProfilePageState> {
         this.getAccountData(params.profileId);
     }
 
-    componentDidMount() {
-        this.client.get("/accounts/relationships", {id: [this.props.match.params.profileId]}).then((resp: any) => {
-            let relationship: Relationship = resp.data;
+    getRelationships() {
+        this.client.get("/accounts/relationships", {id: this.props.match.params.profileId }).then((resp: any) => {
+            let relationship: Relationship = resp.data[0];
             this.setState({ relationship });
         }).catch((error: Error) => {
             this.setState({
@@ -142,6 +152,56 @@ class ProfilePage extends Component<any, IProfilePageState> {
         }
     }
 
+    toggleFollow() {
+        if (this.state.relationship) {
+            if (this.state.relationship.following) {
+                this.client.post(`/accounts/${this.state.account? this.state.account.id: this.props.match.params.profileId}/unfollow`).then((resp: any) => {
+                    let relationship: Relationship = resp.data;
+                    this.setState({ relationship });
+                    this.props.enqueueSnackbar('You are no longer following this account.');
+                }).catch((err: Error) => {
+                    this.props.enqueueSnackbar("Couldn't unfollow account: " + err.name, { variant: 'error' });
+                    console.error(err.message);
+                })
+            } else {
+                this.client.post(`/accounts/${this.state.account? this.state.account.id: this.props.match.params.profileId}/follow`).then((resp: any) => {
+                    let relationship: Relationship = resp.data;
+                    this.setState({ relationship });
+                    this.props.enqueueSnackbar('You are now following this account.');
+                }).catch((err: Error) => {
+                    this.props.enqueueSnackbar("Couldn't follow account: " + err.name, { variant: 'error' });
+                    console.error(err.message);
+                })
+            }
+        }
+        
+    }
+
+    toggleBlock() {
+        if (this.state.relationship) {
+            if (this.state.relationship.blocking) {
+                this.client.post(`/accounts/${this.state.account? this.state.account.id: this.props.match.params.profileId}/unblock`).then((resp: any) => {
+                    let relationship: Relationship = resp.data;
+                    this.setState({ relationship });
+                    this.props.enqueueSnackbar('You are no longer blocking this account.');
+                }).catch((err: Error) => {
+                    this.props.enqueueSnackbar("Couldn't unblock account: " + err.name, { variant: 'error' });
+                    console.error(err.message);
+                })
+            } else {
+                this.client.post(`/accounts/${this.state.account? this.state.account.id: this.props.match.params.profileId}/block`).then((resp: any) => {
+                    let relationship: Relationship = resp.data;
+                    this.setState({ relationship });
+                    this.props.enqueueSnackbar('You are now blocking this account.');
+                }).catch((err: Error) => {
+                    this.props.enqueueSnackbar("Couldn't block account: " + err.name, { variant: 'error' });
+                    console.error(err.message);
+                })
+            }
+        }
+        
+    }
+
     render() {
         const { classes } = this.props;
         return(
@@ -161,11 +221,27 @@ class ProfilePage extends Component<any, IProfilePageState> {
                         </div>
                         <Divider/>
                         {
-                            this.state.account && this.state.relationship?
+                            this.state.relationship?
                             <div>
-                                <Button variant="contained" color="primary" className={classes.pageProfileFollowButton}>{this.state.relationship? "Unfollow": "Follow"}</Button>
-                                <LinkableButton to={`/compose?mention=${this.state.account.acct}`} variant="contained" className={classes.pageProfileFollowButton}>Mention</LinkableButton>
-                                <Button variant="contained" className={classes.pageProfileFollowButton}>{this.state.relationship.blocking? "Unblock": "Block"}</Button>
+                                <Button
+                                    variant="contained" 
+                                    color="primary" 
+                                    className={classes.pageProfileFollowButton}
+                                    onClick={() => this.toggleFollow()}
+                                    disabled={this.state.account? this.state.account.id === JSON.parse(localStorage.getItem('account') as string).id: false}
+                                >
+                                    {this.state.relationship.following? "Unfollow": "Follow"}
+                                </Button>
+                                
+                                <LinkableButton to={`/compose?mention=${this.state.account? this.state.account.acct: ""}`} variant="contained" className={classes.pageProfileFollowButton}>Mention</LinkableButton>
+                                <Button 
+                                    variant="contained" 
+                                    className={classes.pageProfileFollowButton}
+                                    disabled={this.state.account? this.state.account.id === JSON.parse(localStorage.getItem('account') as string).id: false}
+                                    onClick={() => this.toggleBlockDialog()}
+                                >
+                                    {this.state.relationship.blocking? "Unblock": "Block"}
+                                </Button>
                             </div>: null
                         }
                     </div>
@@ -194,11 +270,33 @@ class ProfilePage extends Component<any, IProfilePageState> {
                             }
                         </div>: <span/>
                     }
-                                        {
+                    {
                         this.state.viewIsLoading?
                         <div style={{ textAlign: 'center' }}><CircularProgress className={classes.progress} color="primary" /></div>:
                         <span/>
                     }
+                    <Dialog
+                        open={this.state.blockDialogOpen}
+                        onClose={() => this.toggleBlockDialog()}
+                        >
+                        <DialogTitle id="alert-dialog-title">Block this person?</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                Are you sure you want to block this person? You won't see their posts on your home feed, local timeline, or public timeline.
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                        <Button onClick={() => this.toggleBlockDialog()} color="primary" autoFocus>
+                            Cancel
+                            </Button>
+                            <Button onClick={() => {
+                                this.toggleBlock();
+                                this.toggleBlockDialog();
+                            }} color="primary">
+                            Block
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </div>
             </div>
         );

@@ -383,9 +383,12 @@ export class Post extends React.Component<any, IPostState> {
                     }}/>
                     {
                         post.reblog?
-                        <LinkableMenuItem to={`/profile/${post.reblog.account.id}`}>View author profile</LinkableMenuItem>: null
+                        <div>
+                            <LinkableMenuItem to={`/profile/${post.reblog.account.id}`}>View author profile</LinkableMenuItem>
+                            <LinkableMenuItem to={`/profile/${post.account.id}`}>View reblogger profile</LinkableMenuItem>
+
+                        </div>: <LinkableMenuItem to={`/profile/${post.account.id}`}>View profile</LinkableMenuItem>
                     }
-                    <LinkableMenuItem to={`/profile/${post.account.id}`}>View reblogger profile</LinkableMenuItem>
                     {
                         post.account.id == JSON.parse(localStorage.getItem('account') as string).id?
                         <div>
