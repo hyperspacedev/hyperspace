@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItem, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, withStyles, Menu, MenuItem, ClickAwayListener } from '@material-ui/core';
+import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItem, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, withStyles, Menu, MenuItem, ClickAwayListener, Badge } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -15,27 +15,86 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {styles} from './AppLayout.styles';
 import { UAccount } from '../../types/Account';
 import {LinkableListItem, LinkableIconButton} from '../../interfaces/overrides';
+import Mastodon from 'megalodon';
+import { Notification } from '../../types/Notification';
+import {sendNotificationRequest} from '../../utilities/notifications';
 
 interface IAppLayoutState {
     acctMenuOpen: boolean;
     drawerOpenOnMobile: boolean;
     currentUser: UAccount;
+    notificationCount: number;
 }
 
 export class AppLayout extends Component<any, IAppLayoutState> {
+    
+    client: Mastodon;
+    streamListener: any;
+
     constructor(props: any) {
         super(props);
 
         let accountData = JSON.parse(localStorage.getItem('account') as string);
+
+        this.client = new Mastodon(localStorage.getItem('access_token') as string, localStorage.getItem('baseurl') as string + "/api/v1");
     
         this.state = {
           drawerOpenOnMobile: false,
           acctMenuOpen: false,
-          currentUser: accountData
+          currentUser: accountData,
+          notificationCount: 0
         }
     
         this.toggleDrawerOnMobile = this.toggleDrawerOnMobile.bind(this);
         this.toggleAcctMenu = this.toggleAcctMenu.bind(this);
+      }
+
+      componentDidMount() {
+        this.streamListener = this.client.stream('/streaming/user');
+
+        this.streamListener.on('connect', () => { console.log ('Streaming notifs!')});
+
+        this.streamListener.on('notification', (notif: Notification) => {
+          console.log("received notif");
+          const notificationCount = this.state.notificationCount + 1;
+          this.setState({ notificationCount });
+          if (!document.hasFocus()) {
+            let primaryMessage = "";
+            let secondaryMessage = "";
+
+            switch(notif.type) {
+              case "favourite":
+                primaryMessage = (notif.account.display_name || "@" + notif.account.username) + " favorited your post.";
+                if (notif.status) {
+                  const div = document.createElement('div');
+                  div.innerHTML = notif.status.content;
+                  secondaryMessage = (div.textContent || div.innerText || "").slice(0, 100) + "..."
+                }
+                break;
+              case "follow":
+                primaryMessage = (notif.account.display_name || "@" + notif.account.username) + " is now following you.";
+                break;
+              case "mention":
+                primaryMessage = (notif.account.display_name || "@" + notif.account.username) + " mentioned you in a post.";
+                if (notif.status) {
+                  const div = document.createElement('div');
+                  div.innerHTML = notif.status.content;
+                  secondaryMessage = (div.textContent || div.innerText || "").slice(0, 100) + "..."
+                }
+                break;
+              case "reblog":
+                primaryMessage = (notif.account.display_name || "@" + notif.account.username) + " reblogged your post.";
+                if (notif.status) {
+                  const div = document.createElement('div');
+                  div.innerHTML = notif.status.content;
+                  secondaryMessage = (div.textContent || div.innerText || "").slice(0, 100) + "..."
+                }
+                break;
+            }
+
+            sendNotificationRequest(primaryMessage, secondaryMessage);
+          }
+        });
       }
 
       toggleAcctMenu() {
@@ -127,7 +186,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
           );
     }
 
-    render() {
+  render() {
     const { classes } = this.props;
     return (
         <div className={classes.root}>
@@ -161,8 +220,10 @@ export class AppLayout extends Component<any, IAppLayoutState> {
               </div>
               <div className={classes.appBarFlexGrow}/>
               <div className={classes.appBarActionButtons}>
-                  <LinkableIconButton color="inherit" to="/notifications">
-                    <NotificationsIcon/>
+                  <LinkableIconButton color="inherit" to="/notifications" onClick={() => this.setState({ notificationCount: 0 })}>
+                    <Badge badgeContent={this.state.notificationCount > 0? this.state.notificationCount: ""} color="secondary">
+                      <NotificationsIcon />
+                    </Badge>
                   </LinkableIconButton>
                   <LinkableIconButton color="inherit" to="/messages">
                     <MailIcon/>

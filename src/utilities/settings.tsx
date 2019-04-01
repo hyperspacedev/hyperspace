@@ -1,4 +1,5 @@
 import { defaultTheme, themes } from "../types/HyperspaceTheme";
+import { getNotificationRequestPermission } from './notifications';
 
 type SettingsTemplate = {
     [key:string]: any;
@@ -64,10 +65,11 @@ export function createUserDefaults() {
         clearNotificationsOnRead: false
     }
 
-    let settings = ["darkModeEnabled", "enablePushNotifications", "clearNotificationsOnRead"];
+    let settings = ["darkModeEnabled"];
     settings.forEach((setting: string) => {
         if (localStorage.getItem(setting) === null) {
             setUserDefaultBool(setting, defaults[setting]);
         }
     })
+    getNotificationRequestPermission();
 }

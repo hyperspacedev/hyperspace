@@ -3,12 +3,13 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import { HashRouter } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
-import {createUserDefaults} from './utilities/settings';
+import {createUserDefaults, getUserDefaultBool} from './utilities/settings';
 import {refreshUserAccountData} from './utilities/accounts';
 import {SnackbarProvider} from 'notistack';
+import {getNotificationRequestPermission} from './utilities/notifications';
 
 createUserDefaults();
-refreshUserAccountData(); 
+refreshUserAccountData();
 
 ReactDOM.render(
     <HashRouter>

@@ -104,9 +104,9 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
 
     removeAllNotifications() {
         this.client.post('/notifications/clear').then((resp: any) => {
+            this.setState({ notifications: undefined })
             this.props.enqueueSnackbar('All notifications deleted.');
         }).catch((err: Error) => {
-            this.setState({ notifications: undefined })
             this.props.enqueueSnackbar("Couldn't delete notifications: " + err.name, {
                 variant: 'error'
             });
