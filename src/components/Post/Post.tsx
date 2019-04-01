@@ -158,7 +158,7 @@ export class Post extends React.Component<any, IPostState> {
         const { classes } = this.props;
         if (mention.length > 0) {
             return (
-                <CardContent>
+                <CardContent className={classes.postTags}>
                     <Typography variant="caption">Mentions</Typography>
                     {
                         mention.map((person: Mention) => {
@@ -187,7 +187,7 @@ export class Post extends React.Component<any, IPostState> {
         const { classes } = this.props;
         if (tags.length > 0) {
             return (
-                <CardContent>
+                <CardContent className={classes.postTags}>
                     <Typography variant="caption">Tags</Typography>
                     {
                         tags.map((tag: Tag) => {

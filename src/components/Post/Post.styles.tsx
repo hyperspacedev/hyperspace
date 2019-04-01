@@ -72,5 +72,9 @@ export const styles = (theme: Theme) => createStyles({
     },
     nsfwCard: {
       backgroundColor: theme.palette.error.main
+    },
+    postTags: {
+      paddingTop: theme.spacing.unit,
+      paddingBottom: theme.spacing.unit
     }
 });
