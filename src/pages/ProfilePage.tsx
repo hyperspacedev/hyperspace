@@ -211,7 +211,7 @@ class ProfilePage extends Component<any, IProfilePageState> {
                     <div className={classes.pageHeroContent}>
                         <Avatar className={classes.pageProfileAvatar} src={this.state.account ? this.state.account.avatar: ""}/>
                         <Typography variant="h4" color="inherit">{this.state.account ? this.state.account.display_name: ""}</Typography>
-                        <Typography variant="caption" color="inherit">{this.state.account ? this.state.account.acct: ""}</Typography>
+                        <Typography variant="caption" color="inherit">{this.state.account ? '@' + this.state.account.acct: ""}</Typography>
                         <Typography paragraph color="inherit">{this.state.account ? this.state.account.note: ""}</Typography>
                         <Divider/>
                         <div className={classes.pageProfileStatsDiv}>

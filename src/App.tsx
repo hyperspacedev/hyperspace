@@ -11,6 +11,7 @@ import ProfilePage from './pages/ProfilePage';
 import HomePage from './pages/Home';
 import LocalPage from './pages/Local';
 import PublicPage from './pages/Public';
+import Conversation from './pages/Conversation';
 import NotificationsPage from './pages/Notifications';
 import {withSnackbar} from 'notistack';
 let theme = setHyperspaceTheme(getUserDefaultTheme());
@@ -46,7 +47,7 @@ class App extends Component<any, any> {
         <Route path="/messages"/>
         <Route path="/notifications" component={NotificationsPage}/>
         <Route path="/profile/:profileId" render={props => <ProfilePage {...props}></ProfilePage>}/>
-        <Route path="/conversation/:conversationId"/>
+        <Route path="/conversation/:conversationId" component={Conversation}/>
         <Route path="/settings" component={Settings}/>
         <Route path="/about" component={AboutPage}/>
       </MuiThemeProvider>

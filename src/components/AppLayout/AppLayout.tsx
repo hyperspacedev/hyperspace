@@ -182,7 +182,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                             <ListItemAvatar>
                               <Avatar alt="You" src={this.state.currentUser.avatar_static}/>
                             </ListItemAvatar>
-                            <ListItemText primary={this.state.currentUser.display_name} secondary={this.state.currentUser.acct}/>
+                            <ListItemText primary={this.state.currentUser.display_name || this.state.currentUser.acct} secondary={'@' + this.state.currentUser.acct}/>
                         </LinkableListItem>
                         <Divider/>
                         <MenuItem>Switch account</MenuItem>

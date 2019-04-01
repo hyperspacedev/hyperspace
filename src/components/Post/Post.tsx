@@ -290,116 +290,116 @@ export class Post extends React.Component<any, IPostState> {
         const post = this.state.post;
         return (
             <Zoom in={true}>
-            <Card className={classes.post}>
-                <CardHeader avatar={
-                    <Avatar src={
-                        post.reblog? post.reblog.account.avatar_static: post.account.avatar_static
-                    } />
-                } action={
-                <IconButton key={`${post.id}_submenu`} id={`${post.id}_submenu`} onClick={() => this.togglePostMenu()}>
-                    <MoreVertIcon />
-                </IconButton>} 
-                title={this.getReblogAuthors(post)} subheader={moment(post.created_at).format("MMMM Do YYYY [at] h:mm A")} />
-                    {
-                        post.reblog? this.getReblogOfPost(post.reblog): null
-                    }
-                    {
-                        post.sensitive? this.getSensitiveContent(post.spoiler_text, post):
-                            post.reblog? null: this.materializeContent(post)
-                    }
-                    {
-                        post.reblog && post.reblog.mentions.length > 0? this.getMentions(post.reblog.mentions): this.getMentions(post.mentions)
-                    }
-                    {
-                        post.reblog && post.reblog.tags.length > 0? this.getTags(post.reblog.tags): this.getTags(post.tags)
-                    }
-                <CardActions>
-                    <Tooltip title="Reply">
-                        <LinkableIconButton to={`/compose?reply=${post.id}`}>
-                            <ReplyIcon/>
-                        </LinkableIconButton>
-                    </Tooltip>
-                        <Typography>{post.reblog? post.reblog.replies_count: post.replies_count}</Typography>
-                    <Tooltip title="Favorite">
-                        <IconButton onClick={() => this.toggleFavorited(post)}>
-                            <FavoriteIcon className={
-                                post.reblog? 
-                                    post.reblog.favourited? 
-                                        classes.postDidAction: 
-                                        '': 
-                                    post.favourited? 
-                                        classes.postDidAction: 
-                                        ''
-                            }/>
-                        </IconButton>
-                    </Tooltip>
-                        <Typography>{post.reblog? post.reblog.favourites_count: post.favourites_count}</Typography>
-                    <Tooltip title="Boost">
-                        <IconButton onClick={() => this.toggleReblogged(post)}>
-                            <AutorenewIcon className={
-                                post.reblog? 
-                                    post.reblog.reblogged? 
-                                        classes.postDidAction: 
-                                        '': 
-                                    post.reblogged? 
-                                        classes.postDidAction: 
-                                        ''
-                            }/>
-                        </IconButton>
-                    </Tooltip>
-                        <Typography>{post.reblog? post.reblog.reblogs_count: post.reblogs_count}</Typography>
-                    <Tooltip title="View thread">
-                        <LinkableIconButton to={`/conversation/${post.id}`}>
-                            <ForumIcon />
-                        </LinkableIconButton>
-                    </Tooltip>
-                    <Tooltip title="Open in Web">
-                        <IconButton href={this.getMastodonUrl(post)} rel="noreferrer" target="_blank">
-                            <OpenInNewIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <div className={classes.postFlexGrow} />
-                    <div className={classes.postTypeIconDiv}>
-                        {this.showVisibilityIcon(post.visibility)}
-                    </div>
-                </CardActions>
-                <Menu
-                    id="postmenu"
-                    anchorEl={document.getElementById(`${post.id}_submenu`)}
-                    open={this.state.menuIsOpen}
-                    onClose={() => this.togglePostMenu()}
-                >
-                    <ShareMenu config={{
-                        params: {
-                            title: `@${post.account.username} posted on Mastodon: `,
-                            text: post.content,
-                            url: this.getMastodonUrl(post),
-                        },
-                        onShareSuccess: () => this.props.enqueueSnackbar("Post shared!", {variant: 'success'}),
-                        onShareError: (error: Error) => {
-                            if (error.name != "AbortError")
-                                this.props.enqueueSnackbar(`Couldn't share post: ${error.name}`, {variant: 'error'})
-                        },
-                    }}/>
-                    {
-                        post.reblog?
-                        <div>
-                            <LinkableMenuItem to={`/profile/${post.reblog.account.id}`}>View author profile</LinkableMenuItem>
-                            <LinkableMenuItem to={`/profile/${post.account.id}`}>View reblogger profile</LinkableMenuItem>
+                <Card className={classes.post} id={`post_${post.id}`}>
+                    <CardHeader avatar={
+                        <Avatar src={
+                            post.reblog? post.reblog.account.avatar_static: post.account.avatar_static
+                        } />
+                    } action={
+                    <IconButton key={`${post.id}_submenu`} id={`${post.id}_submenu`} onClick={() => this.togglePostMenu()}>
+                        <MoreVertIcon />
+                    </IconButton>} 
+                    title={this.getReblogAuthors(post)} subheader={moment(post.created_at).format("MMMM Do YYYY [at] h:mm A")} />
+                        {
+                            post.reblog? this.getReblogOfPost(post.reblog): null
+                        }
+                        {
+                            post.sensitive? this.getSensitiveContent(post.spoiler_text, post):
+                                post.reblog? null: this.materializeContent(post)
+                        }
+                        {
+                            post.reblog && post.reblog.mentions.length > 0? this.getMentions(post.reblog.mentions): this.getMentions(post.mentions)
+                        }
+                        {
+                            post.reblog && post.reblog.tags.length > 0? this.getTags(post.reblog.tags): this.getTags(post.tags)
+                        }
+                    <CardActions>
+                        <Tooltip title="Reply">
+                            <LinkableIconButton to={`/compose?reply=${post.id}`}>
+                                <ReplyIcon/>
+                            </LinkableIconButton>
+                        </Tooltip>
+                            <Typography>{post.reblog? post.reblog.replies_count: post.replies_count}</Typography>
+                        <Tooltip title="Favorite">
+                            <IconButton onClick={() => this.toggleFavorited(post)}>
+                                <FavoriteIcon className={
+                                    post.reblog? 
+                                        post.reblog.favourited? 
+                                            classes.postDidAction: 
+                                            '': 
+                                        post.favourited? 
+                                            classes.postDidAction: 
+                                            ''
+                                }/>
+                            </IconButton>
+                        </Tooltip>
+                            <Typography>{post.reblog? post.reblog.favourites_count: post.favourites_count}</Typography>
+                        <Tooltip title="Boost">
+                            <IconButton onClick={() => this.toggleReblogged(post)}>
+                                <AutorenewIcon className={
+                                    post.reblog? 
+                                        post.reblog.reblogged? 
+                                            classes.postDidAction: 
+                                            '': 
+                                        post.reblogged? 
+                                            classes.postDidAction: 
+                                            ''
+                                }/>
+                            </IconButton>
+                        </Tooltip>
+                            <Typography>{post.reblog? post.reblog.reblogs_count: post.reblogs_count}</Typography>
+                        <Tooltip title="View thread">
+                            <LinkableIconButton to={`/conversation/${post.id}`}>
+                                <ForumIcon />
+                            </LinkableIconButton>
+                        </Tooltip>
+                        <Tooltip title="Open in Web">
+                            <IconButton href={this.getMastodonUrl(post)} rel="noreferrer" target="_blank">
+                                <OpenInNewIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <div className={classes.postFlexGrow} />
+                        <div className={classes.postTypeIconDiv}>
+                            {this.showVisibilityIcon(post.visibility)}
+                        </div>
+                    </CardActions>
+                    <Menu
+                        id="postmenu"
+                        anchorEl={document.getElementById(`${post.id}_submenu`)}
+                        open={this.state.menuIsOpen}
+                        onClose={() => this.togglePostMenu()}
+                    >
+                        <ShareMenu config={{
+                            params: {
+                                title: `@${post.account.username} posted on Mastodon: `,
+                                text: post.content,
+                                url: this.getMastodonUrl(post),
+                            },
+                            onShareSuccess: () => this.props.enqueueSnackbar("Post shared!", {variant: 'success'}),
+                            onShareError: (error: Error) => {
+                                if (error.name != "AbortError")
+                                    this.props.enqueueSnackbar(`Couldn't share post: ${error.name}`, {variant: 'error'})
+                            },
+                        }}/>
+                        {
+                            post.reblog?
+                            <div>
+                                <LinkableMenuItem to={`/profile/${post.reblog.account.id}`}>View author profile</LinkableMenuItem>
+                                <LinkableMenuItem to={`/profile/${post.account.id}`}>View reblogger profile</LinkableMenuItem>
 
-                        </div>: <LinkableMenuItem to={`/profile/${post.account.id}`}>View profile</LinkableMenuItem>
-                    }
-                    {
-                        post.account.id == JSON.parse(localStorage.getItem('account') as string).id?
-                        <div>
-                            <Divider/>
-                            <MenuItem>Delete</MenuItem>
-                        </div>:
-                        null
-                    }
-                </Menu>
-            </Card>
-        </Zoom>
+                            </div>: <LinkableMenuItem to={`/profile/${post.account.id}`}>View profile</LinkableMenuItem>
+                        }
+                        {
+                            post.account.id == JSON.parse(localStorage.getItem('account') as string).id?
+                            <div>
+                                <Divider/>
+                                <MenuItem>Delete</MenuItem>
+                            </div>:
+                            null
+                        }
+                    </Menu>
+                </Card>
+            </Zoom>
         );
     }
 }

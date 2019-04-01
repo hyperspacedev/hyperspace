@@ -27,6 +27,7 @@ import {LinkableIconButton} from '../interfaces/overrides';
 import ForumIcon from '@material-ui/icons/Forum';
 import Mastodon from 'megalodon';
 import { Notification } from '../types/Notification';
+import { Account } from '../types/Account';
 import { withSnackbar } from 'notistack';
 
 interface INotificationsPageState  {
@@ -146,7 +147,7 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                 <ListItemSecondaryAction>
                     {
                         notif.type === "follow"?
-                        <IconButton href={localStorage.getItem("baseurl") as string} target="_blank" rel="noreferrer">
+                        <IconButton onClick={() => this.followMember(notif.account)}>
                             <PersonAddIcon/>
                         </IconButton>:
 
@@ -162,6 +163,15 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                 </ListItemSecondaryAction>
             </ListItem>
         );
+    }
+
+    followMember(acct: Account) {
+        this.client.post(`/accounts/${acct.id}/follow`).then((resp: any) => {
+            this.props.enqueueSnackbar('You are now following this account.');
+        }).catch((err: Error) => {
+            this.props.enqueueSnackbar("Couldn't follow account: " + err.name, { variant: 'error' });
+            console.error(err.message);
+        })
     }
 
     render() {
