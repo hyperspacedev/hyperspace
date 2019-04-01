@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { withStyles, CircularProgress, Typography, Paper, Button, Chip, Avatar, Slide} from '@material-ui/core';
+import { withStyles, CircularProgress, Typography, Paper} from '@material-ui/core';
 import {styles} from './PageLayout.styles';
 import Post from '../components/Post';
 import { Status } from '../types/Status';
 import { Context } from '../types/Context';
 import Mastodon from 'megalodon';
 import {withSnackbar} from 'notistack';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 
 interface IConversationPageState {
     posts?: [Status];
@@ -82,7 +81,7 @@ class Conversation extends Component<any, IConversationPageState> {
 
     componentDidUpdate() {
         const where: HTMLElement | null = document.getElementById(`post_${this.state.conversationId}`);
-        if (where) {
+        if (where && this.state.posts && this.state.posts[0].id !== this.state.conversationId) {
             window.scrollTo(0, where.getBoundingClientRect().top);
         }
     }
