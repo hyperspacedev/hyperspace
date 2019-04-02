@@ -13,6 +13,8 @@ import LocalPage from './pages/Local';
 import PublicPage from './pages/Public';
 import Conversation from './pages/Conversation';
 import NotificationsPage from './pages/Notifications';
+import SearchPage from './pages/Search';
+
 import {withSnackbar} from 'notistack';
 let theme = setHyperspaceTheme(getUserDefaultTheme());
 
@@ -48,6 +50,7 @@ class App extends Component<any, any> {
         <Route path="/notifications" component={NotificationsPage}/>
         <Route path="/profile/:profileId" render={props => <ProfilePage {...props}></ProfilePage>}/>
         <Route path="/conversation/:conversationId" component={Conversation}/>
+        <Route path="/search" component={SearchPage}/>
         <Route path="/settings" component={Settings}/>
         <Route path="/about" component={AboutPage}/>
       </MuiThemeProvider>

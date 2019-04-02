@@ -20,7 +20,8 @@
     "react-swipeable-views": "^0.13.1",
     "typescript": "3.3.4000",
     "notistack": "^0.5.1",
-    "react-web-share-api": "^0.0.2"
+    "react-web-share-api": "^0.0.2",
+    "query-string": "^6.4.2"
   },
   "scripts": {
     "start": "BROWSER='Safari Technology Preview' react-scripts start",

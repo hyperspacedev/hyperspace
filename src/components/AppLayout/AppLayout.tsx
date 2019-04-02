@@ -52,10 +52,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
       componentDidMount() {
         this.streamListener = this.client.stream('/streaming/user');
 
-        this.streamListener.on('connect', () => { console.log ('Streaming notifs!')});
-
         this.streamListener.on('notification', (notif: Notification) => {
-          console.log("received notif");
           const notificationCount = this.state.notificationCount + 1;
           this.setState({ notificationCount });
           if (!document.hasFocus()) {
@@ -105,6 +102,11 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         this.setState({
           drawerOpenOnMobile: !this.state.drawerOpenOnMobile
         })
+      }
+
+      searchForQuery(what: string) {
+        window.location.href = "/#/search?query=" + what;
+        window.location.reload;
       }
 
       titlebar() {
@@ -215,6 +217,11 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                   classes={{
                     root: classes.appBarSearchInputRoot,
                     input: classes.appBarSearchInputInput
+                  }}
+                  onKeyUp={(event) => {
+                    if (event.keyCode === 13) {
+                      this.searchForQuery(event.currentTarget.value);
+                    }
                   }}
                 />
               </div>
