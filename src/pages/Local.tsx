@@ -61,7 +61,7 @@ class LocalPage extends Component<any, ILocalPageState> {
 
         this.streamListener.on('update', (status: Status) => {
             let queue = this.state.backlogPosts;
-            if (queue !== null && queue !== undefined) { queue.push(status); } else { queue = [status] }
+            if (queue !== null && queue !== undefined) { queue.unshift(status); } else { queue = [status] }
             this.setState({ backlogPosts: queue });
         })
 

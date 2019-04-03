@@ -69,7 +69,6 @@ class AttachmentComponent extends Component<IAttachmentProps, IAttachmentState> 
         const mediaItem = this.state.attachments[step];
         return (
             <div className={classes.mediaContainer}>
-                <Typography variant="button">{mediaItem.description? mediaItem.description: "No description provided."}</Typography>
                 <SwipeableViews
                     index={this.state.currentStep}
                 >
@@ -97,6 +96,7 @@ class AttachmentComponent extends Component<IAttachmentProps, IAttachmentState> 
                         </Button>
                     }
                     />
+                    <Typography variant="caption">{mediaItem.description? mediaItem.description: "No description provided."}</Typography>
             </div>
         )
     }

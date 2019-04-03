@@ -103,4 +103,13 @@ export const dragonTheme: HyperspaceTheme = {
     }
 }
 
-export const themes = [defaultTheme, gardenerTheme, teacherTheme, jokerTheme, brotherTheme, guardTheme, scientistTheme, entertainerTheme, kingTheme, dragonTheme]
+export const memoriumTheme: HyperspaceTheme = {
+    key: "memoriumTheme",
+    name: "Memorium",
+    palette: {
+        primary: red,
+        secondary: red
+    }
+}
+
+export const themes = [defaultTheme, gardenerTheme, teacherTheme, jokerTheme, brotherTheme, guardTheme, scientistTheme, entertainerTheme, kingTheme, dragonTheme, memoriumTheme]
