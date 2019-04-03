@@ -8,15 +8,10 @@ import {
     ListItemAvatar, 
     Avatar, 
     Paper, 
-    IconButton, 
     withStyles, 
     Typography,
-    Link,
     CircularProgress
 } from '@material-ui/core';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import DomainIcon from '@material-ui/icons/Domain';
-import ChatIcon from '@material-ui/icons/Chat';
 import PersonIcon from '@material-ui/icons/Person';
 import {styles} from './PageLayout.styles';
 import {LinkableIconButton} from '../interfaces/overrides';
@@ -32,6 +27,7 @@ interface ISearchPageState  {
     query: string[] | string;
     type?: string[] | string;
     results?: Results;
+    tagResults?: [Status];
     viewIsLoading: boolean;
     viewDidLoad?: boolean;
     viewDidError?: boolean;
@@ -47,47 +43,31 @@ class SearchPage extends Component<any, ISearchPageState> {
 
         this.client = new Mastodon(localStorage.getItem('access_token') as string, localStorage.getItem('baseurl') + "/api/v2");
 
-        let search = this.runQueryCheck();
-        let query;
-        let type;
-
-        if (search.query) {
-            query = search.query;
-        } else {
-            query = "";
-        }
-
-        if (search.type && search.type !== undefined) {
-            type = search.type;
-        }
+        let searchParams = this.getQueryAndType(props);
 
         this.state = {
             viewIsLoading: true,
-            query,
-            type
+            query: searchParams.query,
+            type: searchParams.type
         }
-        this.searchQuery(query);
+
+        if (searchParams.type === "tag") {
+            this.searchForPostsWithTags(searchParams.query);
+        } else {
+            this.searchQuery(searchParams.query);
+        }
+        
     }
 
     componentWillReceiveProps(props: any) {
         this.setState({ viewDidLoad: false, viewIsLoading: true, viewDidError: false, viewDidErrorCode: '', results: undefined});
-
-        let newSearch = this.runQueryCheck(props.location);
-        let query;
-        let type;
-
-        if (newSearch.query) {
-            query = newSearch.query;
+        let searchParams = this.getQueryAndType(props);
+        this.setState({ query: searchParams.query, type: searchParams.type });
+        if (searchParams.type === "tag") {
+            this.searchForPostsWithTags(searchParams.query);
         } else {
-            query = "";
+            this.searchQuery(searchParams.query);
         }
-
-        if (newSearch.type && newSearch.type !== undefined) {
-            type = newSearch.type;
-        }
-
-        this.setState({ query, type });
-        this.searchQuery(query);
     }
 
     runQueryCheck(newLocation?: string): ParsedQuery {
@@ -98,6 +78,31 @@ class SearchPage extends Component<any, ISearchPageState> {
             searchParams = location.hash.replace("#/search", "");
         }
         return parseParams(searchParams);
+    }
+
+    getQueryAndType(props: any) {
+        let newSearch = this.runQueryCheck(props.location);
+        let query: string | string[];
+        let type;
+
+        if (newSearch.query) {
+            if (newSearch.query.toString().startsWith("tag:")) {
+                type = "tag";
+                query = newSearch.query.toString().replace("tag:", "");
+            } else {
+                query = newSearch.query;
+            }
+        } else {
+            query = "";
+        }
+
+        if (newSearch.type && newSearch.type !== undefined) {
+            type = newSearch.type;
+        }
+        return {
+            query: query,
+            type: type
+        };
     }
 
     searchQuery(query: string | string[]) {
@@ -119,41 +124,100 @@ class SearchPage extends Component<any, ISearchPageState> {
         });
     }
 
+    searchForPostsWithTags(query: string | string[]) {
+        let client = new Mastodon(localStorage.getItem('access_token') as string, localStorage.getItem('baseurl') + "/api/v1");
+        client.get(`/timelines/tag/${query}`).then((resp: any) => {
+            let tagResults: [Status] = resp.data;
+            this.setState({ 
+                tagResults,
+                viewDidLoad: true,
+                viewIsLoading: false 
+            });
+            console.log(this.state.tagResults);
+        }).catch((err: Error) => {
+            this.setState({
+                viewIsLoading: false,
+                viewDidError: true,
+                viewDidErrorCode: err.message
+            })
+
+            this.props.enqueueSnackbar(`Couldn't search for posts with tag ${this.state.query}: ${err.name}`, { variant: 'error' });
+        });
+    }
+
+    showAllAccountsFromQuery() {
+        const { classes } = this.props;
+        return (
+            <div>
+                <ListSubheader>Accounts</ListSubheader>
+                    <Paper className={classes.pageListConstraints}>
+                        <List>
+                            {
+                                this.state.results?
+                                    this.state.results.accounts.map((acct: Account) => {
+                                        return (
+                                        <ListItem key={acct.id}>
+                                            <ListItemAvatar>
+                                                <Avatar alt={acct.username} src={acct.avatar_static}/>
+                                            </ListItemAvatar>
+                                            <ListItemText primary={acct.display_name || acct.acct} secondary={acct.acct}/>
+                                            <ListItemSecondaryAction>
+                                                <LinkableIconButton to={`/profile/${acct.id}`}>
+                                                    <PersonIcon/>
+                                                </LinkableIconButton>
+                                            </ListItemSecondaryAction>
+                                        </ListItem>
+                                        );
+                                    }): null
+                            }
+                        </List>
+                    </Paper>
+                <br/>
+            </div>
+        )
+    }
+
+    showAllPostsFromQuery() {
+        return (
+            <div>
+                <ListSubheader>Posts</ListSubheader>
+                    {
+                        this.state.results?
+                            this.state.results.statuses.length > 0?
+                                this.state.results.statuses.map((post: Status) => {
+                                    return <Post key={post.id} post={post} client={this.client}/>
+                                }): <Typography variant="caption">No results found.</Typography>: null
+                    }
+            </div>
+        );
+    }
+
+    showAllPostsWithTag() {
+        return (
+            <div>
+                <ListSubheader>Tagged posts</ListSubheader>
+                    {
+                        this.state.tagResults?
+                            this.state.tagResults.length > 0?
+                                this.state.tagResults.map((post: Status) => {
+                                    return <Post key={post.id} post={post} client={this.client}/>
+                                }): <Typography variant="caption">No results found.</Typography>: null
+                    }
+            </div>
+        );
+    }
+
     render() {
         const { classes } = this.props;
         return (
             <div className={classes.pageLayoutConstraints}>
-                <ListSubheader>Accounts</ListSubheader>
-                <Paper className={classes.pageListConstraints}>
-                    <List>
-                        {
-                            this.state.results?
-                                this.state.results.accounts.map((acct: Account) => {
-                                    return (
-                                    <ListItem key={acct.id}>
-                                        <ListItemAvatar>
-                                            <Avatar alt={acct.username} src={acct.avatar_static}/>
-                                        </ListItemAvatar>
-                                        <ListItemText primary={acct.display_name || acct.acct} secondary={acct.acct}/>
-                                        <ListItemSecondaryAction>
-                                            <LinkableIconButton to={`/profile/${acct.id}`}>
-                                                <PersonIcon/>
-                                            </LinkableIconButton>
-                                        </ListItemSecondaryAction>
-                                    </ListItem>
-                                    );
-                                }): null
-                        }
-                    </List>
-                </Paper>
-                <br/>
-                <ListSubheader>Posts</ListSubheader>
                 {
-                    this.state.results?
-                        this.state.results.statuses.length > 0?
-                            this.state.results.statuses.map((post: Status) => {
-                                return <Post key={post.id} post={post} client={this.client}/>
-                            }): <Typography variant="caption">No results found.</Typography>: null
+                    this.state.type && this.state.type === "tag"?
+                        this.showAllPostsWithTag():
+                        <div>
+                            {this.showAllAccountsFromQuery()}
+                            {this.showAllPostsFromQuery()}
+                        </div>
                 }
                 {
                     this.state.viewDidError? 
