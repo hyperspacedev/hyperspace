@@ -142,5 +142,11 @@ export const styles = (theme: Theme) => createStyles({
         marginLeft: 250
       },
       overflowY: 'auto',
+    },
+    composeButton: {
+      position: "fixed",
+      bottom: theme.spacing.unit * 2,
+      right: theme.spacing.unit * 2,
+      zIndex: 50
     }
   });

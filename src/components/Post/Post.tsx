@@ -19,12 +19,12 @@ import { Tag } from '../../types/Tag';
 import { Mention } from '../../types/Mention';
 import { Visibility } from '../../types/Visibility';
 import moment from 'moment';
-import { MastodonEmoji } from '../../types/Emojis';
 import AttachmentComponent from '../Attachment';
 import Mastodon from 'megalodon';
 import { LinkableChip, LinkableMenuItem, LinkableIconButton } from '../../interfaces/overrides';
 import {withSnackbar} from 'notistack';
 import ShareMenu from './PostShareMenu';
+import {emojifyString} from '../../utilities/emojis';
 
 interface IPostProps {
     post: Status;
@@ -61,6 +61,7 @@ export class Post extends React.Component<any, IPostState> {
 
     materializeContent(status: Status) {
         const { classes } = this.props;
+        
         const oldContent = document.createElement('div');
         oldContent.innerHTML = status.content;
 
@@ -72,12 +73,8 @@ export class Post extends React.Component<any, IPostState> {
             }
         });
 
-        if (status.emojis !== undefined && status.emojis.length > 0) {
-            status.emojis.forEach((emoji: MastodonEmoji) => {
-                let regexp = new RegExp(':' + emoji.shortcode + ':', 'g');
-                oldContent.innerHTML = oldContent.innerHTML.replace(regexp, `<img src="${emoji.static_url}" class="${classes.postEmoji}"/>`)
-            })
-        }
+        oldContent.innerHTML = emojifyString(oldContent.innerHTML, status.emojis, classes.postEmoji);
+
         return (
             <CardContent className={classes.postContent}>
                 <div className={classes.mediaContainer}>
@@ -144,12 +141,17 @@ export class Post extends React.Component<any, IPostState> {
     }
 
     getReblogAuthors(post: Status) {
+        const { classes } = this.props;
         if (post.reblog) {
             let author = post.reblog.account;
-            return `${author.display_name || author.username} (@${author.acct}) 🔄 ${post.account.display_name || post.account.username}`
+            let origString = `<span>${author.display_name || author.username} (@${author.acct}) 🔄 ${post.account.display_name || post.account.username}</span>`;
+            let emojis = author.emojis;
+            emojis.concat(post.account.emojis);
+            return emojifyString(origString, emojis, classes.postAuthorEmoji);
         } else {
             let author = post.account;
-            return `${author.display_name || author.username} (@${author.acct})`
+            let origString =  `<span>${author.display_name || author.username} (@${author.acct})</span>`;
+            return emojifyString(origString, author.emojis, classes.postAuthorEmoji);
         }
 
     }
@@ -299,7 +301,10 @@ export class Post extends React.Component<any, IPostState> {
                     <IconButton key={`${post.id}_submenu`} id={`${post.id}_submenu`} onClick={() => this.togglePostMenu()}>
                         <MoreVertIcon />
                     </IconButton>} 
-                    title={this.getReblogAuthors(post)} subheader={moment(post.created_at).format("MMMM Do YYYY [at] h:mm A")} />
+                    title={
+                        <Typography dangerouslySetInnerHTML={{__html: this.getReblogAuthors(post)}}></Typography>
+                    }
+                    subheader={moment(post.created_at).format("MMMM Do YYYY [at] h:mm A")} />
                         {
                             post.reblog? this.getReblogOfPost(post.reblog): null
                         }
@@ -315,7 +320,7 @@ export class Post extends React.Component<any, IPostState> {
                         }
                     <CardActions>
                         <Tooltip title="Reply">
-                            <LinkableIconButton to={`/compose?reply=${post.id}`}>
+                            <LinkableIconButton to={`/compose?reply=${post.reblog? post.reblog.id: post.id}&visibility=${post.visibility}&acct=${post.reblog? post.reblog.account.acct: post.account.acct}`}>
                                 <ReplyIcon/>
                             </LinkableIconButton>
                         </Tooltip>

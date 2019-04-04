@@ -40,7 +40,7 @@ export const styles = (theme: Theme) => createStyles({
       }
     },
     postEmoji: {
-      width: theme.typography.body2.fontSize
+      height: theme.typography.fontSize
     },
     postMedia: {
       height: 0,
@@ -76,5 +76,9 @@ export const styles = (theme: Theme) => createStyles({
     postTags: {
       paddingTop: theme.spacing.unit,
       paddingBottom: theme.spacing.unit
+    },
+    postAuthorEmoji: {
+      height: theme.typography.fontSize,
+      verticalAlign: "middle"
     }
 });

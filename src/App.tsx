@@ -14,6 +14,7 @@ import PublicPage from './pages/Public';
 import Conversation from './pages/Conversation';
 import NotificationsPage from './pages/Notifications';
 import SearchPage from './pages/Search';
+import Composer from './pages/Compose';
 
 import {withSnackbar} from 'notistack';
 let theme = setHyperspaceTheme(getUserDefaultTheme());
@@ -53,6 +54,7 @@ class App extends Component<any, any> {
         <Route path="/search" component={SearchPage}/>
         <Route path="/settings" component={Settings}/>
         <Route path="/about" component={AboutPage}/>
+        <Route path="/compose" component={Composer}/>
       </MuiThemeProvider>
     );
   }

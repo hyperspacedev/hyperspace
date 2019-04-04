@@ -8,6 +8,7 @@ import { Relationship } from '../types/Relationship';
 import Post from '../components/Post';
 import {withSnackbar} from 'notistack';
 import { LinkableButton } from '../interfaces/overrides';
+import { emojifyString } from '../utilities/emojis';
 
 interface IProfilePageState {
     account?: Account;
@@ -210,7 +211,7 @@ class ProfilePage extends Component<any, IProfilePageState> {
                     <div className={classes.pageHeroBackgroundImage} style={{ backgroundImage: this.state.account? `url("${this.state.account.header}")`: `url("")`}}/>
                     <div className={classes.pageHeroContent}>
                         <Avatar className={classes.pageProfileAvatar} src={this.state.account ? this.state.account.avatar: ""}/>
-                        <Typography variant="h4" color="inherit">{this.state.account ? this.state.account.display_name: ""}</Typography>
+                        <Typography variant="h4" color="inherit" dangerouslySetInnerHTML={{__html: this.state.account? emojifyString(this.state.account.display_name, this.state.account.emojis, classes.pageProfileNameEmoji): ""}}></Typography>
                         <Typography variant="caption" color="inherit">{this.state.account ? '@' + this.state.account.acct: ""}</Typography>
                         <Typography paragraph color="inherit">{this.state.account ? this.state.account.note: ""}</Typography>
                         <Divider/>

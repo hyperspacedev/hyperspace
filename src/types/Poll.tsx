@@ -18,3 +18,13 @@ export type PollOption = {
     title: string;
     votes_count: number | null;
 }
+
+export type PollWizard = {
+    expires_at: string;
+    multiple: boolean;
+    options: PollWizardOption[];
+}
+
+export type PollWizardOption = {
+    title: string;
+}

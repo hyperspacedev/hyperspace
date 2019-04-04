@@ -6,6 +6,7 @@ import Chip, { ChipProps } from '@material-ui/core/Chip';
 import { MenuItemProps } from '@material-ui/core/MenuItem';
 import { MenuItem } from '@material-ui/core';
 import Button, { ButtonProps } from '@material-ui/core/Button';
+import Fab, { FabProps } from '@material-ui/core/Fab';
 
 export interface ILinkableListItemProps extends ListItemProps {
     to: string;
@@ -32,6 +33,11 @@ export interface ILinkableButtonProps extends ButtonProps {
     replace?: boolean;
 }
 
+export interface ILinkableFabProps extends FabProps {
+    to: string;
+    replace?: boolean;
+}
+
 export const LinkableListItem = (props: ILinkableListItemProps) => (
     <ListItem {...props} component={Link as any}/>
   )
@@ -50,6 +56,10 @@ export const LinkableMenuItem = (props: ILinkableMenuItemProps) => (
 
 export const LinkableButton = (props: ILinkableButtonProps) => (
     <Button {...props} component={Link as any}/>
+)
+
+export const LinkableFab = (props: ILinkableFabProps) => (
+    <Fab {...props} component={Link as any}/>
 )
 
 export const ProfileRoute = (rest: any, component: Component) => (

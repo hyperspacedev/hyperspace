@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItem, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, withStyles, Menu, MenuItem, ClickAwayListener, Badge } from '@material-ui/core';
+import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, withStyles, Menu, MenuItem, ClickAwayListener, Badge } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -10,11 +10,12 @@ import PublicIcon from '@material-ui/icons/Public';
 import GroupIcon from '@material-ui/icons/Group';
 import SettingsIcon from '@material-ui/icons/Settings';
 import InfoIcon from '@material-ui/icons/Info';
+import EditIcon from '@material-ui/icons/Edit';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {styles} from './AppLayout.styles';
 import { UAccount } from '../../types/Account';
-import {LinkableListItem, LinkableIconButton} from '../../interfaces/overrides';
+import {LinkableListItem, LinkableIconButton, LinkableFab} from '../../interfaces/overrides';
 import Mastodon from 'megalodon';
 import { Notification } from '../../types/Notification';
 import {sendNotificationRequest} from '../../utilities/notifications';
@@ -287,6 +288,9 @@ export class AppLayout extends Component<any, IAppLayoutState> {
             </Hidden>
           </nav>
         </div>
+        <LinkableFab to="/compose" className={classes.composeButton} color="secondary" aria-label="Compose">
+          <EditIcon/>
+        </LinkableFab>
     </div>
     );
   }

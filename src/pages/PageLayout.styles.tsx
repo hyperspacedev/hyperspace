@@ -98,6 +98,9 @@ export const styles = (theme: Theme) => createStyles({
       marginBottom: theme.spacing.unit,
       backgroundColor: theme.palette.primary.main
     },
+    pageProfileNameEmoji: {
+      height: theme.typography.h4.fontSize,
+    },
     pageProfileStatsDiv: {
       display: 'inline-flex',
       marginTop: theme.spacing.unit * 2,
@@ -153,5 +156,5 @@ export const styles = (theme: Theme) => createStyles({
         top: 116,
         right: theme.spacing.unit * 24,
       }
-    }
+    },
   });

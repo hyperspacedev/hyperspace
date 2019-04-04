@@ -6,7 +6,6 @@ import * as serviceWorker from './serviceWorker';
 import {createUserDefaults, getUserDefaultBool} from './utilities/settings';
 import {refreshUserAccountData} from './utilities/accounts';
 import {SnackbarProvider} from 'notistack';
-import {getNotificationRequestPermission} from './utilities/notifications';
 
 createUserDefaults();
 refreshUserAccountData();
@@ -16,7 +15,7 @@ ReactDOM.render(
         <SnackbarProvider
             anchorOrigin={{
                 vertical: 'bottom',
-                horizontal: 'right',
+                horizontal: 'left',
             }}
         >
             <App />
