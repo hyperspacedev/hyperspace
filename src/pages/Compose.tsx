@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Dialog, DialogContent, DialogActions, withStyles, Button, CardHeader, Avatar, TextField, Toolbar, IconButton, Fade, Typography, Tooltip, Menu, MenuItem } from '@material-ui/core';
+import { Dialog, DialogContent, DialogActions, withStyles, Button, CardHeader, Avatar, TextField, Toolbar, IconButton, Fade, Typography, Tooltip, Menu, MenuItem, GridList, ListSubheader, GridListTile } from '@material-ui/core';
 import {styles} from './Compose.styles';
 import { UAccount } from '../types/Account';
 import { Visibility } from '../types/Visibility';
@@ -13,6 +13,7 @@ import {withSnackbar} from 'notistack';
 import { Attachment } from '../types/Attachment';
 import { PollWizard } from '../types/Poll';
 import filedialog from 'file-dialog';
+import ComposeMediaAttachment from '../components/ComposeMediaAttachment';
 
 
 interface IComposerState {
@@ -122,6 +123,31 @@ class Composer extends Component<any, IComposerState> {
         this.setState({ visibilityMenu: !this.state.visibilityMenu });
     }
 
+    fetchAttachmentAfterUpdate(attachment: Attachment) {
+        let attachments = this.state.attachments;
+        if (attachments) {
+            attachments.forEach((attach: Attachment) => {
+                if (attach.id === attachment.id && attachments) {
+                    attachments[attachments.indexOf(attach)] = attachment;
+                }
+            })
+            this.setState({ attachments });
+        }
+    }
+
+    deleteMediaAttachment(attachment: Attachment) {
+        let attachments = this.state.attachments;
+        if (attachments) {
+            attachments.forEach((attach: Attachment) => {
+                if (attach.id === attachment.id && attachments) {
+                    attachments.splice(attachments.indexOf(attach), 1);
+                }
+                this.setState({ attachments });
+            })
+            this.props.enqueueSnackbar("Attachment removed.");
+        }
+    }
+
     render() {
         const {classes} = this.props;
 
@@ -170,6 +196,29 @@ class Composer extends Component<any, IComposerState> {
                     <Typography variant="caption" className={this.state.remainingChars <= 100? classes.charsReachingLimit: null}>
                         {`${this.state.remainingChars} character${this.state.remainingChars === 1? '': 's'} remaining`}
                     </Typography>
+                    {
+                        this.state.attachments && this.state.attachments.length > 0?
+                            <div className={classes.composeAttachmentArea}>
+                                <GridList cellHeight={48} className={classes.composeAttachmentAreaGridList}>
+                                    <GridListTile key="Subheader-composer" cols={2} style={{ height: 'auto' }}>
+                                        <ListSubheader>Attachments</ListSubheader>
+                                    </GridListTile>
+                                    {
+                                        this.state.attachments.length > 0?
+                                            this.state.attachments.map((attachment: Attachment) => {
+                                                return <ComposeMediaAttachment
+                                                    key={attachment.id + "_compose_attachment"}
+                                                    client={this.client}
+                                                    attachment={attachment}
+                                                    onAttachmentUpdate={(attachment: Attachment) => this.fetchAttachmentAfterUpdate(attachment)}
+                                                    onDeleteCallback={(attachment: Attachment) => this.deleteMediaAttachment(attachment)}
+                                                    />
+                                            })
+                                        :null
+                                    }
+                                </GridList>
+                            </div>: null
+                    }
                 </DialogContent>
                 <Toolbar className={classes.dialogActions}>
                     <Tooltip title="Add photos or videos">

@@ -19,7 +19,7 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
     "react-swipeable-views": "^0.13.1",
-    "typescript": "3.3.4000",
+    "typescript": "3.4.1",
     "notistack": "^0.5.1",
     "react-web-share-api": "^0.0.2",
     "query-string": "^6.4.2",

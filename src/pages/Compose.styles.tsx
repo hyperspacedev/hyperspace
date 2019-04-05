@@ -16,5 +16,15 @@ export const styles = (theme: Theme) => createStyles({
     warningCaption: {
         height: 16,
         verticalAlign: "text-bottom"
+    },
+    composeAttachmentArea: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+        overflow: 'hidden'
+    },
+    composeAttachmentAreaGridList: {
+        height: 250,
+        width: '100%'
     }
 });
