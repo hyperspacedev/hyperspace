@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Dialog, DialogContent, DialogActions, withStyles, Button, CardHeader, Avatar, TextField, Toolbar, IconButton, Fade, Typography, Tooltip, Menu, MenuItem, GridList, ListSubheader, GridListTile } from '@material-ui/core';
+import {parse as parseParams, ParsedQuery} from 'query-string';
 import {styles} from './Compose.styles';
 import { UAccount } from '../types/Account';
 import { Visibility } from '../types/Visibility';
@@ -14,6 +15,7 @@ import { Attachment } from '../types/Attachment';
 import { PollWizard } from '../types/Poll';
 import filedialog from 'file-dialog';
 import ComposeMediaAttachment from '../components/ComposeMediaAttachment';
+
 
 
 interface IComposerState {
@@ -46,6 +48,58 @@ class Composer extends Component<any, IComposerState> {
             visibilityMenu: false,
             text: '',
             remainingChars: 500
+        }
+    }
+
+    componentDidMount() {
+        let state = this.getComposerParams(this.props);
+        this.setState({
+            reply: state.reply,
+            acct: state.acct,
+            visibility: state.visibility,
+            text: state.acct? `@${state.acct}: `: ''
+        })
+    }
+
+    componentWillReceiveProps(props: any) {
+        let state = this.getComposerParams(props);
+        this.setState({
+            reply: state.reply,
+            acct: state.acct,
+            visibility: state.visibility,
+            text: state.acct? `@${state.acct}: `: ''
+        })
+    }
+
+    checkComposerParams(location?: string): ParsedQuery {
+        let params = "";
+        if (location !== undefined && typeof(location) === "string") {
+            params = location.replace("#/compose", "");
+        } else {
+            params = window.location.hash.replace("#/compose", "");
+        }
+        return parseParams(params);
+    }
+
+    getComposerParams(props: any) {
+        let params = this.checkComposerParams(props.location);
+        let reply: string = "";
+        let acct: string = "";
+        let visibility: Visibility = "public";
+
+        if (params.reply) {
+            reply = params.reply.toString();
+        }
+        if (params.acct) {
+            acct = params.acct.toString();
+        }
+        if (params.visibility) {
+            visibility = params.visibility.toString() as Visibility;
+        }
+        return {
+            reply,
+            acct,
+            visibility
         }
     }
 
@@ -105,7 +159,8 @@ class Composer extends Component<any, IComposerState> {
             media_ids: this.getOnlyMediaIds(),
             visibility: this.state.visibility,
             sensitive: this.state.sensitive,
-            spoiler_text: this.state.sensitiveText
+            spoiler_text: this.state.sensitiveText,
+            in_reply_to_id: this.state.reply
         }).then(() => {
             this.props.enqueueSnackbar('Posted!');
             window.history.back();
@@ -149,6 +204,7 @@ class Composer extends Component<any, IComposerState> {
     }
 
     render() {
+        console.log(this.state);
         const {classes} = this.props;
 
         return (
@@ -192,6 +248,7 @@ class Composer extends Component<any, IComposerState> {
                                 maxLength: 500
                             }
                         }
+                        defaultValue={this.state.text}
                     />
                     <Typography variant="caption" className={this.state.remainingChars <= 100? classes.charsReachingLimit: null}>
                         {`${this.state.remainingChars} character${this.state.remainingChars === 1? '': 's'} remaining`}
@@ -204,17 +261,15 @@ class Composer extends Component<any, IComposerState> {
                                         <ListSubheader>Attachments</ListSubheader>
                                     </GridListTile>
                                     {
-                                        this.state.attachments.length > 0?
                                             this.state.attachments.map((attachment: Attachment) => {
-                                                return <ComposeMediaAttachment
-                                                    key={attachment.id + "_compose_attachment"}
-                                                    client={this.client}
-                                                    attachment={attachment}
-                                                    onAttachmentUpdate={(attachment: Attachment) => this.fetchAttachmentAfterUpdate(attachment)}
-                                                    onDeleteCallback={(attachment: Attachment) => this.deleteMediaAttachment(attachment)}
-                                                    />
+                                                let c = <ComposeMediaAttachment
+                                                            client={this.client}
+                                                            attachment={attachment}
+                                                            onAttachmentUpdate={(attachment: Attachment) => this.fetchAttachmentAfterUpdate(attachment)}
+                                                            onDeleteCallback={(attachment: Attachment) => this.deleteMediaAttachment(attachment)}
+                                                        />;
+                                                return (c);
                                             })
-                                        :null
                                     }
                                 </GridList>
                             </div>: null
