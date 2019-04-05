@@ -16,9 +16,15 @@ export class EmojiPicker extends Component<IEmojiPickerProps, any> {
         return (
             <Picker
                 custom={this.retrieveFromLocal()}
-                emoji="point_up"
-                title="Pick an emoji"
+                emoji=""
+                title=""
                 onClick={this.props.onGetEmoji}
+                style={{
+                    borderColor: 'transparent'
+                }}
+                perLine={10}
+                emojiSize={20}
+                set={"google"}
             />
         )
     }

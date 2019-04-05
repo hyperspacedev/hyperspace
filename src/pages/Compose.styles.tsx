@@ -26,5 +26,14 @@ export const styles = (theme: Theme) => createStyles({
     composeAttachmentAreaGridList: {
         height: 250,
         width: '100%'
+    },
+    composeEmoji: {
+        marginTop: theme.spacing.unit * 8
+    },
+    desktopOnly: {
+        display: "none",
+        [theme.breakpoints.up('sm')]: {
+            display: "block"
+        }
     }
 });

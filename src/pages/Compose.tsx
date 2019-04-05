@@ -55,22 +55,25 @@ class Composer extends Component<any, IComposerState> {
 
     componentDidMount() {
         let state = this.getComposerParams(this.props);
+        let text = state.acct? `@${state.acct}: `: '';
         this.setState({
             reply: state.reply,
             acct: state.acct,
             visibility: state.visibility,
-            text: state.acct? `@${state.acct}: `: ''
+            text,
+            remainingChars: 500 - text.length
         })
     }
 
     componentWillReceiveProps(props: any) {
         let state = this.getComposerParams(props);
+        let text = state.acct? `@${state.acct}: `: '';
         this.setState({
             reply: state.reply,
             acct: state.acct,
             visibility: state.visibility,
-            text: state.acct? `@${state.acct}: `: '',
-            remainingChars: 500 - (state.acct? `@${state.acct}: `: '').length
+            text,
+            remainingChars: 500 - text.length
         })
     }
 
@@ -304,7 +307,7 @@ class Composer extends Component<any, IComposerState> {
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Insert emoji">
-                        <IconButton id="compose-emoji" onClick={() => this.toggleEmojis()}>
+                        <IconButton id="compose-emoji" onClick={() => this.toggleEmojis()} className={classes.desktopOnly}>
                             <TagFacesIcon/>
                         </IconButton>
                     </Tooltip>
@@ -312,6 +315,7 @@ class Composer extends Component<any, IComposerState> {
                         open={this.state.showEmojis}
                         anchorEl={document.getElementById('compose-emoji')}
                         onClose={() => this.toggleEmojis()}
+                        className={classes.composeEmoji}
                     >
                         <EmojiPicker onGetEmoji={(emoji: any) => this.insertEmoji(emoji)}/>
                     </Menu>
