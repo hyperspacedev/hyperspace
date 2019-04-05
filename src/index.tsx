@@ -5,10 +5,12 @@ import { HashRouter } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import {createUserDefaults, getUserDefaultBool} from './utilities/settings';
 import {refreshUserAccountData} from './utilities/accounts';
+import {collectEmojisFromServer} from './utilities/emojis';
 import {SnackbarProvider} from 'notistack';
 
 createUserDefaults();
 refreshUserAccountData();
+collectEmojisFromServer();
 
 ReactDOM.render(
     <HashRouter>

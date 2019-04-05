@@ -1,11 +1,5 @@
 import {MastodonEmoji} from '../types/Emojis';
-
-// if (status.emojis !== undefined && status.emojis.length > 0) {
-//     status.emojis.forEach((emoji: MastodonEmoji) => {
-//         let regexp = new RegExp(':' + emoji.shortcode + ':', 'g');
-//         oldContent.innerHTML = oldContent.innerHTML.replace(regexp, `<img src="${emoji.static_url}" class="${classes.postEmoji}"/>`)
-//     })
-// }
+import Mastodon from 'megalodon';
 
 /**
  * Takes a given string and replaces emoji codes with their respective image tags.
@@ -23,4 +17,27 @@ export function emojifyString(contents: string, emojis: [MastodonEmoji], classNa
     })
 
     return newContents;
+}
+
+export function collectEmojisFromServer() {
+    let client = new Mastodon(localStorage.getItem('access_token') as string, localStorage.getItem('baseurl') + "/api/v1");
+    let emojisPath = localStorage.getItem('emojis');
+    let emojis: any[] = [];
+    if (emojisPath === null) {
+        client.get('/custom_emojis').then((resp: any) => {
+            resp.data.forEach((emoji: MastodonEmoji) => {
+                let customEmoji = {
+                    name: emoji.shortcode,
+                    emoticons: [''],
+                    short_names: [emoji.shortcode],
+                    imageUrl: emoji.static_url,
+                    keywords: ['mastodon', 'custom']
+                }
+                emojis.push(customEmoji);
+                localStorage.setItem("emojis", JSON.stringify(emojis));
+            })
+        }).catch((err: Error) => {
+            console.error(err.message);
+        })
+    }
 }

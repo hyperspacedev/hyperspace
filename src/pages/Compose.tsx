@@ -15,7 +15,7 @@ import { Attachment } from '../types/Attachment';
 import { PollWizard } from '../types/Poll';
 import filedialog from 'file-dialog';
 import ComposeMediaAttachment from '../components/ComposeMediaAttachment';
-
+import EmojiPicker from '../components/EmojiPicker';
 
 
 interface IComposerState {
@@ -30,6 +30,7 @@ interface IComposerState {
     acct?: string;
     attachments?: [Attachment];
     poll?: PollWizard;
+    showEmojis: boolean;
 }
 
 class Composer extends Component<any, IComposerState> {
@@ -47,7 +48,8 @@ class Composer extends Component<any, IComposerState> {
             sensitive: false,
             visibilityMenu: false,
             text: '',
-            remainingChars: 500
+            remainingChars: 500,
+            showEmojis: false
         }
     }
 
@@ -67,7 +69,8 @@ class Composer extends Component<any, IComposerState> {
             reply: state.reply,
             acct: state.acct,
             visibility: state.visibility,
-            text: state.acct? `@${state.acct}: `: ''
+            text: state.acct? `@${state.acct}: `: '',
+            remainingChars: 500 - (state.acct? `@${state.acct}: `: '').length
         })
     }
 
@@ -153,31 +156,6 @@ class Composer extends Component<any, IComposerState> {
         return ids;
     }
 
-    post() {
-        this.client.post('/statuses', {
-            status: this.state.text,
-            media_ids: this.getOnlyMediaIds(),
-            visibility: this.state.visibility,
-            sensitive: this.state.sensitive,
-            spoiler_text: this.state.sensitiveText,
-            in_reply_to_id: this.state.reply
-        }).then(() => {
-            this.props.enqueueSnackbar('Posted!');
-            window.history.back();
-        }).catch((err: Error) => {
-            this.props.enqueueSnackbar("Couldn't post: " + err.name);
-            console.log(err.message);
-        })
-    }
-
-    toggleSensitive() {
-        this.setState({ sensitive: !this.state.sensitive });
-    }
-
-    toggleVisibilityMenu() {
-        this.setState({ visibilityMenu: !this.state.visibilityMenu });
-    }
-
     fetchAttachmentAfterUpdate(attachment: Attachment) {
         let attachments = this.state.attachments;
         if (attachments) {
@@ -203,8 +181,52 @@ class Composer extends Component<any, IComposerState> {
         }
     }
 
+    insertEmoji(e: any) {
+        if (e.custom) {
+            let text = this.state.text + e.colons
+            this.setState({ 
+                text,
+                remainingChars: 500 - text.length
+            });
+        } else {
+            let text = this.state.text + e.native
+            this.setState({ 
+                text,
+                remainingChars: 500 - text.length
+            });
+        }
+    }
+
+    post() {
+        this.client.post('/statuses', {
+            status: this.state.text,
+            media_ids: this.getOnlyMediaIds(),
+            visibility: this.state.visibility,
+            sensitive: this.state.sensitive,
+            spoiler_text: this.state.sensitiveText,
+            in_reply_to_id: this.state.reply
+        }).then(() => {
+            this.props.enqueueSnackbar('Posted!');
+            window.history.back();
+        }).catch((err: Error) => {
+            this.props.enqueueSnackbar("Couldn't post: " + err.name);
+            console.log(err.message);
+        })
+    }
+
+    toggleSensitive() {
+        this.setState({ sensitive: !this.state.sensitive });
+    }
+
+    toggleVisibilityMenu() {
+        this.setState({ visibilityMenu: !this.state.visibilityMenu });
+    }
+
+    toggleEmojis() {
+        this.setState({ showEmojis: !this.state.showEmojis });
+    }
+
     render() {
-        console.log(this.state);
         const {classes} = this.props;
 
         return (
@@ -248,7 +270,7 @@ class Composer extends Component<any, IComposerState> {
                                 maxLength: 500
                             }
                         }
-                        defaultValue={this.state.text}
+                        value={this.state.text}
                     />
                     <Typography variant="caption" className={this.state.remainingChars <= 100? classes.charsReachingLimit: null}>
                         {`${this.state.remainingChars} character${this.state.remainingChars === 1? '': 's'} remaining`}
@@ -282,10 +304,17 @@ class Composer extends Component<any, IComposerState> {
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Insert emoji">
-                        <IconButton id="compose-emoji">
+                        <IconButton id="compose-emoji" onClick={() => this.toggleEmojis()}>
                             <TagFacesIcon/>
                         </IconButton>
                     </Tooltip>
+                    <Menu
+                        open={this.state.showEmojis}
+                        anchorEl={document.getElementById('compose-emoji')}
+                        onClose={() => this.toggleEmojis()}
+                    >
+                        <EmojiPicker onGetEmoji={(emoji: any) => this.insertEmoji(emoji)}/>
+                    </Menu>
                     <Tooltip title="Add a poll">
                         <IconButton disabled={this.state.attachments && this.state.attachments.length > 0} id="compose-poll">
                             <HowToVoteIcon/>
