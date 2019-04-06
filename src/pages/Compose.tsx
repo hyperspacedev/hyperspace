@@ -467,7 +467,7 @@ class Composer extends Component<any, IComposerState> {
                     >
                         <EmojiPicker onGetEmoji={(emoji: any) => this.insertEmoji(emoji)}/>
                     </Menu>
-                    <Tooltip title="Add a poll">
+                    <Tooltip title="Add/remove a poll">
                         <IconButton disabled={this.state.attachments && this.state.attachments.length > 0} id="compose-poll" onClick={() => {
                             this.state.poll?
                                 this.removePoll():
