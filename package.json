@@ -24,7 +24,9 @@
     "react-web-share-api": "^0.0.2",
     "query-string": "^6.4.2",
     "file-dialog": "^0.0.7",
-    "emoji-mart": "^2.8.2"
+    "emoji-mart": "^2.8.2",
+    "material-ui-pickers": "^2.2.4",
+    "@date-io/moment": "^1.1.0"
   },
   "scripts": {
     "start": "BROWSER='Safari Technology Preview' react-scripts start",

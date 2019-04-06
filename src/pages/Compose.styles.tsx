@@ -35,5 +35,14 @@ export const styles = (theme: Theme) => createStyles({
         [theme.breakpoints.up('sm')]: {
             display: "block"
         }
+    },
+    pollWizardOptionIcon: {
+        marginRight: theme.spacing.unit * 2,
+        marginTop: 4,
+        marginBottom: 4,
+        color: theme.palette.grey[700]
+    },
+    pollWizardFlexGrow: {
+        flexGrow: 1
     }
 });

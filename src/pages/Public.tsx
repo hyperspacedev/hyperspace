@@ -3,7 +3,7 @@ import { withStyles, CircularProgress, Typography, Paper, Button, Chip, Avatar, 
 import {styles} from './PageLayout.styles';
 import Post from '../components/Post';
 import { Status } from '../types/Status';
-import Mastodon from 'megalodon';
+import Mastodon, { StreamListener } from 'megalodon';
 import {withSnackbar} from 'notistack';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 
@@ -20,7 +20,7 @@ interface IPublicPageState {
 class PublicPage extends Component<any, IPublicPageState> {
 
     client: Mastodon;
-    streamListener: any;
+    streamListener: StreamListener;
 
     constructor(props: any) {
         super(props);
@@ -31,12 +31,11 @@ class PublicPage extends Component<any, IPublicPageState> {
         }
 
         this.client = new Mastodon(localStorage.getItem('access_token') as string, localStorage.getItem('baseurl') as string + "/api/v1");
+        this.streamListener = this.client.stream('/streaming/public');
         
     }
 
     componentWillMount() {
-        this.streamListener = this.client.stream('/streaming/public');
-
         this.streamListener.on('connect', () => {
             this.client.get('/timelines/public', {limit: 40}).then((resp: any) => {
                 let statuses: [Status] = resp.data;
@@ -90,6 +89,10 @@ class PublicPage extends Component<any, IPublicPageState> {
         this.streamListener.on('heartbeat', () => {
             
         })
+    }
+
+    componentWillUnmount() {
+        this.streamListener.stop();
     }
 
     insertBacklog() {

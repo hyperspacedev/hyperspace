@@ -3,7 +3,7 @@ import { withStyles, CircularProgress, Typography, Paper, Button, Chip, Avatar, 
 import {styles} from './PageLayout.styles';
 import Post from '../components/Post';
 import { Status } from '../types/Status';
-import Mastodon from 'megalodon';
+import Mastodon, { StreamListener } from 'megalodon';
 import {withSnackbar} from 'notistack';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 
@@ -20,7 +20,7 @@ interface IHomePageState {
 class HomePage extends Component<any, IHomePageState> {
 
     client: Mastodon;
-    streamListener: any;
+    streamListener: StreamListener;
 
     constructor(props: any) {
         super(props);
@@ -31,11 +31,11 @@ class HomePage extends Component<any, IHomePageState> {
         }
 
         this.client = new Mastodon(localStorage.getItem('access_token') as string, localStorage.getItem('baseurl') as string + "/api/v1");
+        this.streamListener = this.client.stream('/streaming/user');
         
     }
 
     componentWillMount() {
-        this.streamListener = this.client.stream('/streaming/user');
 
         this.streamListener.on('connect', () => {
             this.client.get('/timelines/home', {limit: 40}).then((resp: any) => {
@@ -90,6 +90,10 @@ class HomePage extends Component<any, IHomePageState> {
         this.streamListener.on('heartbeat', () => {
             
         })
+    }
+
+    componentWillUnmount() {
+        this.streamListener.stop();
     }
 
     insertBacklog() {

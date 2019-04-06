@@ -254,7 +254,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                             <ListItemText primary={this.state.currentUser.display_name || this.state.currentUser.acct} secondary={'@' + this.state.currentUser.acct}/>
                         </LinkableListItem>
                         <Divider/>
-                        <MenuItem>Switch account</MenuItem>
+                        {/* <MenuItem>Switch account</MenuItem> */}
                         <MenuItem>Log out</MenuItem>                      
                       </div>
                     </ClickAwayListener>

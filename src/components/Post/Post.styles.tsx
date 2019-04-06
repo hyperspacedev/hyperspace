@@ -80,5 +80,8 @@ export const styles = (theme: Theme) => createStyles({
     postAuthorEmoji: {
       height: theme.typography.fontSize,
       verticalAlign: "middle"
+    },
+    heading: {
+      color: "inherit"
     }
 });

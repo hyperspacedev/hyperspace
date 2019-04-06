@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, IconButton, Card, CardHeader, Avatar, CardContent, CardActions, withStyles, Menu, MenuItem, Chip, Divider, CardMedia, CardActionArea, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Zoom, Tooltip } from '@material-ui/core';
+import { Typography, IconButton, Card, CardHeader, Avatar, CardContent, CardActions, withStyles, Menu, MenuItem, Chip, Divider, CardMedia, CardActionArea, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Zoom, Tooltip, RadioGroup, Radio, FormControlLabel, Button } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ReplyIcon from '@material-ui/icons/Reply';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -25,6 +25,7 @@ import { LinkableChip, LinkableMenuItem, LinkableIconButton } from '../../interf
 import {withSnackbar} from 'notistack';
 import ShareMenu from './PostShareMenu';
 import {emojifyString} from '../../utilities/emojis';
+import { PollOption, Poll } from '../../types/Poll';
 
 interface IPostProps {
     post: Status;
@@ -36,6 +37,7 @@ interface IPostState {
     post: Status;
     media_slides?: number;
     menuIsOpen: boolean;
+    myVote?: [number];
 }
 
 export class Post extends React.Component<any, IPostState> {
@@ -57,6 +59,54 @@ export class Post extends React.Component<any, IPostState> {
 
     togglePostMenu() {
         this.setState({ menuIsOpen: !this.state.menuIsOpen })
+    }
+
+    findBiggestVote() {
+        let poll = this.state.post.poll;
+        let votes: number[] = [];
+        let bv = "";
+        if (poll) {
+            poll.options.forEach((option: PollOption) => {
+                votes.push(option.votes_count? option.votes_count: 0);
+            });
+            let biggestVote = Math.max.apply(null, votes);
+            poll.options.forEach((option: PollOption) => {
+                if (option.votes_count === biggestVote) {
+                    bv = option.title;
+                };
+            });
+            return bv;
+        } else {
+            return "No poll option was the best.";
+        }
+    }
+
+    captureVote(option: any) {
+        let poll = this.state.post.poll;
+        let pollIndex: number = 0;
+        if (poll) {
+            poll.options.forEach((pollOption: PollOption, index: number) => {
+                if (pollOption.title === option) {
+                    pollIndex = index;
+                }
+            })
+        }
+        this.setState({ myVote: [pollIndex] });
+    }
+
+    submitVote() {
+        let poll = this.state.post.poll;
+        if (poll) {
+            this.client.post(`/polls/${poll.id}/votes`, {choices: this.state.myVote}).then((resp: any) => {
+                let post = this.state.post;
+                post.poll = resp.data;
+                this.setState({ post });
+                this.props.enqueueSnackbar("Vote submitted.");
+            }).catch((err: Error) => {
+                this.props.enqueueSnackbar("Couldn't vote: " + err.name);
+                console.error(err.message);
+            })
+        }
     }
 
     materializeContent(status: Status) {
@@ -105,22 +155,81 @@ export class Post extends React.Component<any, IPostState> {
                         <AttachmentComponent media={status.media_attachments}/>:
                         <span/>
                     }
+                    {
+                        status.poll?
+                            status.poll.voted || status.poll.expired?
+                                <div>
+                                    <Typography variant="caption">You can't vote on this poll. Below are the results of the poll.</Typography>
+                                    <RadioGroup
+                                        value={this.findBiggestVote()}
+                                    >
+                                        {
+                                            status.poll.options.map((pollOption: PollOption) => {
+                                                let x = <FormControlLabel
+                                                            disabled
+                                                            value={pollOption.title}
+                                                            control={<Radio />}
+                                                            label={`${pollOption.title} (${pollOption.votes_count} votes)`}
+                                                            key={pollOption.title+pollOption.votes_count}
+                                                        />;
+                                                return (x);
+                                                    
+                                            })
+                                        }
+                                    </RadioGroup>
+                                    {
+                                        status.poll && status.poll.expired?
+                                            <Typography variant="caption">This poll has expired.</Typography>:
+                                            <Typography variant="caption">This poll will expire on {moment(status.poll.expires_at? status.poll.expires_at: "").format('MMMM Do YYYY, [at] h:mm A')}.</Typography>
+                                    }
+                                </div>:
+                                <div>
+                                    <RadioGroup
+                                        onChange={(event: any, option: any) => this.captureVote(option)}
+                                    >
+                                        {
+                                            status.poll.options.map((pollOption: PollOption) => {
+                                                let x = <FormControlLabel
+                                                            value={pollOption.title}
+                                                            control={<Radio />}
+                                                            label={pollOption.title}
+                                                            key={pollOption.title+pollOption.votes_count}
+                                                        />;
+                                                return (x);
+                                                    
+                                            })
+                                        }
+                                    </RadioGroup>
+                                    <Button color="primary" onClick={(event: any) => this.submitVote()}>Vote</Button>
+                                </div>: null
+                    }
                 </div>
             </CardContent>
         );
+    }
+
+    spoilerContainsFlags(text: string): boolean {
+        let unsafeFlags = ["NSFW", "nsfw", "lewd", "sex"];
+        let result: boolean = false;
+        unsafeFlags.forEach((flag: string) => {
+            if (text.includes(flag)) {
+                result = true;
+            }
+        })
+        return result;
     }
 
     getSensitiveContent(spoiler_text: string, content: Status) {
         const { classes } = this.props;
         const warningText = spoiler_text || "Unmarked content";
         let icon;
-        if (spoiler_text.includes("NSFW") || spoiler_text.includes("Spoiler") || warningText === "Unmarked content") {
+        if (this.spoilerContainsFlags(spoiler_text) || spoiler_text.includes("Spoiler") || warningText === "Unmarked content") {
             icon = <WarningIcon className={classes.postWarningIcon}/>;
         }
         return (
-            <ExpansionPanel className={spoiler_text.includes("NSFW")? classes.nsfwCard: classes.spoilerCard} color="inherit">
+            <ExpansionPanel className={this.spoilerContainsFlags(spoiler_text)? classes.nsfwCard: classes.spoilerCard} color="inherit">
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>} color="inherit">
-                    {icon}<Typography className={classes.heading} color="inherit">{warningText}</Typography>
+                    {icon}<Typography>{warningText}</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails className={classes.postContent} color="inherit">
                     {this.materializeContent(content)}

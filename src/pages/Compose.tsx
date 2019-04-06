@@ -9,14 +9,17 @@ import TagFacesIcon from '@material-ui/icons/TagFaces';
 import HowToVoteIcon from '@material-ui/icons/HowToVote';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import WarningIcon from '@material-ui/icons/Warning';
+import DeleteIcon from '@material-ui/icons/Delete';
+import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import Mastodon from 'megalodon';
 import {withSnackbar} from 'notistack';
 import { Attachment } from '../types/Attachment';
-import { PollWizard } from '../types/Poll';
+import { PollWizard, PollWizardOption } from '../types/Poll';
 import filedialog from 'file-dialog';
 import ComposeMediaAttachment from '../components/ComposeMediaAttachment';
 import EmojiPicker from '../components/EmojiPicker';
-
+import { DateTimePicker, MuiPickersUtilsProvider } from 'material-ui-pickers';
+import MomentUtils from '@date-io/moment';
 
 interface IComposerState {
     account: UAccount;
@@ -30,6 +33,7 @@ interface IComposerState {
     acct?: string;
     attachments?: [Attachment];
     poll?: PollWizard;
+    pollExpiresDate?: any;
     showEmojis: boolean;
 }
 
@@ -200,14 +204,120 @@ class Composer extends Component<any, IComposerState> {
         }
     }
 
+    createPoll() {
+        if (this.state.poll === undefined) {
+            let expiration = new Date();
+            let current = new Date();
+            expiration.setMinutes(expiration.getMinutes() + 30);
+            let expiryDifference = (expiration.getTime() - current.getTime() / 1000);
+            let temporaryPoll: PollWizard = {
+                expires_at: expiryDifference.toString(),
+                multiple: false,
+                options: [{title: 'Option 1'}, {title: 'Option 2'}]
+            }
+            this.setState({
+                poll: temporaryPoll,
+                pollExpiresDate: expiration
+            });
+        }
+    }
+
+    addPollItem() {
+        if (this.state.poll !== undefined && this.state.poll.options.length < 4) {
+            let newOption = {title: 'New option'}
+            let options = this.state.poll.options;
+            let poll = this.state.poll;
+            options.push(newOption);
+            poll.options = options;
+            poll.multiple = true;
+            this.setState({
+                poll: poll
+            })
+        } else if (this.state.poll && this.state.poll.options.length == 4) {
+            this.props.enqueueSnackbar("You've reached the options limit in your poll.", { variant: 'error' })
+        }
+    }
+
+    editPollItem(position: number, newTitle: any) {
+        if (this.state.poll !== undefined) {
+            let poll = this.state.poll;
+            let options = this.state.poll.options;
+            options.forEach((option: PollWizardOption) => {
+                if (position === options.indexOf(option)) {
+                    option.title = newTitle.target.value;
+                }
+            });
+            poll.options = options;
+            this.setState({
+                poll: poll
+            });
+            this.props.enqueueSnackbar('Option edited.');
+        }
+    }
+
+    removePollItem(item: string) {
+        if (this.state.poll !== undefined && this.state.poll.options.length > 2) {
+            let options = this.state.poll.options;
+            let poll = this.state.poll;
+            options.forEach((option: PollWizardOption) => {
+                if (item === option.title) {
+                    options.splice(options.indexOf(option), 1);
+                }
+            });
+            poll.options = options;
+            if (options.length === 2) {
+                poll.multiple = false;
+            }
+            this.setState({
+                poll: poll
+            })
+        } else if (this.state.poll && this.state.poll.options.length <= 2) {
+            this.props.enqueueSnackbar('Polls must have at least two items.', { variant: 'error'} );
+        }
+    }
+
+    setPollExpires(date: string) {
+        let currentDate = new Date();
+        let newDate = new Date(date);
+        let poll = this.state.poll;
+        if (poll) {
+            let expiry = ((newDate.getTime() - currentDate.getTime()) / 1000);
+            console.log(expiry);
+            if (expiry >= 1800) {
+                poll.expires_at = expiry.toString();
+                this.setState({ poll, pollExpiresDate: date });
+                this.props.enqueueSnackbar("Expiration updated.")
+            } else {
+                this.props.enqueueSnackbar("Expiration is too small (min. 30 minutes).", { variant: 'error' });
+            }
+        }
+    }
+
+    removePoll() {
+        this.setState({
+            poll: undefined
+        });
+    }
+
     post() {
+        let pollOptions: string[] = [];
+        if (this.state.poll) {
+            this.state.poll.options.forEach((option: PollWizardOption) => {
+                pollOptions.push(option.title);
+            })
+        }
         this.client.post('/statuses', {
             status: this.state.text,
             media_ids: this.getOnlyMediaIds(),
             visibility: this.state.visibility,
             sensitive: this.state.sensitive,
             spoiler_text: this.state.sensitiveText,
-            in_reply_to_id: this.state.reply
+            in_reply_to_id: this.state.reply,
+            poll: this.state.poll? {
+                options: pollOptions,
+                expires_in: this.state.poll.expires_at,
+                multiple: this.state.poll.multiple
+            }: null
         }).then(() => {
             this.props.enqueueSnackbar('Posted!');
             window.history.back();
@@ -299,6 +409,44 @@ class Composer extends Component<any, IComposerState> {
                                 </GridList>
                             </div>: null
                     }
+                    {
+                        this.state.poll?
+                        <div style={{ marginTop: 4}}>
+                            
+                                {
+                                    this.state.poll?
+                                        this.state.poll.options.map((option: PollWizardOption, index: number) => {
+                                            let c = <div style={{ display: "flex" }} key={"compose_option_" + index.toString()}>
+                                                <RadioButtonCheckedIcon className={classes.pollWizardOptionIcon}/>
+                                                <TextField
+                                                    onBlur={(event: any) => this.editPollItem(index, event)}
+                                                    defaultValue={option.title}/>
+                                                <div className={classes.pollWizardFlexGrow}/>
+                                                <Tooltip title="Remove poll option">
+                                                    <IconButton onClick={() => this.removePollItem(option.title)}>
+                                                        <DeleteIcon/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </div>
+                                            return c;
+                                        }): null
+                                }
+                                <div style={{ display: "flex"}}>
+                                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                                        <DateTimePicker
+                                            value={this.state.pollExpiresDate? this.state.pollExpiresDate: new Date()} 
+                                            onChange={(date: any) => {
+                                                this.setPollExpires(date.toISOString());
+                                            }} 
+                                            label="Poll exipres on"
+                                            disablePast
+                                        />
+                                    </MuiPickersUtilsProvider>
+                                    <div className={classes.pollWizardFlexGrow}/>
+                                    <Button onClick={() => this.addPollItem()}>Add Option</Button>
+                                </div>
+                        </div>: null
+                    }
                 </DialogContent>
                 <Toolbar className={classes.dialogActions}>
                     <Tooltip title="Add photos or videos">
@@ -320,7 +468,11 @@ class Composer extends Component<any, IComposerState> {
                         <EmojiPicker onGetEmoji={(emoji: any) => this.insertEmoji(emoji)}/>
                     </Menu>
                     <Tooltip title="Add a poll">
-                        <IconButton disabled={this.state.attachments && this.state.attachments.length > 0} id="compose-poll">
+                        <IconButton disabled={this.state.attachments && this.state.attachments.length > 0} id="compose-poll" onClick={() => {
+                            this.state.poll?
+                                this.removePoll():
+                                this.createPoll()
+                        }}>
                             <HowToVoteIcon/>
                         </IconButton>
                     </Tooltip>
