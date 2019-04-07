@@ -70,9 +70,9 @@ class AboutPage extends Component<any, IAboutPageState> {
                                 "Loading..."
                             }/>
                             <ListItemSecondaryAction>
-                                <IconButton>
+                                <LinkableIconButton to={`/compose?visibility=public&acct=${this.state? this.state.instance.contact_account.acct: ""}`}>
                                     <ChatIcon/>
-                                </IconButton>
+                                </LinkableIconButton>
                                 <LinkableIconButton to={`/profile/${this.state? this.state.instance.contact_account.id: 0}`}>
                                     <PersonIcon/>
                                 </LinkableIconButton>

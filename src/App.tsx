@@ -16,9 +16,10 @@ import NotificationsPage from './pages/Notifications';
 import SearchPage from './pages/Search';
 import Composer from './pages/Compose';
 import WelcomePage from './pages/Welcome';
+import MessagesPage from './pages/Messages';
 import {withSnackbar} from 'notistack';
 import {PrivateRoute} from './interfaces/overrides';
-import { userLoggedIn, refreshUserAccountData } from './utilities/accounts';
+import { userLoggedIn } from './utilities/accounts';
 let theme = setHyperspaceTheme(getUserDefaultTheme());
 
 class App extends Component<any, any> {
@@ -51,7 +52,7 @@ class App extends Component<any, any> {
             <PrivateRoute path="/home" component={HomePage}/>
             <PrivateRoute path="/local" component={LocalPage}/>
             <PrivateRoute path="/public" component={PublicPage}/>
-            <Route path="/messages"/>
+            <PrivateRoute path="/messages" component={MessagesPage}/>
             <PrivateRoute path="/notifications" component={NotificationsPage}/>
             <PrivateRoute path="/profile/:profileId" component={ProfilePage}/>
             <PrivateRoute path="/conversation/:conversationId" component={Conversation}/>
