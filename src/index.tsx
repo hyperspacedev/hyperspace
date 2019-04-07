@@ -3,14 +3,23 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import { HashRouter } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
-import {createUserDefaults, getUserDefaultBool} from './utilities/settings';
-import {refreshUserAccountData} from './utilities/accounts';
+import {createUserDefaults} from './utilities/settings';
 import {collectEmojisFromServer} from './utilities/emojis';
 import {SnackbarProvider} from 'notistack';
+import axios from 'axios';
+import { userLoggedIn, refreshUserAccountData } from './utilities/accounts';
+
+axios.get('config.json').then((resp: any) => {
+    document.title = resp.data.branding.name || "Hyperspace";
+}).catch((err: Error) => {
+    console.error(err);
+})
 
 createUserDefaults();
-refreshUserAccountData();
-collectEmojisFromServer();
+if (userLoggedIn()) {
+    collectEmojisFromServer();
+    refreshUserAccountData();
+}
 
 ReactDOM.render(
     <HashRouter>

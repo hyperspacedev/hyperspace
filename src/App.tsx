@@ -15,8 +15,10 @@ import Conversation from './pages/Conversation';
 import NotificationsPage from './pages/Notifications';
 import SearchPage from './pages/Search';
 import Composer from './pages/Compose';
-
+import WelcomePage from './pages/Welcome';
 import {withSnackbar} from 'notistack';
+import {PrivateRoute} from './interfaces/overrides';
+import { userLoggedIn, refreshUserAccountData } from './utilities/accounts';
 let theme = setHyperspaceTheme(getUserDefaultTheme());
 
 class App extends Component<any, any> {
@@ -42,19 +44,23 @@ class App extends Component<any, any> {
     return (
       <MuiThemeProvider theme={this.state.theme}>
         <CssBaseline/>
-        <AppLayout/>
-        <Route exact path="/" component={HomePage}/>
-        <Route path="/home" component={HomePage}/>
-        <Route path="/local" component={LocalPage}/>
-        <Route path="/public" component={PublicPage}/>
-        <Route path="/messages"/>
-        <Route path="/notifications" component={NotificationsPage}/>
-        <Route path="/profile/:profileId" render={props => <ProfilePage {...props}></ProfilePage>}/>
-        <Route path="/conversation/:conversationId" component={Conversation}/>
-        <Route path="/search" component={SearchPage}/>
-        <Route path="/settings" component={Settings}/>
-        <Route path="/about" component={AboutPage}/>
-        <Route path="/compose" component={Composer}/>
+        <Route path="/welcome" component={WelcomePage}/>
+          <div>
+            { userLoggedIn()? <AppLayout/>: null}
+            <PrivateRoute exact path="/" component={HomePage}/>
+            <PrivateRoute path="/home" component={HomePage}/>
+            <PrivateRoute path="/local" component={LocalPage}/>
+            <PrivateRoute path="/public" component={PublicPage}/>
+            <Route path="/messages"/>
+            <PrivateRoute path="/notifications" component={NotificationsPage}/>
+            <PrivateRoute path="/profile/:profileId" component={ProfilePage}/>
+            <PrivateRoute path="/conversation/:conversationId" component={Conversation}/>
+            <PrivateRoute path="/search" component={SearchPage}/>
+            <PrivateRoute path="/settings" component={Settings}/>
+            <PrivateRoute path="/about" component={AboutPage}/>
+            <PrivateRoute path="/compose" component={Composer}/>
+          </div>
+
       </MuiThemeProvider>
     );
   }

@@ -1,0 +1,15 @@
+{
+    "branding": {
+        "name": "Hyperspace",
+        "logo": "logo.svg",
+        "background": "background.png"
+    },
+    "federated": "true",
+    "registration": {
+        "defaultInstance": "mastodon.social"
+    },
+    "admin": {
+        "name": "Marquis Kurt",
+        "account": "alicerunsonfedora@mastodon.social"
+    }
+}

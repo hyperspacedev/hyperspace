@@ -26,10 +26,11 @@
     "file-dialog": "^0.0.7",
     "emoji-mart": "^2.8.2",
     "material-ui-pickers": "^2.2.4",
-    "@date-io/moment": "^1.1.0"
+    "@date-io/moment": "^1.1.0",
+    "axios": "^0.18.0"
   },
   "scripts": {
-    "start": "BROWSER='Safari Technology Preview' react-scripts start",
+    "start": "HTTPS=true BROWSER='Safari Technology Preview' react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

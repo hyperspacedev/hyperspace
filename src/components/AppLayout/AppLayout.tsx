@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, withStyles, Menu, MenuItem, ClickAwayListener, Badge } from '@material-ui/core';
+import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, withStyles, Menu, MenuItem, ClickAwayListener, Badge, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -19,12 +19,14 @@ import {LinkableListItem, LinkableIconButton, LinkableFab} from '../../interface
 import Mastodon from 'megalodon';
 import { Notification } from '../../types/Notification';
 import {sendNotificationRequest} from '../../utilities/notifications';
+import {withSnackbar} from 'notistack';
 
 interface IAppLayoutState {
     acctMenuOpen: boolean;
     drawerOpenOnMobile: boolean;
-    currentUser: UAccount;
+    currentUser?: UAccount;
     notificationCount: number;
+    logOutOpen: boolean;
 }
 
 export class AppLayout extends Component<any, IAppLayoutState> {
@@ -35,15 +37,13 @@ export class AppLayout extends Component<any, IAppLayoutState> {
     constructor(props: any) {
         super(props);
 
-        let accountData = JSON.parse(localStorage.getItem('account') as string);
-
         this.client = new Mastodon(localStorage.getItem('access_token') as string, localStorage.getItem('baseurl') as string + "/api/v1");
     
         this.state = {
           drawerOpenOnMobile: false,
           acctMenuOpen: false,
-          currentUser: accountData,
-          notificationCount: 0
+          notificationCount: 0,
+          logOutOpen: false
         }
     
         this.toggleDrawerOnMobile = this.toggleDrawerOnMobile.bind(this);
@@ -51,6 +51,20 @@ export class AppLayout extends Component<any, IAppLayoutState> {
       }
 
       componentDidMount() {
+        
+        let acct = localStorage.getItem('account');
+        if (acct) {
+          this.setState({ currentUser: JSON.parse(acct) });
+        } else {
+          this.client.get('/accounts/verify_credentials').then((resp: any) => {
+            let data: UAccount = resp.data;
+            this.setState({ currentUser: data });
+          }).catch((err: Error) => {
+            this.props.enqueueSnackbar("Couldn't find profile info: " + err.name);
+            console.error(err.message);
+          })
+        }
+
         this.streamListener = this.client.stream('/streaming/user');
 
         this.streamListener.on('notification', (notif: Notification) => {
@@ -105,9 +119,21 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         })
       }
 
+      toggleLogOutDialog() {
+        this.setState({ logOutOpen: !this.state.logOutOpen });
+      }
+
       searchForQuery(what: string) {
         window.location.href = "/#/search?query=" + what;
         window.location.reload;
+      }
+
+      logOutAndRestart() {
+        let loginData = localStorage.getItem("login");
+        if (loginData) {
+          localStorage.clear();
+          window.location.reload();
+        }
       }
 
       titlebar() {
@@ -133,11 +159,11 @@ export class AppLayout extends Component<any, IAppLayoutState> {
           <div>
               <List>
                 <div className={classes.drawerDisplayMobile}>
-                  <LinkableListItem button key="profile-mobile" to={`/profile/${this.state.currentUser.id}`}>
+                  <LinkableListItem button key="profile-mobile" to={`/profile/${this.state.currentUser? this.state.currentUser.id: "1"}`}>
                     <ListItemAvatar>
-                      <Avatar alt="You" src={this.state.currentUser.avatar_static}/>
+                      <Avatar alt="You" src={this.state.currentUser? this.state.currentUser.avatar_static: ""}/>
                     </ListItemAvatar>
-                    <ListItemText primary={this.state.currentUser.display_name} secondary={this.state.currentUser.acct}/>
+                    <ListItemText primary={this.state.currentUser? (this.state.currentUser.display_name || this.state.currentUser.acct): "Loading..."} secondary={this.state.currentUser? this.state.currentUser.acct: "Loading..."}/>
                   </LinkableListItem>
                   <LinkableListItem button key="notifications-mobile" to="/notifications">
                     <ListItemIcon><NotificationsIcon/></ListItemIcon>
@@ -237,7 +263,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                     <MailIcon/>
                   </LinkableIconButton>
                   <IconButton id="acctMenuBtn" onClick={this.toggleAcctMenu}>
-                    <Avatar className={classes.appBarAcctMenuIcon} alt="You" src={this.state.currentUser.avatar_static}/>
+                    <Avatar className={classes.appBarAcctMenuIcon} alt="You" src={this.state.currentUser? this.state.currentUser.avatar_static: ""}/>
                   </IconButton>
                   <Menu
                     id="acct-menu"
@@ -247,15 +273,18 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                   >
                     <ClickAwayListener onClickAway={this.toggleAcctMenu}>
                       <div>
-                        <LinkableListItem to={`/profile/${this.state.currentUser.id}`}>
+                        <LinkableListItem to={`/profile/${this.state.currentUser? this.state.currentUser.id: "1"}`}>
                             <ListItemAvatar>
-                              <Avatar alt="You" src={this.state.currentUser.avatar_static}/>
+                              <Avatar alt="You" src={this.state.currentUser? this.state.currentUser.avatar_static: ""}/>
                             </ListItemAvatar>
-                            <ListItemText primary={this.state.currentUser.display_name || this.state.currentUser.acct} secondary={'@' + this.state.currentUser.acct}/>
+                            <ListItemText 
+                              primary={this.state.currentUser? (this.state.currentUser.display_name || this.state.currentUser.acct): "Loading..."} 
+                              secondary={'@' + (this.state.currentUser? this.state.currentUser.acct: "Loading...")}
+                              />
                         </LinkableListItem>
                         <Divider/>
                         {/* <MenuItem>Switch account</MenuItem> */}
-                        <MenuItem>Log out</MenuItem>                      
+                        <MenuItem onClick={() => this.toggleLogOutDialog()}>Log out</MenuItem>                      
                       </div>
                     </ClickAwayListener>
                   </Menu>
@@ -288,6 +317,27 @@ export class AppLayout extends Component<any, IAppLayoutState> {
             </Hidden>
           </nav>
         </div>
+        <Dialog
+          open={this.state.logOutOpen}
+          onClose={() => this.toggleLogOutDialog()}
+          >
+          <DialogTitle id="alert-dialog-title">Log out of Hyperspace?</DialogTitle>
+          <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                You'll need to remove Hyperspace from your list of authorized apps and log in again if you want to use Hyperspace.
+              </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+          <Button onClick={() => this.toggleLogOutDialog()} color="primary" autoFocus>
+              Cancel
+              </Button>
+              <Button onClick={() => {
+                  this.logOutAndRestart();
+              }} color="primary">
+              Log out
+              </Button>
+          </DialogActions>
+        </Dialog>
         <LinkableFab to="/compose" className={classes.composeButton} color="secondary" aria-label="Compose">
           <EditIcon/>
         </LinkableFab>
@@ -296,4 +346,4 @@ export class AppLayout extends Component<any, IAppLayoutState> {
   }
 }
 
-export default withStyles(styles)(AppLayout);
+export default withStyles(styles)(withSnackbar(AppLayout));

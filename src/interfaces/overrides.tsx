@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import ListItem, { ListItemProps } from "@material-ui/core/ListItem";
 import IconButton, { IconButtonProps } from "@material-ui/core/IconButton";
-import { Link, Route } from "react-router-dom";
+import { Link, Route, Redirect, RouteProps } from "react-router-dom";
 import Chip, { ChipProps } from '@material-ui/core/Chip';
 import { MenuItemProps } from '@material-ui/core/MenuItem';
 import { MenuItem } from '@material-ui/core';
 import Button, { ButtonProps } from '@material-ui/core/Button';
 import Fab, { FabProps } from '@material-ui/core/Fab';
+import { userLoggedIn } from '../utilities/accounts';
 
 export interface ILinkableListItemProps extends ListItemProps {
     to: string;
@@ -67,4 +68,19 @@ export const ProfileRoute = (rest: any, component: Component) => (
         <Component {...props}/>
     )}/>
   )
+  
+export const PrivateRoute = (props: IPrivateRouteProps) => {
+    const { component, render, ...rest } = props;
+    return (<Route {...rest} 
+        render={(compProps: any) => (
+            userLoggedIn()?
+                React.createElement(component, compProps):
+                <Redirect to="/welcome"/>
+        )}
+    />
+  )}
+
+interface IPrivateRouteProps extends RouteProps {
+    component: any
+}
   
