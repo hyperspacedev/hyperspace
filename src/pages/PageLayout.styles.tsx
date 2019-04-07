@@ -117,8 +117,8 @@ export const styles = (theme: Theme) => createStyles({
       zIndex: 3
     },
     pageContentLayoutConstraints: {
-      paddingLeft: theme.spacing.unit * 4,
-      paddingRight: theme.spacing.unit * 4,
+      paddingLeft: theme.spacing.unit * 2,
+      paddingRight: theme.spacing.unit * 2,
       paddingTop: theme.spacing.unit * 4,
       paddingBottom: theme.spacing.unit * 2,
       [theme.breakpoints.up('md')]: {

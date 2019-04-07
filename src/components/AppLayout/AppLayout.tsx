@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, withStyles, Menu, MenuItem, ClickAwayListener, Badge, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core';
+import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, withStyles, Menu, MenuItem, ClickAwayListener, Badge, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, ListItem } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -177,10 +177,10 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                     <ListItemIcon><SupervisedUserCircleIcon/></ListItemIcon>
                     <ListItemText primary="Switch account"/>
                   </LinkableListItem>
-                  <LinkableListItem button key="acctLogout-mobile" to="/logout">
+                  <ListItem button key="acctLogout-mobile" onClick={() => this.toggleLogOutDialog()}>
                     <ListItemIcon><ExitToAppIcon/></ListItemIcon>
                     <ListItemText primary="Log out"/>
-                  </LinkableListItem>
+                  </ListItem>
                   <Divider/>
                 </div>
                 <ListSubheader>Timelines</ListSubheader>
