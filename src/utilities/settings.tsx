@@ -1,5 +1,7 @@
 import { defaultTheme, themes } from "../types/HyperspaceTheme";
 import { getNotificationRequestPermission } from './notifications';
+import axios from 'axios';
+import { Config } from "../types/Config";
 
 type SettingsTemplate = {
     [key:string]: any;
@@ -72,4 +74,13 @@ export function createUserDefaults() {
         }
     })
     getNotificationRequestPermission();
+}
+
+export function getConfig() {
+    return axios.get('config.json').then((resp: any) => {
+        let config: Config = resp.data;
+        return config;
+    }).catch((err: Error) => {
+        console.error("Couldn't configure Hyperspace with the config file. Reason: " + err.name)
+    })
 }

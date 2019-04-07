@@ -3,14 +3,13 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import { HashRouter } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
-import {createUserDefaults} from './utilities/settings';
+import {createUserDefaults, getConfig} from './utilities/settings';
 import {collectEmojisFromServer} from './utilities/emojis';
 import {SnackbarProvider} from 'notistack';
-import axios from 'axios';
 import { userLoggedIn, refreshUserAccountData } from './utilities/accounts';
 
-axios.get('config.json').then((resp: any) => {
-    document.title = resp.data.branding.name || "Hyperspace";
+getConfig().then((config: any) => {
+    document.title = config.branding.name || "Hyperspace";
 }).catch((err: Error) => {
     console.error(err);
 })

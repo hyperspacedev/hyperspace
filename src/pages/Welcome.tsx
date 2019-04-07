@@ -7,6 +7,7 @@ import {Config} from '../types/Config';
 import {SaveClientSession} from '../types/SessionData';
 import { createHyperspaceApp } from '../utilities/login';
 import {parseUrl} from 'query-string';
+import { getConfig } from '../utilities/settings';
 
 interface IWelcomeState {
     logoUrl?: string;
@@ -39,9 +40,7 @@ class WelcomePage extends Component<any, IWelcomeState> {
             authority: false
         }
 
-        axios.get('config.json').then((resp: any) => {
-            let result: Config = resp.data;
-
+        getConfig().then((result: any) => {
             this.setState({
                 logoUrl: result.branding? result.branding.logo: "logo.png",
                 backgroundUrl: result.branding? result.branding.background: "background.png",

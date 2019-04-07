@@ -4,6 +4,7 @@ export type Config = {
         logo?: string;
         background?: string;
     };
+    developer?: string;
     federated?: string;
     registration?: {
         defaultInstance?: string;

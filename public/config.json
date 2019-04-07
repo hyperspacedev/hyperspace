@@ -4,6 +4,7 @@
         "logo": "logo.svg",
         "background": "background.png"
     },
+    "developer": "true",
     "federated": "true",
     "registration": {
         "defaultInstance": "mastodon.social"
