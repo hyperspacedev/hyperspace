@@ -17,5 +17,6 @@
     "license": {
         "name": "Apache 2.0 License",
         "url": "https://www.apache.org/licenses/LICENSE-2.0"
-    }
+    },
+    "repository": "https://github.com/hyperspacedev/hyperspace"
 }

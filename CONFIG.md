@@ -17,6 +17,7 @@ Hyperspace 1.0 comes with a new configuration file app providers can use to crea
 - `license`: Licensing information about the app. Will default to Apache 2.0 if not listed (the standard license for Hyperspace source code).
   - `name`: The name of the license.
   - `url`: The link to the license for reviewing.
+- `repository`: The URL to the source code, if possible.
 
 ## Example Config File
 

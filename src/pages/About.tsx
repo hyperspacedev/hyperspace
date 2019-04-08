@@ -21,6 +21,7 @@ import NetworkCheckIcon from '@material-ui/icons/NetworkCheck';
 import UpdateIcon from '@material-ui/icons/Update';
 import InfoIcon from '@material-ui/icons/Info';
 import NotesIcon from '@material-ui/icons/Notes';
+import CodeIcon from '@material-ui/icons/Code';
 import {styles} from './PageLayout.styles';
 import {Instance} from '../types/Instance';
 import {LinkableIconButton} from '../interfaces/overrides';
@@ -38,6 +39,7 @@ interface IAboutPageState  {
     versionNumber?: string;
     brandName?: string;
     license: License;
+    repository?: string;
 }
 
 class AboutPage extends Component<any, IAboutPageState> {
@@ -78,7 +80,8 @@ class AboutPage extends Component<any, IAboutPageState> {
                     license: {
                         name: config.license.name,
                         url: config.license.url
-                    }
+                    },
+                    repository: config.repository
                 })
             }).catch((err: Error) => {
                 console.error(err.message);
@@ -188,6 +191,22 @@ class AboutPage extends Component<any, IAboutPageState> {
                                 </IconButton>
                             </ListItemSecondaryAction>
                         </ListItem>
+                        {
+                            this.state.repository?
+                            <ListItem>
+                                <ListItemAvatar>
+                                    <Avatar>
+                                        <CodeIcon/>
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary="View source code" secondary={this.state.repository? this.state.repository: "No repository in config"}/>
+                                <ListItemSecondaryAction>
+                                    <IconButton href={this.state.repository? this.state.repository: ""} target="_blank" rel="noreferrer">
+                                        <OpenInNewIcon/>
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>: null
+                        }
                     </List>
                 </Paper>
                 <br/>
