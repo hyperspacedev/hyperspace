@@ -34,6 +34,7 @@ interface IAboutPageState  {
     federated?: boolean;
     developer?: boolean;
     hyperspaceAdmin?: UAccount;
+    hyperspaceAdminName?: string;
     versionNumber?: string;
     brandName?: string;
     license: License;
@@ -69,6 +70,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                 console.log(config);
                 this.setState({
                     hyperspaceAdmin: account,
+                    hyperspaceAdminName: config.admin.name,
                     federated: config.federated? config.federated === "true": false,
                     developer: config.developer? config.developer === "true": false,
                     versionNumber: config.version,
@@ -141,7 +143,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                                     <PersonIcon/>
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="App provider" secondary={this.state.hyperspaceAdmin? (this.state.hyperspaceAdmin.display_name || "@" + this.state.hyperspaceAdmin.acct): "No provider set in config"}/>
+                            <ListItemText primary="App provider" secondary={this.state.hyperspaceAdmin && this.state.hyperspaceAdminName? (this.state.hyperspaceAdminName || this.state.hyperspaceAdmin.display_name || "@" + this.state.hyperspaceAdmin.acct): "No provider set in config"}/>
                             <ListItemSecondaryAction>
                                 <LinkableIconButton to={`/compose?visibility=${this.state.federated? "public": "private"}&acct=${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.acct: ""}`}>
                                     <ChatIcon/>
