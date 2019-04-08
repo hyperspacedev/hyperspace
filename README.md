@@ -10,7 +10,7 @@ This is the official repository for the Hyperspace 1.0 release. This release inc
 
 If you are looking for the **current** release of Hyperspace, please look at [hyperspace-classic](https://github.com/hyperspacedev/hyperspace-classic).
 
-## What makes Hyperspace 1.0 different from the current version?
+## What makes Hyperspace 1.0 different from the current version
 
 The 1.0 redesign of Hyperspace acts differently from the current classic version of in multiple ways:
 
