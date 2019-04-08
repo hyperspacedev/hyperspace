@@ -1,4 +1,4 @@
-# Hyperspace 1.0 Configuration File
+# Configuring Hyperspace
 
 Hyperspace 1.0 comes with a new configuration file app providers can use to create a custom experience relatively easy. This is inspired from the way the [Riot](https://github.com/vector-im/riot-web) project handles configurations for their app. The following fields should be in the `config.json` folder at the root of the Hyperspace installation.
 
