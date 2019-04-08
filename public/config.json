@@ -1,4 +1,5 @@
 {
+    "version": "1.0.0beta1",
     "branding": {
         "name": "Hyperspace",
         "logo": "logo.svg",
@@ -11,6 +12,10 @@
     },
     "admin": {
         "name": "Marquis Kurt",
-        "account": "alicerunsonfedora@mastodon.social"
+        "account": "367895"
+    },
+    "license": {
+        "name": "Apache 2.0 License",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0"
     }
 }

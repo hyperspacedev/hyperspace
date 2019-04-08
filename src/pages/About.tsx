@@ -17,26 +17,69 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import DomainIcon from '@material-ui/icons/Domain';
 import ChatIcon from '@material-ui/icons/Chat';
 import PersonIcon from '@material-ui/icons/Person';
+import NetworkCheckIcon from '@material-ui/icons/NetworkCheck';
+import UpdateIcon from '@material-ui/icons/Update';
+import InfoIcon from '@material-ui/icons/Info';
+import NotesIcon from '@material-ui/icons/Notes';
 import {styles} from './PageLayout.styles';
 import {Instance} from '../types/Instance';
 import {LinkableIconButton} from '../interfaces/overrides';
 import Mastodon from 'megalodon';
+import { UAccount } from '../types/Account';
+import { getConfig } from '../utilities/settings';
+import { License } from '../types/Config';
 
 interface IAboutPageState  {
-    instance: Instance | any;
+    instance?: Instance | any;
+    federated?: boolean;
+    developer?: boolean;
+    hyperspaceAdmin?: UAccount;
+    versionNumber?: string;
+    brandName?: string;
+    license: License;
 }
 
 class AboutPage extends Component<any, IAboutPageState> {
 
+    client: Mastodon;
+
     constructor(props: any) {
         super(props);
+
+        this.client = new Mastodon(localStorage.getItem('access_token') as string, localStorage.getItem('baseurl') + "/api/v1");
+
+        this.state = {
+            license: {
+                name: "Apache 2.0 License (inherited)",
+                url: "https://www.apache.org/licenses/LICENSE-2.0"
+            }
+        }
     }
 
     componentWillMount() {
-        let client = new Mastodon(localStorage.getItem('access_token') as string, localStorage.getItem('baseurl') + "/api/v1");
-        client.get('/instance').then((resp: any) => {
+        this.client.get('/instance').then((resp: any) => {
             this.setState({
                 instance: resp.data
+            })
+        })
+
+        getConfig().then((config: any) => {
+            this.client.get('/accounts/' + (config.admin? config.admin.account: "0")).then((resp: any) => {
+                let account = resp.data;
+                console.log(config);
+                this.setState({
+                    hyperspaceAdmin: account,
+                    federated: config.federated? config.federated === "true": false,
+                    developer: config.developer? config.developer === "true": false,
+                    versionNumber: config.version,
+                    brandName: config.branding? config.branding.name: "Hyperspace",
+                    license: {
+                        name: config.license.name,
+                        url: config.license.url
+                    }
+                })
+            }).catch((err: Error) => {
+                console.error(err.message);
             })
         })
     }
@@ -54,7 +97,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                                     <DomainIcon/>
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="Instance location (URL)" secondary={this.state ? this.state.instance.uri: "Loading..."}/>
+                            <ListItemText primary="Instance location (URL)" secondary={this.state.instance ? this.state.instance.uri: "Loading..."}/>
                             <ListItemSecondaryAction>
                                 <IconButton href={localStorage.getItem("baseurl") as string} target="_blank" rel="noreferrer">
                                     <OpenInNewIcon/>
@@ -63,17 +106,17 @@ class AboutPage extends Component<any, IAboutPageState> {
                         </ListItem>
                         <ListItem>
                             <ListItemAvatar>
-                                <Avatar alt="Instance admin" src={this.state? this.state.instance.contact_account.avatar_static: ""}/>
+                                <Avatar alt="Instance admin" src={this.state.instance? this.state.instance.contact_account.avatar_static: ""}/>
                             </ListItemAvatar>
                             <ListItemText primary="Instance admin" secondary={
-                                this.state ? `${this.state.instance.contact_account.display_name} (@${this.state.instance.contact_account.acct})`:
+                                this.state.instance ? `${this.state.instance.contact_account.display_name} (@${this.state.instance.contact_account.acct})`:
                                 "Loading..."
                             }/>
                             <ListItemSecondaryAction>
-                                <LinkableIconButton to={`/compose?visibility=public&acct=${this.state? this.state.instance.contact_account.acct: ""}`}>
+                                <LinkableIconButton to={`/compose?visibility=public&acct=${this.state.instance? this.state.instance.contact_account.acct: ""}`}>
                                     <ChatIcon/>
                                 </LinkableIconButton>
-                                <LinkableIconButton to={`/profile/${this.state? this.state.instance.contact_account.id: 0}`}>
+                                <LinkableIconButton to={`/profile/${this.state.instance? this.state.instance.contact_account.id: 0}`}>
                                     <PersonIcon/>
                                 </LinkableIconButton>
                             </ListItemSecondaryAction>
@@ -85,20 +128,70 @@ class AboutPage extends Component<any, IAboutPageState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
-                            <ListItemText primary="App version" secondary="Hyperspace v1.0.0"/>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <InfoIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="App version" secondary={`${this.state? this.state.brandName: "Hyperspace"} v${this.state? this.state.versionNumber: "1.0.x"} ${this.state && this.state.brandName !== "Hyperspace"? "(Hyperspace-like)": ""}`}/>
                         </ListItem>
                         <ListItem>
-                            <ListItemText primary="Release channel" secondary="Developer"/>
+                            <ListItemAvatar>
+                                <Avatar src={this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.avatar_static: ""}>
+                                    <PersonIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="App provider" secondary={this.state.hyperspaceAdmin? (this.state.hyperspaceAdmin.display_name || "@" + this.state.hyperspaceAdmin.acct): "No provider set in config"}/>
+                            <ListItemSecondaryAction>
+                                <LinkableIconButton to={`/compose?visibility=${this.state.federated? "public": "private"}&acct=${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.acct: ""}`}>
+                                    <ChatIcon/>
+                                </LinkableIconButton>
+                                <LinkableIconButton to={`/profile/${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.id: 0}`}>
+                                    <PersonIcon/>
+                                </LinkableIconButton>
+                            </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
-                            <ListItemText primary="License" secondary="Apache 2.0 License (inherited)"/>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <NetworkCheckIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Federation status" secondary={`This instance of ${this.state? this.state.brandName: "Hyperspace"} is ${this.state? this.state.federated? "": "not": "unknown"} federated.`}/>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <UpdateIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Release channel" secondary={
+                                this.state?
+                                    this.state.developer?
+                                        "Developer":
+                                        "Release":
+                                "Loading..."
+                            }/>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <NotesIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="License" secondary={this.state.license.name}/>
+                            <ListItemSecondaryAction>
+                                <IconButton href={this.state.license.url} target="_blank" rel="noreferrer">
+                                    <OpenInNewIcon/>
+                                </IconButton>
+                            </ListItemSecondaryAction>
                         </ListItem>
                     </List>
                 </Paper>
                 <br/>
                 <div>
-                    <Typography variant="caption">(C) 2019 Hyperspace developers. All rights reserved.</Typography>
-                    <Typography variant="caption" paragraph>Hyperspace is made possible by the <Link href={"https://material-ui.com"} target="_blank" rel="noreferrer">Material UI</Link> project, <Link href={"https://www.npmjs.com/package/megalodon"} target="_blank" rel="noreferrer">Megalodon</Link> library, and other <Link href={"https://github.com/hyperspacedev/hyperspace/blob/master/package.json"} target="_blank" rel="noreferrer">open source software</Link>.</Typography>
+                    <Typography variant="caption">(C) 2019 {this.state? this.state.brandName: "Hyperspace"} developers. All rights reserved.</Typography>
+                    <Typography variant="caption" paragraph>{this.state? this.state.brandName: "Hyperspace"} is made possible by the <Link href={"https://material-ui.com"} target="_blank" rel="noreferrer">Material UI</Link> project, <Link href={"https://www.npmjs.com/package/megalodon"} target="_blank" rel="noreferrer">Megalodon</Link> library, and other <Link href={"https://github.com/hyperspacedev/hyperspace/blob/master/package.json"} target="_blank" rel="noreferrer">open source software</Link>.</Typography>
                 </div>
             </div>
         );

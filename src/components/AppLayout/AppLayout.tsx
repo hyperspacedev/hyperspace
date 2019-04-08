@@ -20,6 +20,7 @@ import Mastodon from 'megalodon';
 import { Notification } from '../../types/Notification';
 import {sendNotificationRequest} from '../../utilities/notifications';
 import {withSnackbar} from 'notistack';
+import { getConfig } from '../../utilities/settings';
 
 interface IAppLayoutState {
     acctMenuOpen: boolean;
@@ -27,6 +28,9 @@ interface IAppLayoutState {
     currentUser?: UAccount;
     notificationCount: number;
     logOutOpen: boolean;
+    enableFederation?: boolean;
+    brandName?: string;
+    developerMode?: boolean;
 }
 
 export class AppLayout extends Component<any, IAppLayoutState> {
@@ -65,6 +69,18 @@ export class AppLayout extends Component<any, IAppLayoutState> {
           })
         }
 
+        getConfig().then((config: any) => {
+          this.setState({ 
+            enableFederation: config.federated === "true",
+            brandName: config.branding? config.branding.name: "Hyperspace",
+            developerMode: config.developer === "true"
+          });
+        })
+
+        this.streamNotifications()
+      }
+
+      streamNotifications() {
         this.streamListener = this.client.stream('/streaming/user');
 
         this.streamListener.on('notification', (notif: Notification) => {
@@ -131,14 +147,17 @@ export class AppLayout extends Component<any, IAppLayoutState> {
       logOutAndRestart() {
         let loginData = localStorage.getItem("login");
         if (loginData) {
-          localStorage.clear();
+          let items = ["login", "account", "baseurl", "access_token"];
+          items.forEach((entry) => {
+            localStorage.removeItem(entry);
+          })
           window.location.reload();
         }
       }
 
       titlebar() {
         const { classes } = this.props;
-        if (process.env.NODE_ENV === "development") {
+        if (this.state.developerMode || process.env.NODE_ENV === "development") {
           return (
             <div className={classes.titleBarRoot}>
               <Typography className={classes.titleBarText}>Careful: you're running in developer mode.</Typography>
@@ -192,15 +211,22 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                   <ListItemIcon><DomainIcon/></ListItemIcon>
                   <ListItemText primary="Local"/>
                 </LinkableListItem>
-                <LinkableListItem button key="public" to="/public">
-                  <ListItemIcon><PublicIcon/></ListItemIcon>
-                  <ListItemText primary="Public"/>
-                </LinkableListItem>
+                {
+                  this.state.enableFederation?
+                    <LinkableListItem button key="public" to="/public">
+                      <ListItemIcon><PublicIcon/></ListItemIcon>
+                      <ListItemText primary="Public"/>
+                    </LinkableListItem>:
+                    <ListItem disabled>
+                      <ListItemIcon><PublicIcon/></ListItemIcon>
+                      <ListItemText primary="Public" secondary="Disabled by admin"/>
+                    </ListItem>
+                }
                 <Divider/>
                 <ListSubheader>More</ListSubheader>
-                <LinkableListItem button key="recommended" to="/recommended">
+                <LinkableListItem button key="recommended" to="/recommended" disabled>
                   <ListItemIcon><GroupIcon/></ListItemIcon>
-                  <ListItemText primary="Who to follow"/>
+                  <ListItemText primary="Who to follow" secondary="Coming soon!"/>
                 </LinkableListItem>
                 <LinkableListItem button key="settings" to="/settings">
                   <ListItemIcon><SettingsIcon/></ListItemIcon>
@@ -232,7 +258,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                 <MenuIcon/>
               </IconButton>
               <Typography className={classes.appBarTitle} variant="h6" color="inherit" noWrap>
-                Hyperspace
+                {this.state.brandName? this.state.brandName: "Hyperspace"}
               </Typography>
               <div className={classes.appBarFlexGrow}/>
               <div className={classes.appBarSearch}>

@@ -16,7 +16,8 @@ import {
     RadioGroup,
     FormControlLabel,
     Radio,
-    DialogActions
+    DialogActions,
+    DialogContentText
 } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import {styles} from './PageLayout.styles';
@@ -29,6 +30,7 @@ interface ISettingsState {
     pushNotificationsEnabled: boolean;
     selectThemeName: string;
     themeDialogOpen: boolean;
+    resetHyperspaceDialog: boolean;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -40,7 +42,8 @@ class SettingsPage extends Component<any, ISettingsState> {
             darkModeEnabled: getUserDefaultBool('darkModeEnabled'),
             pushNotificationsEnabled: canSendNotifications(),
             selectThemeName: getUserDefaultTheme().key,
-            themeDialogOpen: false
+            themeDialogOpen: false,
+            resetHyperspaceDialog: false
         }
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -65,6 +68,10 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.setState({ themeDialogOpen: !this.state.themeDialogOpen });
     }
 
+    toggleResetDialog() {
+        this.setState({ resetHyperspaceDialog: !this.state.resetHyperspaceDialog });
+    }
+
     changeTheme() {
         setUserDefaultTheme(this.state.selectThemeName);
         window.location.reload();
@@ -72,6 +79,11 @@ class SettingsPage extends Component<any, ISettingsState> {
 
     changeThemeName(theme: string) {
         this.setState({ selectThemeName: theme});
+    }
+
+    reset() {
+        localStorage.clear();
+        window.location.reload();
     }
 
     showThemeDialog() {
@@ -107,6 +119,32 @@ class SettingsPage extends Component<any, ISettingsState> {
                     </Button>
                 </DialogActions>
             </Dialog>
+        );
+    }
+
+    showResetDialog() {
+        return (
+            <Dialog
+                open={this.state.resetHyperspaceDialog}
+                onClose={() => this.toggleResetDialog()}
+                >
+                <DialogTitle id="alert-dialog-title">Reset Hyperspace?</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to reset Hyperspace? You'll need to sign in again and grant Hyperspace access to use it again.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={() => this.toggleResetDialog()} color="primary" autoFocus>
+                    Cancel
+                    </Button>
+                    <Button onClick={() => {
+                        this.reset();
+                    }} color="primary">
+                    Reset
+                    </Button>
+                </DialogActions>
+                </Dialog>
         );
     }
 
@@ -177,7 +215,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                         <ListItem>
                             <ListItemText primary="Reset Hyperspace" secondary="Deletes all data and resets the app"/>
                             <ListItemSecondaryAction>
-                                <Button>
+                                <Button onClick={() => this.toggleResetDialog()}>
                                     Reset
                                 </Button>
                             </ListItemSecondaryAction>
@@ -185,6 +223,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                     </List>
                 </Paper>
                 {this.showThemeDialog()}
+                {this.showResetDialog()}
             </div>
         );
     }

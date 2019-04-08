@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import {withStyles, Paper, Typography, Button, TextField, Fade, Checkbox, FormControlLabel, Link, CircularProgress} from '@material-ui/core';
+import {withStyles, Paper, Typography, Button, TextField, Fade, Link, CircularProgress} from '@material-ui/core';
 import {styles} from './WelcomePage.styles';
-import axios from 'axios';
 import Mastodon from 'megalodon';
-import {Config} from '../types/Config';
 import {SaveClientSession} from '../types/SessionData';
 import { createHyperspaceApp } from '../utilities/login';
 import {parseUrl} from 'query-string';

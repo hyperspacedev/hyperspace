@@ -1,4 +1,5 @@
 export type Config = {
+    version: string;
     branding?: {
         name?: string;
         logo?: string;
@@ -13,4 +14,10 @@ export type Config = {
         name?: string;
         account?: string;
     };
+    license: License;
+}
+
+export type License = {
+    name: string;
+    url: string;
 }
