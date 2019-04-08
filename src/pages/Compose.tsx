@@ -299,6 +299,12 @@ class Composer extends Component<any, IComposerState> {
         });
     }
 
+    postViaKeyboard(event: any) {
+        if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
+            this.post();
+        }
+    }
+
     post() {
         let pollOptions: string[] = [];
         if (this.state.poll) {
@@ -378,6 +384,7 @@ class Composer extends Component<any, IComposerState> {
                         placeholder="What's on your mind?"
                         margin="normal"
                         onChange={(event) => this.updateTextFromField(event.target.value)}
+                        onKeyDown={(event) => this.postViaKeyboard(event)}
                         inputProps = {
                             {
                                 maxLength: 500
