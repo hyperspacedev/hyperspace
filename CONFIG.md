@@ -41,6 +41,7 @@ Hyperspace 1.0 comes with a new configuration file app providers can use to crea
     "license": {
         "name": "Apache 2.0 License",
         "url": "https://www.apache.org/licenses/LICENSE-2.0"
-    }
+    },
+    "repository": "https://github.com/hyperspacedev/hyperspace"
 }
 ```
