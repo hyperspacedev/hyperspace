@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, IconButton, Card, CardHeader, Avatar, CardContent, CardActions, withStyles, Menu, MenuItem, Chip, Divider, CardMedia, CardActionArea, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Zoom, Tooltip, RadioGroup, Radio, FormControlLabel, Button } from '@material-ui/core';
+import { Typography, IconButton, Card, CardHeader, Avatar, CardContent, CardActions, withStyles, Menu, MenuItem, Chip, Divider, CardMedia, CardActionArea, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Zoom, Tooltip, RadioGroup, Radio, FormControlLabel, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ReplyIcon from '@material-ui/icons/Reply';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -38,6 +38,7 @@ interface IPostState {
     media_slides?: number;
     menuIsOpen: boolean;
     myVote?: [number];
+    deletePostDialog: boolean;
 }
 
 export class Post extends React.Component<any, IPostState> {
@@ -50,7 +51,8 @@ export class Post extends React.Component<any, IPostState> {
         this.state = {
             post: this.props.post,
             media_slides: this.props.post.media_attachments.length > 0? this.props.post.media_attachments.length: 0,
-            menuIsOpen: false
+            menuIsOpen: false,
+            deletePostDialog: false
         }
 
         this.client = this.props.client;
@@ -59,6 +61,19 @@ export class Post extends React.Component<any, IPostState> {
 
     togglePostMenu() {
         this.setState({ menuIsOpen: !this.state.menuIsOpen })
+    }
+
+    togglePostDeleteDialog() {
+        this.setState({ deletePostDialog: !this.state.deletePostDialog });
+    }
+
+    deletePost() {
+        this.client.del('/statuses/' + this.state.post.id).then((resp: any) => {
+            this.props.enqueueSnackbar('Post deleted. Refresh to see changes.');
+        }).catch((err: Error) => {
+            this.props.enqueueSnackbar("Couldn't delete post: " + err.name);
+            console.log(err.message);
+        })
     }
 
     findBiggestVote() {
@@ -396,6 +411,33 @@ export class Post extends React.Component<any, IPostState> {
         }
     }
 
+    showDeleteDialog() {
+        return (
+            <Dialog
+                open={this.state.deletePostDialog}
+                onClose={() => this.togglePostDeleteDialog()}
+                >
+                <DialogTitle id="alert-dialog-title">Delete this post?</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to delete this post? This action cannot be undone.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={() => this.togglePostDeleteDialog()} color="primary" autoFocus>
+                    Cancel
+                    </Button>
+                    <Button onClick={() => {
+                        this.deletePost();
+                        this.togglePostDeleteDialog();
+                    }} color="primary">
+                    Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
+    }
+
     render() {
         const { classes } = this.props;
         const post = this.state.post;
@@ -507,10 +549,11 @@ export class Post extends React.Component<any, IPostState> {
                             post.account.id == JSON.parse(localStorage.getItem('account') as string).id?
                             <div>
                                 <Divider/>
-                                <MenuItem>Delete</MenuItem>
+                                <MenuItem onClick={() => this.togglePostDeleteDialog()}>Delete</MenuItem>
                             </div>:
                             null
                         }
+                        {this.showDeleteDialog()}
                     </Menu>
                 </Card>
             </Zoom>
