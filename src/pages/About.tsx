@@ -142,44 +142,6 @@ class AboutPage extends Component<any, IAboutPageState> {
                         </ListItem>
                         <ListItem>
                             <ListItemAvatar>
-                                <Avatar src={this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.avatar_static: ""}>
-                                    <PersonIcon/>
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="App provider" secondary={this.state.hyperspaceAdmin && this.state.hyperspaceAdminName? (this.state.hyperspaceAdminName || this.state.hyperspaceAdmin.display_name || "@" + this.state.hyperspaceAdmin.acct): "No provider set in config"}/>
-                            <ListItemSecondaryAction>
-                                <LinkableIconButton to={`/compose?visibility=${this.state.federated? "public": "private"}&acct=${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.acct: ""}`}>
-                                    <ChatIcon/>
-                                </LinkableIconButton>
-                                <LinkableIconButton to={`/profile/${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.id: 0}`}>
-                                    <PersonIcon/>
-                                </LinkableIconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar>
-                                    <NetworkCheckIcon/>
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Federation status" secondary={`This instance of ${this.state? this.state.brandName: "Hyperspace"} is ${this.state? this.state.federated? "": "not": "unknown"} federated.`}/>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar>
-                                    <UpdateIcon/>
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Release channel" secondary={
-                                this.state?
-                                    this.state.developer?
-                                        "Developer":
-                                        "Release":
-                                "Loading..."
-                            }/>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemAvatar>
                                 <Avatar>
                                     <NotesIcon/>
                                 </Avatar>
@@ -207,6 +169,50 @@ class AboutPage extends Component<any, IAboutPageState> {
                                 </ListItemSecondaryAction>
                             </ListItem>: null
                         }
+                    </List>
+                </Paper>
+                <br/>
+                <ListSubheader>Advanced app info</ListSubheader>
+                <Paper className={classes.pageListConstraints}>
+                    <List>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar src={this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.avatar_static: ""}>
+                                    <PersonIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="App provider" secondary={this.state.hyperspaceAdmin && this.state.hyperspaceAdminName? (this.state.hyperspaceAdminName || this.state.hyperspaceAdmin.display_name || "@" + this.state.hyperspaceAdmin.acct): "No provider set in config"}/>
+                            <ListItemSecondaryAction>
+                                <LinkableIconButton to={`/compose?visibility=${this.state.federated? "public": "private"}&acct=${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.acct: ""}`}>
+                                    <ChatIcon/>
+                                </LinkableIconButton>
+                                <LinkableIconButton to={`/profile/${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.id: 0}`}>
+                                    <PersonIcon/>
+                                </LinkableIconButton>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <NetworkCheckIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Federation status" secondary={`This instance of ${this.state? this.state.brandName: "Hyperspace"} ${this.state? this.state.federated? "supports": "doesn't support": "might support"} federation.`}/>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <UpdateIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Release channel" secondary={
+                                this.state?
+                                    this.state.developer?
+                                        "Developer":
+                                        "Release":
+                                "Loading..."
+                            }/>
+                        </ListItem>
                     </List>
                 </Paper>
                 <br/>

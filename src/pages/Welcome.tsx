@@ -6,6 +6,7 @@ import {SaveClientSession} from '../types/SessionData';
 import { createHyperspaceApp } from '../utilities/login';
 import {parseUrl} from 'query-string';
 import { getConfig } from '../utilities/settings';
+import axios from 'axios';
 
 interface IWelcomeState {
     logoUrl?: string;
@@ -16,6 +17,7 @@ interface IWelcomeState {
     wantsToLogin: boolean;
     user: string;
     userInputError: boolean;
+    userInputErrorMessage: string;
     clientId?: string;
     clientSecret?: string;
     authUrl?: string;
@@ -35,7 +37,8 @@ class WelcomePage extends Component<any, IWelcomeState> {
             user: "",
             userInputError: false,
             foundSavedLogin: false,
-            authority: false
+            authority: false,
+            userInputErrorMessage: ''
         }
 
         getConfig().then((result: any) => {
@@ -161,7 +164,26 @@ class WelcomePage extends Component<any, IWelcomeState> {
     }
 
     checkForErrors() {
-        this.setState({ userInputError: this.state.user === "" })
+        let userInputError = false;
+        let userInputErrorMessage = "";
+
+        if (this.state.user === "") {
+            userInputError = true;
+            userInputErrorMessage = "Field cannot be blank.";
+            this.setState({ userInputError, userInputErrorMessage });
+        } else {
+            if (this.state.user.includes("@")) {
+                let baseUrl = this.state.user.split("@")[1];
+                axios.get("https://" + baseUrl + "/api/v1/timelines/public").catch((err: Error) => {
+                    let userInputError = true;
+                    let userInputErrorMessage = "Invalid instance name";
+                    this.setState({ userInputError, userInputErrorMessage });
+                })
+            } else {
+                this.setState({ userInputError, userInputErrorMessage });
+            }
+        }
+        
     }
 
     readyForAuth() {
@@ -188,6 +210,9 @@ class WelcomePage extends Component<any, IWelcomeState> {
                         error={this.state.userInputError}
                         onBlur={() => this.checkForErrors()}
                     ></TextField>
+                    {
+                        this.state.userInputError? <Typography color="error">{this.state.userInputErrorMessage}</Typography> : null
+                    }
                     {
                         this.state.registerBase? <Typography variant="caption">If you are from <b>{this.state.registerBase? this.state.registerBase: "noinstance"}</b>, sign in with your username.</Typography>: null
                     }
@@ -260,7 +285,7 @@ class WelcomePage extends Component<any, IWelcomeState> {
         return (
         <div className={classes.root} style={{ backgroundImage: `url(${this.state !== null? this.state.backgroundUrl: "background.png"})`}}>
             <Paper className={classes.paper}>
-                <img className={classes.logo} src={this.state? this.state.logoUrl: "logo.png"}/>
+                <img className={classes.logo} alt={this.state? this.state.brandName: "Hyperspace"} src={this.state? this.state.logoUrl: "logo.png"}/>
                 <br/>
                 <Fade in={true}>
                     { 
