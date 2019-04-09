@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {withStyles, Paper, Typography, Button, TextField, Fade, Link, CircularProgress} from '@material-ui/core';
+import {withStyles, Paper, Typography, Button, TextField, Fade, Link, CircularProgress, Tooltip} from '@material-ui/core';
 import {styles} from './WelcomePage.styles';
 import Mastodon from 'megalodon';
 import {SaveClientSession} from '../types/SessionData';
@@ -226,12 +226,14 @@ class WelcomePage extends Component<any, IWelcomeState> {
                     
                     <div className={classes.middlePadding}/>
                     <div style={{ display: "flex" }}>
-                        <Button
-                            color="primary"
-                            href={this.startRegistration()}
-                            target="_blank"
-                            rel="noreferrer"
-                        >Create account</Button>
+                        <Tooltip title="Create a new account. You'll be redirected to a sign up page.">
+                            <Button
+                                color="primary"
+                                href={this.startRegistration()}
+                                target="_blank"
+                                rel="noreferrer"
+                            >Create account</Button>
+                        </Tooltip>
                         <div className={classes.flexGrow}/>
                         <Button color="primary" variant="contained" onClick={() => this.startLogin()}>Next</Button>
                     </div>
