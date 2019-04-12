@@ -23,6 +23,8 @@ interface IWelcomeState {
     authUrl?: string;
     foundSavedLogin: boolean;
     authority: boolean;
+    license?: string;
+    repo?: string;
 }
 
 class WelcomePage extends Component<any, IWelcomeState> {
@@ -47,7 +49,9 @@ class WelcomePage extends Component<any, IWelcomeState> {
                 backgroundUrl: result.branding? result.branding.background: "background.png",
                 brandName: result.branding? result.branding.name: "Hyperspace",
                 registerBase: result.registration? result.registration.defaultInstance: "",
-                federates: result.federated? result.federated === "true": true
+                federates: result.federated? result.federated === "true": true,
+                license: result.license.url,
+                repo: result.repository
             });
         }).catch(() => {
             console.warn('config.json is missing. If you want to customize Hyperspace, please include config.json');
@@ -115,7 +119,8 @@ class WelcomePage extends Component<any, IWelcomeState> {
     }
 
     startLogin() {
-        if (this.state.user != "") {
+        let error = this.checkForErrors();
+        if (!error) {
             const scopes = 'read write follow';
             const baseurl = this.getLoginUser(this.state.user);
             localStorage.setItem("baseurl", baseurl);
@@ -134,7 +139,7 @@ class WelcomePage extends Component<any, IWelcomeState> {
                 })
             })
         } else {
-            this.setState({ userInputError: true });
+            
         }
     }
 
@@ -163,25 +168,29 @@ class WelcomePage extends Component<any, IWelcomeState> {
         }
     }
 
-    checkForErrors() {
+    checkForErrors(): boolean {
         let userInputError = false;
         let userInputErrorMessage = "";
 
         if (this.state.user === "") {
             userInputError = true;
-            userInputErrorMessage = "Field cannot be blank.";
+            userInputErrorMessage = "Username cannot be blank.";
             this.setState({ userInputError, userInputErrorMessage });
+            return true;
         } else {
             if (this.state.user.includes("@")) {
                 let baseUrl = this.state.user.split("@")[1];
                 axios.get("https://" + baseUrl + "/api/v1/timelines/public").catch((err: Error) => {
                     let userInputError = true;
-                    let userInputErrorMessage = "Invalid instance name";
+                    let userInputErrorMessage = "Instance name is invalid.";
                     this.setState({ userInputError, userInputErrorMessage });
+                    return true;
                 })
             } else {
                 this.setState({ userInputError, userInputErrorMessage });
+                return false;
             }
+            return false;
         }
         
     }
@@ -213,6 +222,7 @@ class WelcomePage extends Component<any, IWelcomeState> {
                     {
                         this.state.userInputError? <Typography color="error">{this.state.userInputErrorMessage}</Typography> : null
                     }
+                    <br/>
                     {
                         this.state.registerBase? <Typography variant="caption">If you are from <b>{this.state.registerBase? this.state.registerBase: "noinstance"}</b>, sign in with your username.</Typography>: null
                     }
@@ -226,7 +236,7 @@ class WelcomePage extends Component<any, IWelcomeState> {
                     
                     <div className={classes.middlePadding}/>
                     <div style={{ display: "flex" }}>
-                        <Tooltip title="Create a new account. You'll be redirected to a sign up page.">
+                        <Tooltip title="Create account on site">
                             <Button
                                 color="primary"
                                 href={this.startRegistration()}
@@ -235,7 +245,10 @@ class WelcomePage extends Component<any, IWelcomeState> {
                             >Create account</Button>
                         </Tooltip>
                         <div className={classes.flexGrow}/>
-                        <Button color="primary" variant="contained" onClick={() => this.startLogin()}>Next</Button>
+                        <Tooltip title="Continue sign-in">
+                            <Button color="primary" variant="contained" onClick={() => this.startLogin()}>Next</Button>
+                        </Tooltip>
+                        
                     </div>
                 </div>
         );
@@ -303,7 +316,7 @@ class WelcomePage extends Component<any, IWelcomeState> {
                     &copy; 2019 <Link href="https://hyperspace.marquiskurt.net" target="_blank" rel="noreferrer">Hyperspace</Link> developers. All rights reserved.
                 </Typography>
                 <Typography variant="caption">
-                    <Link href="https://github.com/hyperspacedev" target="_blank" rel="noreferrer">GitHub</Link> | <Link href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noreferrer">License</Link> | <Link href="https://github.com/hyperspacedev/hyperspace/issues/new" target="_blank" rel="noreferrer">File an Issue</Link>
+                { this.state.repo? <span><Link href={this.state.repo? this.state.repo: "https://github.com/hyperspacedev"} target="_blank" rel="noreferrer">Source code</Link>  | </span>: null}<Link href={this.state.license? this.state.license: "https://www.apache.org/licenses/LICENSE-2.0"} target="_blank" rel="noreferrer">License</Link> | <Link href="https://github.com/hyperspacedev/hyperspace/issues/new" target="_blank" rel="noreferrer">File an Issue</Link>
                 </Typography>
             </Paper>
         </div>

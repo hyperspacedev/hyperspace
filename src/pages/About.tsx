@@ -11,7 +11,8 @@ import {
     IconButton, 
     withStyles, 
     Typography,
-    Link
+    Link,
+    Tooltip
 } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import DomainIcon from '@material-ui/icons/Domain';
@@ -104,9 +105,11 @@ class AboutPage extends Component<any, IAboutPageState> {
                             </ListItemAvatar>
                             <ListItemText primary="Instance location (URL)" secondary={this.state.instance ? this.state.instance.uri: "Loading..."}/>
                             <ListItemSecondaryAction>
-                                <IconButton href={localStorage.getItem("baseurl") as string} target="_blank" rel="noreferrer">
-                                    <OpenInNewIcon/>
-                                </IconButton>
+                                <Tooltip title="Open in browser">
+                                    <IconButton href={localStorage.getItem("baseurl") as string} target="_blank" rel="noreferrer">
+                                        <OpenInNewIcon/>
+                                    </IconButton>
+                                </Tooltip>
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
@@ -118,12 +121,16 @@ class AboutPage extends Component<any, IAboutPageState> {
                                 "Loading..."
                             }/>
                             <ListItemSecondaryAction>
-                                <LinkableIconButton to={`/compose?visibility=public&acct=${this.state.instance? this.state.instance.contact_account.acct: ""}`}>
-                                    <ChatIcon/>
-                                </LinkableIconButton>
-                                <LinkableIconButton to={`/profile/${this.state.instance? this.state.instance.contact_account.id: 0}`}>
-                                    <PersonIcon/>
-                                </LinkableIconButton>
+                                <Tooltip title="Send a post or message">
+                                    <LinkableIconButton to={`/compose?visibility=public&acct=${this.state.instance? this.state.instance.contact_account.acct: ""}`}>
+                                        <ChatIcon/>
+                                    </LinkableIconButton>
+                                </Tooltip>
+                                <Tooltip title="View profile">
+                                    <LinkableIconButton to={`/profile/${this.state.instance? this.state.instance.contact_account.id: 0}`}>
+                                        <PersonIcon/>
+                                    </LinkableIconButton>
+                                </Tooltip>
                             </ListItemSecondaryAction>
                         </ListItem>
                     </List>
@@ -148,9 +155,11 @@ class AboutPage extends Component<any, IAboutPageState> {
                             </ListItemAvatar>
                             <ListItemText primary="License" secondary={this.state.license.name}/>
                             <ListItemSecondaryAction>
-                                <IconButton href={this.state.license.url} target="_blank" rel="noreferrer">
-                                    <OpenInNewIcon/>
-                                </IconButton>
+                                <Tooltip title = "View license">
+                                    <IconButton href={this.state.license.url} target="_blank" rel="noreferrer">
+                                        <OpenInNewIcon/>
+                                    </IconButton>
+                                </Tooltip>
                             </ListItemSecondaryAction>
                         </ListItem>
                         {
@@ -161,11 +170,13 @@ class AboutPage extends Component<any, IAboutPageState> {
                                         <CodeIcon/>
                                     </Avatar>
                                 </ListItemAvatar>
-                                <ListItemText primary="View source code" secondary={this.state.repository? this.state.repository: "No repository in config"}/>
+                                <ListItemText primary="Source code repository" secondary={this.state.repository? this.state.repository: "No repository in config"}/>
                                 <ListItemSecondaryAction>
-                                    <IconButton href={this.state.repository? this.state.repository: ""} target="_blank" rel="noreferrer">
-                                        <OpenInNewIcon/>
-                                    </IconButton>
+                                    <Tooltip title="View source code">
+                                        <IconButton href={this.state.repository? this.state.repository: ""} target="_blank" rel="noreferrer">
+                                            <OpenInNewIcon/>
+                                        </IconButton>
+                                    </Tooltip>
                                 </ListItemSecondaryAction>
                             </ListItem>: null
                         }
@@ -183,12 +194,16 @@ class AboutPage extends Component<any, IAboutPageState> {
                             </ListItemAvatar>
                             <ListItemText primary="App provider" secondary={this.state.hyperspaceAdmin && this.state.hyperspaceAdminName? (this.state.hyperspaceAdminName || this.state.hyperspaceAdmin.display_name || "@" + this.state.hyperspaceAdmin.acct): "No provider set in config"}/>
                             <ListItemSecondaryAction>
-                                <LinkableIconButton to={`/compose?visibility=${this.state.federated? "public": "private"}&acct=${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.acct: ""}`}>
-                                    <ChatIcon/>
-                                </LinkableIconButton>
-                                <LinkableIconButton to={`/profile/${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.id: 0}`}>
-                                    <PersonIcon/>
-                                </LinkableIconButton>
+                                <Tooltip title="Send a post or message">
+                                    <LinkableIconButton to={`/compose?visibility=${this.state.federated? "public": "private"}&acct=${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.acct: ""}`}>
+                                        <ChatIcon/>
+                                    </LinkableIconButton>
+                                </Tooltip>
+                                <Tooltip title="View profile">
+                                    <LinkableIconButton to={`/profile/${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.id: 0}`}>
+                                        <PersonIcon/>
+                                    </LinkableIconButton>
+                                </Tooltip>
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>

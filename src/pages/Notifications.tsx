@@ -17,7 +17,8 @@ import {
     DialogTitle,
     DialogContent,
     DialogContentText,
-    DialogActions
+    DialogActions,
+    Tooltip
 } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
@@ -152,19 +153,25 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                 <ListItemSecondaryAction>
                     {
                         notif.type === "follow"?
-                        <IconButton onClick={() => this.followMember(notif.account)}>
-                            <PersonAddIcon/>
-                        </IconButton>:
+                        <Tooltip title="Follow account">
+                            <IconButton onClick={() => this.followMember(notif.account)}>
+                                <PersonAddIcon/>
+                            </IconButton>
+                        </Tooltip>:
 
                             notif.status?
-                            <LinkableIconButton to={`/conversation/${notif.status.id}`}>
-                                <ForumIcon/>
-                            </LinkableIconButton>:
+                            <Tooltip title="View conversation">
+                                <LinkableIconButton to={`/conversation/${notif.status.id}`}>
+                                    <ForumIcon/>
+                                </LinkableIconButton>
+                            </Tooltip>:
                             null
                     }
-                    <IconButton onClick={() => this.removeNotification(notif.id)}>
-                        <DeleteIcon/>
-                    </IconButton>
+                    <Tooltip title="Remove notification">
+                        <IconButton onClick={() => this.removeNotification(notif.id)}>
+                            <DeleteIcon/>
+                        </IconButton>
+                    </Tooltip>
                 </ListItemSecondaryAction>
             </ListItem>
         );

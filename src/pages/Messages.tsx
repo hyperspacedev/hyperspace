@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {withStyles, ListSubheader, Paper, List, ListItem, ListItemText, CircularProgress, ListItemAvatar, Avatar, ListItemSecondaryAction} from '@material-ui/core';
+import {withStyles, ListSubheader, Paper, List, ListItem, ListItemText, CircularProgress, ListItemAvatar, Avatar, ListItemSecondaryAction, Tooltip} from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import ForumIcon from '@material-ui/icons/Forum';
 import {styles} from './PageLayout.styles';
@@ -79,9 +79,11 @@ class MessagesPage extends Component<any, IMessagesState> {
                                                         </ListItemAvatar>
                                                         <ListItemText primary={message.account.display_name || "@" + message.account.acct} secondary={this.removeHTMLContent(message.content)}/>
                                                         <ListItemSecondaryAction>
-                                                            <LinkableIconButton to={`/conversation/${message.id}`}>
-                                                                <ForumIcon/>
-                                                            </LinkableIconButton>
+                                                            <Tooltip title="View conversation">
+                                                                <LinkableIconButton to={`/conversation/${message.id}`}>
+                                                                    <ForumIcon/>
+                                                                </LinkableIconButton>
+                                                            </Tooltip>
                                                         </ListItemSecondaryAction>
                                                     </ListItem>
                                                 )
