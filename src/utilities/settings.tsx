@@ -76,11 +76,17 @@ export function createUserDefaults() {
     getNotificationRequestPermission();
 }
 
-export function getConfig() {
-    return axios.get('config.json').then((resp: any) => {
+/**
+ * Gets the configuration data from `config.json`
+ * @returns The Promise data from getting the config.
+ */
+export async function getConfig() {
+    try {
+        const resp = await axios.get('config.json');
         let config: Config = resp.data;
         return config;
-    }).catch((err: Error) => {
-        console.error("Couldn't configure Hyperspace with the config file. Reason: " + err.name)
-    })
+    }
+    catch (err) {
+        console.error("Couldn't configure Hyperspace with the config file. Reason: " + err.name);
+    }
 }

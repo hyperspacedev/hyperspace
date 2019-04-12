@@ -31,6 +31,7 @@ interface ISettingsState {
     selectThemeName: string;
     themeDialogOpen: boolean;
     resetHyperspaceDialog: boolean;
+    resetSettingsDialog: boolean;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -43,7 +44,8 @@ class SettingsPage extends Component<any, ISettingsState> {
             pushNotificationsEnabled: canSendNotifications(),
             selectThemeName: getUserDefaultTheme().key,
             themeDialogOpen: false,
-            resetHyperspaceDialog: false
+            resetHyperspaceDialog: false,
+            resetSettingsDialog: false
         }
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -72,6 +74,10 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.setState({ resetHyperspaceDialog: !this.state.resetHyperspaceDialog });
     }
 
+    toggleResetSettingsDialog() {
+        this.setState({ resetSettingsDialog: !this.state.resetSettingsDialog });
+    }
+
     changeTheme() {
         setUserDefaultTheme(this.state.selectThemeName);
         window.location.reload();
@@ -83,6 +89,14 @@ class SettingsPage extends Component<any, ISettingsState> {
 
     reset() {
         localStorage.clear();
+        window.location.reload();
+    }
+
+    refresh() {
+        let settings = ['darkModeEnabled', 'enablePushNotifications', 'clearNotificationsOnRead', 'theme'];
+        settings.forEach(setting => {
+            localStorage.removeItem(setting);
+        })
         window.location.reload();
     }
 
@@ -119,6 +133,27 @@ class SettingsPage extends Component<any, ISettingsState> {
                     </Button>
                 </DialogActions>
             </Dialog>
+        );
+    }
+
+    showResetSettingsDialog() {
+        return (
+            <Dialog
+                open={this.state.resetSettingsDialog}
+                onClose={() => this.toggleResetSettingsDialog()}
+                >
+                <DialogTitle id="alert-dialog-title">Are you sure you want to refresh settings?</DialogTitle>
+                <DialogActions>
+                <Button onClick={() => this.toggleResetSettingsDialog()} color="primary" autoFocus>
+                    Cancel
+                    </Button>
+                    <Button onClick={() => {
+                        this.refresh();
+                    }} color="primary">
+                    Refresh
+                    </Button>
+                </DialogActions>
+                </Dialog>
         );
     }
 
@@ -213,6 +248,14 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
+                            <ListItemText primary="Refresh settings" secondary="Reset Hyperspace to its default settings."/>
+                            <ListItemSecondaryAction>
+                                <Button onClick={() => this.toggleResetSettingsDialog()}>
+                                    Refresh
+                                </Button>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
                             <ListItemText primary="Reset Hyperspace" secondary="Deletes all data and resets the app"/>
                             <ListItemSecondaryAction>
                                 <Button onClick={() => this.toggleResetDialog()}>
@@ -224,6 +267,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                 </Paper>
                 {this.showThemeDialog()}
                 {this.showResetDialog()}
+                {this.showResetSettingsDialog()}
             </div>
         );
     }
