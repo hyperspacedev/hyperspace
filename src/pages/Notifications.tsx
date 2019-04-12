@@ -133,7 +133,12 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                 secondary = this.removeHTMLContent(notif.status? notif.status.content: "");
                 break;
             default:
-                primary = "A magical thing happened!";
+                if (notif.status && notif.status.poll) {
+                    primary = "A poll you voted in or created has ended.";
+                    secondary = this.removeHTMLContent(notif.status? notif.status.content: "");
+                } else {
+                    primary = "A magical thing happened!";
+                }
                 break;
         }
         return (

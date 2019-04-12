@@ -449,9 +449,12 @@ export class Post extends React.Component<any, IPostState> {
                             post.reblog? post.reblog.account.avatar_static: post.account.avatar_static
                         } />
                     } action={
-                    <IconButton key={`${post.id}_submenu`} id={`${post.id}_submenu`} onClick={() => this.togglePostMenu()}>
-                        <MoreVertIcon />
-                    </IconButton>} 
+                        <Tooltip title="More">
+                            <IconButton key={`${post.id}_submenu`} id={`${post.id}_submenu`} onClick={() => this.togglePostMenu()}>
+                                <MoreVertIcon />
+                            </IconButton>
+                        </Tooltip>
+                    } 
                     title={
                         <Typography dangerouslySetInnerHTML={{__html: this.getReblogAuthors(post)}}></Typography>
                     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, withStyles, Menu, MenuItem, ClickAwayListener, Badge, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, ListItem } from '@material-ui/core';
+import { Typography, AppBar, Toolbar, IconButton, InputBase, Avatar, ListItemText, Divider, List, ListItemIcon, Hidden, Drawer, ListSubheader, ListItemAvatar, withStyles, Menu, MenuItem, ClickAwayListener, Badge, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, ListItem, Tooltip } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -280,17 +280,24 @@ export class AppLayout extends Component<any, IAppLayoutState> {
               </div>
               <div className={classes.appBarFlexGrow}/>
               <div className={classes.appBarActionButtons}>
-                  <LinkableIconButton color="inherit" to="/notifications" onClick={() => this.setState({ notificationCount: 0 })}>
-                    <Badge badgeContent={this.state.notificationCount > 0? this.state.notificationCount: ""} color="secondary">
-                      <NotificationsIcon />
-                    </Badge>
-                  </LinkableIconButton>
-                  <LinkableIconButton color="inherit" to="/messages">
-                    <MailIcon/>
-                  </LinkableIconButton>
-                  <IconButton id="acctMenuBtn" onClick={this.toggleAcctMenu}>
-                    <Avatar className={classes.appBarAcctMenuIcon} alt="You" src={this.state.currentUser? this.state.currentUser.avatar_static: ""}/>
-                  </IconButton>
+                  <Tooltip title="Notifications">
+                    <LinkableIconButton color="inherit" to="/notifications" onClick={() => this.setState({ notificationCount: 0 })}>
+                      <Badge badgeContent={this.state.notificationCount > 0? this.state.notificationCount: ""} color="secondary">
+                        <NotificationsIcon />
+                      </Badge>
+                    </LinkableIconButton>
+                  </Tooltip>
+                  <Tooltip title="Direct messages">
+                    <LinkableIconButton color="inherit" to="/messages">
+                      <MailIcon/>
+                    </LinkableIconButton>
+                  </Tooltip>
+                  <Tooltip title="Your account">
+                    <IconButton id="acctMenuBtn" onClick={this.toggleAcctMenu}>
+                      <Avatar className={classes.appBarAcctMenuIcon} alt="You" src={this.state.currentUser? this.state.currentUser.avatar_static: ""}/>
+                    </IconButton>
+                  </Tooltip>
+
                   <Menu
                     id="acct-menu"
                     anchorEl={document.getElementById("acctMenuBtn")}
@@ -364,9 +371,11 @@ export class AppLayout extends Component<any, IAppLayoutState> {
               </Button>
           </DialogActions>
         </Dialog>
-        <LinkableFab to="/compose" className={classes.composeButton} color="secondary" aria-label="Compose">
-          <EditIcon/>
-        </LinkableFab>
+        <Tooltip title="Create a new post">
+          <LinkableFab to="/compose" className={classes.composeButton} color="secondary" aria-label="Compose">
+            <EditIcon/>
+          </LinkableFab>
+        </Tooltip>
     </div>
     );
   }
