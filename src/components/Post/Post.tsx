@@ -342,11 +342,11 @@ export class Post extends React.Component<any, IPostState> {
         const { classes } = this.props;
         switch(visibility) {
             case "public":
-                return <PublicIcon className={classes.postTypeIcon}/>;
+                return <Tooltip title="Public"><PublicIcon className={classes.postTypeIcon}/></Tooltip>;
             case "private":
-                return <GroupIcon className={classes.postTypeIcon}/>;
+                return <Tooltip title="Followers only"><GroupIcon className={classes.postTypeIcon}/></Tooltip>;
             case "unlisted":
-                return <VisibilityOffIcon className={classes.postTypeIcon}/>
+                return <Tooltip title="Unlisted (invisible from public timeline)"><VisibilityOffIcon className={classes.postTypeIcon}/></Tooltip>;
         }
     }
 
