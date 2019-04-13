@@ -2,6 +2,8 @@
 
 Hyperspace 1.0 comes with a new configuration file app providers can use to create a custom experience relatively easy. This is inspired from the way the [Riot](https://github.com/vector-im/riot-web) project handles configurations for their app. The following fields should be in the `config.json` folder at the root of the Hyperspace installation.
 
+> Note: `config.json` can only control and modify so much with the app. If you want further customizations like custom themes, new panels, etc., it is recommended that you fork Hyperspace and work with it that way.
+
 - `version`: The app's version using semantic versioning. This can be used to differentiate between versions of the main Hyperspace app or the custom deployment.
 - `branding`: The custom branding for Hyperspace.
   - `name`: The name for the brand/app. Affects title bar, about screens, and main interface by replacing the "Hyperspace" text.
