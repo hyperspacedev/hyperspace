@@ -214,16 +214,18 @@ class SettingsPage extends Component<any, ISettingsState> {
                             <ListItemText 
                                 primary="Enable push notifications"
                                 secondary={
-                                    browserSupportsNotificationRequests()?
-                                    "":
-                                    "Notifications aren't supported in this browser."
+                                    getUserDefaultBool('userDeniedNotification')?
+                                        "Check your browser's notification permissions.":
+                                            browserSupportsNotificationRequests()?
+                                                "":
+                                                "Your browser doesn't support notifications."
                                 }
                             />
                             <ListItemSecondaryAction>
                                 <Switch 
                                     checked={this.state.pushNotificationsEnabled} 
                                     onChange={this.togglePushNotifications}
-                                    disabled={!browserSupportsNotificationRequests()}
+                                    disabled={!browserSupportsNotificationRequests() || getUserDefaultBool('userDeniedNotification')}
                                 />
                             </ListItemSecondaryAction>
                         </ListItem>
@@ -234,7 +236,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
-                            <ListItemText primary="Configure on Mastodon" secondary="Configure your account settings on Mastodon"/>
+                            <ListItemText primary="Configure on Mastodon"/>
                             <ListItemSecondaryAction>
                                 <IconButton href={(localStorage.getItem("baseurl") as string) + "/settings/preferences"} target="_blank" rel="noreferrer">
                                     <OpenInNewIcon/>
