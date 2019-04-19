@@ -28,6 +28,7 @@ import {themes} from '../types/HyperspaceTheme';
 interface ISettingsState {
     darkModeEnabled: boolean;
     pushNotificationsEnabled: boolean;
+    badgeDisplaysAllNotifs: boolean;
     selectThemeName: string;
     themeDialogOpen: boolean;
     resetHyperspaceDialog: boolean;
@@ -42,6 +43,7 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.state = {
             darkModeEnabled: getUserDefaultBool('darkModeEnabled'),
             pushNotificationsEnabled: canSendNotifications(),
+            badgeDisplaysAllNotifs: getUserDefaultBool('displayAllOnNotificationBadge'),
             selectThemeName: getUserDefaultTheme().key,
             themeDialogOpen: false,
             resetHyperspaceDialog: false,
@@ -50,6 +52,7 @@ class SettingsPage extends Component<any, ISettingsState> {
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
         this.togglePushNotifications = this.togglePushNotifications.bind(this);
+        this.toggleBadgeCount = this.toggleBadgeCount.bind(this);
         this.toggleThemeDialog = this.toggleThemeDialog.bind(this);
         this.changeThemeName = this.changeThemeName.bind(this);
         this.changeTheme = this.changeTheme.bind(this);
@@ -64,6 +67,11 @@ class SettingsPage extends Component<any, ISettingsState> {
     togglePushNotifications() {
         this.setState({ pushNotificationsEnabled: !this.state.pushNotificationsEnabled });
         setUserDefaultBool('enablePushNotifications', !this.state.pushNotificationsEnabled);
+    }
+
+    toggleBadgeCount() {
+        this.setState({ badgeDisplaysAllNotifs: !this.state.badgeDisplaysAllNotifs });
+        setUserDefaultBool('displayAllOnNotificationBadge', !this.state.badgeDisplaysAllNotifs);
     }
 
     toggleThemeDialog() {
@@ -217,7 +225,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                     getUserDefaultBool('userDeniedNotification')?
                                         "Check your browser's notification permissions.":
                                             browserSupportsNotificationRequests()?
-                                                "":
+                                                "Send a push notification when not focused.":
                                                 "Notifications aren't supported."
                                 }
                             />
@@ -229,6 +237,23 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 />
                             </ListItemSecondaryAction>
                         </ListItem>
+                        {
+                            browserSupportsNotificationRequests()?
+                            <ListItem>
+                                <ListItemText 
+                                    primary="Notification badge counts all notifications"
+                                    secondary={
+                                        "Counts all notifications, read or unread."
+                                    }
+                                />
+                                <ListItemSecondaryAction>
+                                    <Switch 
+                                        checked={this.state.badgeDisplaysAllNotifs} 
+                                        onChange={this.toggleBadgeCount}
+                                    />
+                                </ListItemSecondaryAction>
+                            </ListItem>: null
+                        }
                     </List>
                 </Paper>
                 <br/>

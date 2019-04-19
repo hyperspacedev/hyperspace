@@ -20,7 +20,7 @@ import Mastodon from 'megalodon';
 import { Notification } from '../../types/Notification';
 import {sendNotificationRequest} from '../../utilities/notifications';
 import {withSnackbar} from 'notistack';
-import { getConfig } from '../../utilities/settings';
+import { getConfig, getUserDefaultBool } from '../../utilities/settings';
 
 interface IAppLayoutState {
     acctMenuOpen: boolean;
@@ -82,6 +82,13 @@ export class AppLayout extends Component<any, IAppLayoutState> {
 
       streamNotifications() {
         this.streamListener = this.client.stream('/streaming/user');
+
+        if (getUserDefaultBool('displayAllOnNotificationBadge')) {
+          this.client.get('/notifications').then((resp: any) => {
+            let notifArray = resp.data;
+            this.setState({ notificationCount: notifArray.length });
+          })
+        }
 
         this.streamListener.on('notification', (notif: Notification) => {
           const notificationCount = this.state.notificationCount + 1;
