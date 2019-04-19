@@ -199,10 +199,10 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                     <ListItemIcon><MailIcon/></ListItemIcon>
                     <ListItemText primary="Messages"/>
                   </LinkableListItem>
-                  <LinkableListItem button key="acctSwitch-module" to="/switchacct">
+                  {/* <LinkableListItem button key="acctSwitch-module" to="/switchacct">
                     <ListItemIcon><SupervisedUserCircleIcon/></ListItemIcon>
                     <ListItemText primary="Switch account"/>
-                  </LinkableListItem>
+                  </LinkableListItem> */}
                   <ListItem button key="acctLogout-mobile" onClick={() => this.toggleLogOutDialog()}>
                     <ListItemIcon><ExitToAppIcon/></ListItemIcon>
                     <ListItemText primary="Log out"/>
