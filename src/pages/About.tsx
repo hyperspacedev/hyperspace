@@ -170,7 +170,12 @@ class AboutPage extends Component<any, IAboutPageState> {
                                         <CodeIcon/>
                                     </Avatar>
                                 </ListItemAvatar>
-                                <ListItemText primary="Source code repository" secondary={this.state.repository? this.state.repository: "No repository in config"}/>
+                                <ListItemText primary="Source code repository" secondary={this.state.repository? 
+                                    <span>
+                                        <Typography className={classes.mobileOnly} color='textSecondary'>{this.state.repository.slice(0, 25) + "..."}</Typography>
+                                        <Typography className={classes.desktopOnly} color='textSecondary'>{this.state.repository}</Typography>
+                                    </span>: 
+                                    "No repository in config"}/>
                                 <ListItemSecondaryAction>
                                     <Tooltip title="View source code">
                                         <IconButton href={this.state.repository? this.state.repository: ""} target="_blank" rel="noreferrer">
