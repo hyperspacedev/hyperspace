@@ -218,7 +218,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                         "Check your browser's notification permissions.":
                                             browserSupportsNotificationRequests()?
                                                 "":
-                                                "Your browser doesn't support notifications."
+                                                "Notifications aren't supported."
                                 }
                             />
                             <ListItemSecondaryAction>
