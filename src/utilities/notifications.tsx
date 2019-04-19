@@ -9,8 +9,10 @@ export function getNotificationRequestPermission() {
         let request = Notification.permission;
         if (request === "granted") {
             setUserDefaultBool('enablePushNotifications', true);
+            setUserDefaultBool('userDeniedNotification', false);
         } else {
             setUserDefaultBool('enablePushNotifications', false);
+            setUserDefaultBool('userDeniedNotification', true);
         }
     } else {
         console.warn("Notifications aren't supported in this browser. The setting will be disabled.");

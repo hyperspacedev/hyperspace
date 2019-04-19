@@ -10,6 +10,8 @@ export const styles = (theme: Theme) => createStyles({
       marginTop: 72,
       flexGrow: 1,
       padding: theme.spacing.unit * 3,
+      paddingLeft: theme.spacing.unit,
+      paddingRight: theme.spacing.unit,
       [theme.breakpoints.up('md')]: {
         marginLeft: 250,
         marginTop: 88,
@@ -117,8 +119,8 @@ export const styles = (theme: Theme) => createStyles({
       zIndex: 3
     },
     pageContentLayoutConstraints: {
-      paddingLeft: theme.spacing.unit * 2,
-      paddingRight: theme.spacing.unit * 2,
+      paddingLeft: theme.spacing.unit,
+      paddingRight: theme.spacing.unit,
       paddingTop: theme.spacing.unit * 4,
       paddingBottom: theme.spacing.unit * 2,
       [theme.breakpoints.up('md')]: {
@@ -157,4 +159,15 @@ export const styles = (theme: Theme) => createStyles({
         right: theme.spacing.unit * 24,
       }
     },
+    mobileOnly: {
+      [theme.breakpoints.up('sm')]: {
+        display: 'none'
+      }
+    },
+    desktopOnly: {
+      display: 'none',
+      [theme.breakpoints.up('sm')]: {
+        display: 'block'
+      }
+    }
   });

@@ -83,5 +83,16 @@ export const styles = (theme: Theme) => createStyles({
     },
     heading: {
       color: "inherit"
+    },
+    mobileOnly: {
+      [theme.breakpoints.up('sm')]: {
+        display: 'none'
+      }
+    },
+    desktopOnly: {
+      display: 'none',
+      [theme.breakpoints.up('sm')]: {
+        display: 'block'
+      }
     }
 });

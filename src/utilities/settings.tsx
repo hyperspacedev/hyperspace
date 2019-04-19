@@ -8,6 +8,7 @@ type SettingsTemplate = {
     darkModeEnabled: boolean;
     enablePushNotifications: boolean;
     clearNotificationsOnRead: boolean;
+    displayAllOnNotificationBadge: boolean;
 }
 
 /**
@@ -64,7 +65,8 @@ export function createUserDefaults() {
     let defaults: SettingsTemplate = {
         darkModeEnabled: false,
         enablePushNotifications: true,
-        clearNotificationsOnRead: false
+        clearNotificationsOnRead: false,
+        displayAllOnNotificationBadge: false
     }
 
     let settings = ["darkModeEnabled"];

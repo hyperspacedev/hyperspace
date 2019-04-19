@@ -507,12 +507,12 @@ export class Post extends React.Component<any, IPostState> {
                             </IconButton>
                         </Tooltip>
                             <Typography>{post.reblog? post.reblog.reblogs_count: post.reblogs_count}</Typography>
-                        <Tooltip title="View thread">
+                        <Tooltip className={classes.desktopOnly} title="View thread">
                             <LinkableIconButton to={`/conversation/${post.id}`}>
                                 <ForumIcon />
                             </LinkableIconButton>
                         </Tooltip>
-                        <Tooltip title="Open in Web">
+                        <Tooltip className={classes.desktopOnly} title="Open in Web">
                             <IconButton href={this.getMastodonUrl(post)} rel="noreferrer" target="_blank">
                                 <OpenInNewIcon />
                             </IconButton>
@@ -548,6 +548,11 @@ export class Post extends React.Component<any, IPostState> {
 
                             </div>: <LinkableMenuItem to={`/profile/${post.account.id}`}>View profile</LinkableMenuItem>
                         }
+                            <div className={classes.mobileOnly}>
+                                <Divider/>
+                                <LinkableMenuItem to={`/conversation/${post.id}`}>View thread</LinkableMenuItem>
+                                <MenuItem component="a" href={this.getMastodonUrl(post)} rel="noreferrer" target="_blank">Open in Web</MenuItem>
+                            </div>
                         {
                             post.account.id == JSON.parse(localStorage.getItem('account') as string).id?
                             <div>
