@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogActions, withStyles, Button, CardHeader, A
 import {parse as parseParams, ParsedQuery} from 'query-string';
 import {styles} from './Compose.styles';
 import { UAccount } from '../types/Account';
-import { Visibility, toVisibility } from '../types/Visibility';
+import { Visibility } from '../types/Visibility';
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import TagFacesIcon from '@material-ui/icons/TagFaces';
 import HowToVoteIcon from '@material-ui/icons/HowToVote';
@@ -20,6 +20,7 @@ import ComposeMediaAttachment from '../components/ComposeMediaAttachment';
 import EmojiPicker from '../components/EmojiPicker';
 import { DateTimePicker, MuiPickersUtilsProvider } from 'material-ui-pickers';
 import MomentUtils from '@date-io/moment';
+import { getUserDefaultVisibility } from '../utilities/settings';
 
 interface IComposerState {
     account: UAccount;
@@ -48,7 +49,7 @@ class Composer extends Component<any, IComposerState> {
 
         this.state = {
             account: JSON.parse(localStorage.getItem('account') as string),
-            visibility: (toVisibility(localStorage.getItem("defaultVisibility") as string) || "public"),
+            visibility: getUserDefaultVisibility(),
             sensitive: false,
             visibilityMenu: false,
             text: '',

@@ -2,6 +2,7 @@ import { defaultTheme, themes } from "../types/HyperspaceTheme";
 import { getNotificationRequestPermission } from './notifications';
 import axios from 'axios';
 import { Config } from "../types/Config";
+import { Visibility } from "../types/Visibility";
 
 type SettingsTemplate = {
     [key:string]: any;
@@ -35,6 +36,30 @@ export function setUserDefaultBool(key: string, value: boolean) {
         console.warn('This key has not been set before.');
     }
     localStorage.setItem(key, value.toString());
+}
+
+/**
+ * Gets the user default visibility from localStorage
+ * @returns The Visibility value associated with the key
+ */
+export function getUserDefaultVisibility(): Visibility {
+    if (localStorage.getItem("defaultVisibility") === null) {
+        console.warn('This key has not been set before, so the default value is PUBLIC for now.');
+        return "public";
+    } else {
+        return localStorage.getItem("defaultVisibility") as Visibility;
+    }
+}
+
+/**
+ * Set a user default visibility to localStorage
+ * @param key The settings key in localStorage to change
+ */
+export function setUserDefaultVisibility(key: string) {
+    if (localStorage.getItem("defaultVisibility") === null) {
+        console.warn('This key has not been set before.');
+    }
+    localStorage.setItem("defaultVisibility", key.toString());
 }
 
 /**
@@ -76,7 +101,7 @@ export function createUserDefaults() {
             if (typeof defaults[setting] === "boolean") {
                 setUserDefaultBool(setting, defaults[setting]);
             } else {
-                localStorage.setItem(setting, defaults[setting]);
+                localStorage.setItem(setting, defaults[setting].toString());
             }
 
         }

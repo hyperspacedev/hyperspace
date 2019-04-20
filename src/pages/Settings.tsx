@@ -23,7 +23,7 @@ import {
 } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import {styles} from './PageLayout.styles';
-import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefaultTheme} from '../utilities/settings';
+import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefaultTheme, getUserDefaultVisibility, setUserDefaultVisibility} from '../utilities/settings';
 import {canSendNotifications, browserSupportsNotificationRequests} from '../utilities/notifications';
 import {themes, defaultTheme} from '../types/HyperspaceTheme';
 import ThemePreview from '../components/ThemePreview';
@@ -58,7 +58,7 @@ class SettingsPage extends Component<any, ISettingsState> {
             resetHyperspaceDialog: false,
             resetSettingsDialog: false,
             previewTheme: setHyperspaceTheme(getUserDefaultTheme()) || setHyperspaceTheme(defaultTheme),
-            defaultVisibility: localStorage.getItem('defaultVisibility')? toVisibility(localStorage.getItem("defautlVisibility") as string) : "public"
+            defaultVisibility: getUserDefaultVisibility() || "public"
         }
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -118,7 +118,7 @@ class SettingsPage extends Component<any, ISettingsState> {
     }
 
     setVisibility() {
-        localStorage.setItem('defaultVisibility', this.state.defaultVisibility);
+        setUserDefaultVisibility(this.state.defaultVisibility);
         this.toggleVisibilityDialog();
     }
 
@@ -128,7 +128,7 @@ class SettingsPage extends Component<any, ISettingsState> {
     }
 
     refresh() {
-        let settings = ['darkModeEnabled', 'enablePushNotifications', 'clearNotificationsOnRead', 'theme', 'displayAllOnNotificationBadge'];
+        let settings = ['darkModeEnabled', 'enablePushNotifications', 'clearNotificationsOnRead', 'theme', 'displayAllOnNotificationBadge', 'defaultVisibility'];
         settings.forEach(setting => {
             localStorage.removeItem(setting);
         })
