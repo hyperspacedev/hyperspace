@@ -1,5 +1,6 @@
 export type Config = {
     version: string;
+    location: string;
     branding?: {
         name?: string;
         logo?: string;

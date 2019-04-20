@@ -25,6 +25,7 @@ interface IWelcomeState {
     authority: boolean;
     license?: string;
     repo?: string;
+    defaultRedirectAddress: string;
 }
 
 class WelcomePage extends Component<any, IWelcomeState> {
@@ -40,10 +41,14 @@ class WelcomePage extends Component<any, IWelcomeState> {
             userInputError: false,
             foundSavedLogin: false,
             authority: false,
-            userInputErrorMessage: ''
+            userInputErrorMessage: '',
+            defaultRedirectAddress: ''
         }
 
         getConfig().then((result: any) => {
+            if (result.location === "dynamic") {
+                console.warn("Recirect URI is set to dyanmic, which may affect how sign-in works for some users. Careful!");
+            }
             this.setState({
                 logoUrl: result.branding? result.branding.logo: "logo.png",
                 backgroundUrl: result.branding? result.branding.background: "background.png",
@@ -51,10 +56,11 @@ class WelcomePage extends Component<any, IWelcomeState> {
                 registerBase: result.registration? result.registration.defaultInstance: "",
                 federates: result.federated? result.federated === "true": true,
                 license: result.license.url,
-                repo: result.repository
+                repo: result.repository,
+                defaultRedirectAddress: result.location != "dynamic"? result.location: `https://${window.location.host}`
             });
         }).catch(() => {
-            console.warn('config.json is missing. If you want to customize Hyperspace, please include config.json');
+            console.error('config.json is missing. If you want to customize Hyperspace, please include config.json');
         })
     }
 
@@ -124,7 +130,7 @@ class WelcomePage extends Component<any, IWelcomeState> {
             const scopes = 'read write follow';
             const baseurl = this.getLoginUser(this.state.user);
             localStorage.setItem("baseurl", baseurl);
-            createHyperspaceApp(scopes, baseurl, `https://${window.location.host}`).then((resp: any) => {
+            createHyperspaceApp(scopes, baseurl, this.state.defaultRedirectAddress).then((resp: any) => {
                 let saveSessionForCrashing: SaveClientSession = {
                     clientId: resp.clientId,
                     clientSecret: resp.clientSecret,
