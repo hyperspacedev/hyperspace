@@ -275,7 +275,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
-                            <ListItemText primary="Refresh settings" secondary="Reset Hyperspace to its default settings."/>
+                            <ListItemText primary="Refresh settings" secondary="Reset the settings to defaults."/>
                             <ListItemSecondaryAction>
                                 <Button onClick={() => this.toggleResetSettingsDialog()}>
                                     Refresh
