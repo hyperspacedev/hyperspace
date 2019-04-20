@@ -126,12 +126,12 @@ class SettingsPage extends Component<any, ISettingsState> {
                 fullWidth={true}
                 aria-labelledby="confirmation-dialog-title"
             >
-                <DialogTitle id="confirmation-dialog-title">Choose a color scheme</DialogTitle>
+                <DialogTitle id="confirmation-dialog-title">Choose a theme</DialogTitle>
                 <DialogContent>
                     <Grid container spacing={16}>
                         <Grid item xs={12} md={6}>
                             <RadioGroup
-                                aria-label="Color Scheme"
+                                aria-label="Theme"
                                 name="colorScheme"
                                 value={this.state.selectThemeName}
                                 onChange={(e, value) => this.changeThemeName(value)}
@@ -220,7 +220,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
-                            <ListItemText primary="Color scheme"/>
+                            <ListItemText primary="Interface theme"/>
                             <ListItemSecondaryAction>
                                 <Button onClick={this.toggleThemeDialog}>
                                     Set theme
