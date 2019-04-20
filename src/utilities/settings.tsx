@@ -66,13 +66,19 @@ export function createUserDefaults() {
         darkModeEnabled: false,
         enablePushNotifications: true,
         clearNotificationsOnRead: false,
-        displayAllOnNotificationBadge: false
+        displayAllOnNotificationBadge: false,
+        defaultVisibility: "public"
     }
 
-    let settings = ["darkModeEnabled"];
+    let settings = ["darkModeEnabled", "clearNotificationsOnRead", "displayAllOnNotificationBadge", "defaultVisibility"];
     settings.forEach((setting: string) => {
         if (localStorage.getItem(setting) === null) {
-            setUserDefaultBool(setting, defaults[setting]);
+            if (typeof defaults[setting] === "boolean") {
+                setUserDefaultBool(setting, defaults[setting]);
+            } else {
+                localStorage.setItem(setting, defaults[setting]);
+            }
+
         }
     })
     getNotificationRequestPermission();

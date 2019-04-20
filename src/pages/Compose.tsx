@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogActions, withStyles, Button, CardHeader, A
 import {parse as parseParams, ParsedQuery} from 'query-string';
 import {styles} from './Compose.styles';
 import { UAccount } from '../types/Account';
-import { Visibility } from '../types/Visibility';
+import { Visibility, toVisibility } from '../types/Visibility';
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import TagFacesIcon from '@material-ui/icons/TagFaces';
 import HowToVoteIcon from '@material-ui/icons/HowToVote';
@@ -48,7 +48,7 @@ class Composer extends Component<any, IComposerState> {
 
         this.state = {
             account: JSON.parse(localStorage.getItem('account') as string),
-            visibility: "public",
+            visibility: (toVisibility(localStorage.getItem("defaultVisibility") as string) || "public"),
             sensitive: false,
             visibilityMenu: false,
             text: '',
@@ -95,7 +95,7 @@ class Composer extends Component<any, IComposerState> {
         let params = this.checkComposerParams(props.location);
         let reply: string = "";
         let acct: string = "";
-        let visibility: Visibility = "public";
+        let visibility= this.state.visibility;
 
         if (params.reply) {
             reply = params.reply.toString();
@@ -347,6 +347,7 @@ class Composer extends Component<any, IComposerState> {
 
     render() {
         const {classes} = this.props;
+        console.log(this.state);
 
         return (
             <Dialog open={true} maxWidth="sm" fullWidth={true} className={classes.dialog} onClose={() => window.history.back()}>

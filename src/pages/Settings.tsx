@@ -28,6 +28,7 @@ import {canSendNotifications, browserSupportsNotificationRequests} from '../util
 import {themes, defaultTheme} from '../types/HyperspaceTheme';
 import ThemePreview from '../components/ThemePreview';
 import {setHyperspaceTheme, getHyperspaceTheme} from '../utilities/themes';
+import { Visibility, toVisibility } from '../types/Visibility';
 
 interface ISettingsState {
     darkModeEnabled: boolean;
@@ -35,9 +36,11 @@ interface ISettingsState {
     badgeDisplaysAllNotifs: boolean;
     selectThemeName: string;
     themeDialogOpen: boolean;
+    visibilityDialogOpen: boolean;
     resetHyperspaceDialog: boolean;
     resetSettingsDialog: boolean;
     previewTheme: Theme;
+    defaultVisibility: Visibility;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -51,17 +54,21 @@ class SettingsPage extends Component<any, ISettingsState> {
             badgeDisplaysAllNotifs: getUserDefaultBool('displayAllOnNotificationBadge'),
             selectThemeName: getUserDefaultTheme().key,
             themeDialogOpen: false,
+            visibilityDialogOpen: false,
             resetHyperspaceDialog: false,
             resetSettingsDialog: false,
-            previewTheme: setHyperspaceTheme(getUserDefaultTheme()) || setHyperspaceTheme(defaultTheme)
+            previewTheme: setHyperspaceTheme(getUserDefaultTheme()) || setHyperspaceTheme(defaultTheme),
+            defaultVisibility: localStorage.getItem('defaultVisibility')? toVisibility(localStorage.getItem("defautlVisibility") as string) : "public"
         }
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
         this.togglePushNotifications = this.togglePushNotifications.bind(this);
         this.toggleBadgeCount = this.toggleBadgeCount.bind(this);
         this.toggleThemeDialog = this.toggleThemeDialog.bind(this);
+        this.toggleVisibilityDialog = this.toggleVisibilityDialog.bind(this);
         this.changeThemeName = this.changeThemeName.bind(this);
         this.changeTheme = this.changeTheme.bind(this);
+        this.setVisibility = this.setVisibility.bind(this);
     }
 
     toggleDarkMode() {
@@ -84,6 +91,10 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.setState({ themeDialogOpen: !this.state.themeDialogOpen });
     }
 
+    toggleVisibilityDialog() {
+        this.setState({ visibilityDialogOpen: !this.state.visibilityDialogOpen });
+    }
+
     toggleResetDialog() {
         this.setState({ resetHyperspaceDialog: !this.state.resetHyperspaceDialog });
     }
@@ -100,6 +111,15 @@ class SettingsPage extends Component<any, ISettingsState> {
     changeThemeName(theme: string) {
         let previewTheme = setHyperspaceTheme(getHyperspaceTheme(theme));
         this.setState({ selectThemeName: theme, previewTheme });
+    }
+
+    changeVisibility(to: Visibility) {
+        this.setState({ defaultVisibility: to });
+    }
+
+    setVisibility() {
+        localStorage.setItem('defaultVisibility', this.state.defaultVisibility);
+        this.toggleVisibilityDialog();
     }
 
     reset() {
@@ -153,6 +173,42 @@ class SettingsPage extends Component<any, ISettingsState> {
                     </Button>
                     <Button onClick={this.changeTheme} color="secondary">
                         Set theme
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+    }
+
+    showVisibilityDialog() {
+        return (
+            <Dialog
+                open={this.state.visibilityDialogOpen}
+                disableBackdropClick
+                disableEscapeKeyDown
+                maxWidth="xs"
+                fullWidth={true}
+                aria-labelledby="confirmation-dialog-title"
+            >
+                <DialogTitle id="confirmation-dialog-title">Set your default visibility</DialogTitle>
+                <DialogContent>
+                    <RadioGroup
+                        aria-label="Visibility"
+                        name="visibility"
+                        value={this.state.defaultVisibility}
+                        onChange={(e, value) => this.changeVisibility(value as Visibility)}
+                    >
+                            <FormControlLabel value={"public"} key={"public"} control={<Radio />} label={"Public"} />
+                            <FormControlLabel value={"unlisted"} key={"unlisted"} control={<Radio />} label={"Unlisted"} />
+                            <FormControlLabel value={"private"} key={"private"} control={<Radio />} label={"Private (followers only)"} />
+                            <FormControlLabel value={"direct"} key={"direct"} control={<Radio />} label={"Direct"} />
+                    </RadioGroup>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.toggleVisibilityDialog} color="default">
+                        Cancel
+                    </Button>
+                    <Button onClick={this.setVisibility} color="secondary">
+                        Set default
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -230,6 +286,34 @@ class SettingsPage extends Component<any, ISettingsState> {
                     </List>
                 </Paper>
                 <br/>
+                <ListSubheader>Accounts</ListSubheader>
+                <Paper className={classes.pageListConstraints}>
+                    <List>
+                        <ListItem>
+                            <ListItemText primary="Configure on Mastodon"/>
+                            <ListItemSecondaryAction>
+                                <IconButton href={(localStorage.getItem("baseurl") as string) + "/settings/preferences"} target="_blank" rel="noreferrer">
+                                    <OpenInNewIcon/>
+                                </IconButton>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                    </List>
+                </Paper>
+                <br/>
+                <ListSubheader>Composer</ListSubheader>
+                <Paper className={classes.pageListConstraints}>
+                    <List>
+                        <ListItem>
+                            <ListItemText primary="Default visibility" secondary="New posts in composer will use this visiblity"/>
+                            <ListItemSecondaryAction>
+                                <Button onClick={this.toggleVisibilityDialog}>
+                                    Change
+                                </Button>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                    </List>
+                </Paper>
+                <br/>
                 <ListSubheader>Notifications</ListSubheader>
                 <Paper className={classes.pageListConstraints}>
                     <List>
@@ -272,20 +356,6 @@ class SettingsPage extends Component<any, ISettingsState> {
                     </List>
                 </Paper>
                 <br/>
-                <ListSubheader>Accounts</ListSubheader>
-                <Paper className={classes.pageListConstraints}>
-                    <List>
-                        <ListItem>
-                            <ListItemText primary="Configure on Mastodon"/>
-                            <ListItemSecondaryAction>
-                                <IconButton href={(localStorage.getItem("baseurl") as string) + "/settings/preferences"} target="_blank" rel="noreferrer">
-                                    <OpenInNewIcon/>
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                    </List>
-                </Paper>
-                <br/>
                 <ListSubheader>Advanced</ListSubheader>
                 <Paper className={classes.pageListConstraints}>
                     <List>
@@ -308,6 +378,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                     </List>
                 </Paper>
                 {this.showThemeDialog()}
+                {this.showVisibilityDialog()}
                 {this.showResetDialog()}
                 {this.showResetSettingsDialog()}
             </div>

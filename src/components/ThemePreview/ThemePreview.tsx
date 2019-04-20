@@ -20,10 +20,6 @@ class ThemePreview extends Component<IThemePreviewProps, IThemePreviewState> {
         }
     }
 
-    componentWillUpdate() {
-        console.log(this.props.theme);
-    }
-
     render() {
         return (
             <div style={{ position: 'relative' }}>
