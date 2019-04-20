@@ -17,13 +17,17 @@ import {
     FormControlLabel,
     Radio,
     DialogActions,
-    DialogContentText
+    DialogContentText,
+    Grid,
+    Theme
 } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import {styles} from './PageLayout.styles';
 import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefaultTheme} from '../utilities/settings';
 import {canSendNotifications, browserSupportsNotificationRequests} from '../utilities/notifications';
-import {themes} from '../types/HyperspaceTheme';
+import {themes, defaultTheme} from '../types/HyperspaceTheme';
+import ThemePreview from '../components/ThemePreview';
+import {setHyperspaceTheme, getHyperspaceTheme} from '../utilities/themes';
 
 interface ISettingsState {
     darkModeEnabled: boolean;
@@ -33,6 +37,7 @@ interface ISettingsState {
     themeDialogOpen: boolean;
     resetHyperspaceDialog: boolean;
     resetSettingsDialog: boolean;
+    previewTheme: Theme;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -47,7 +52,8 @@ class SettingsPage extends Component<any, ISettingsState> {
             selectThemeName: getUserDefaultTheme().key,
             themeDialogOpen: false,
             resetHyperspaceDialog: false,
-            resetSettingsDialog: false
+            resetSettingsDialog: false,
+            previewTheme: setHyperspaceTheme(getUserDefaultTheme()) || setHyperspaceTheme(defaultTheme)
         }
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -92,7 +98,8 @@ class SettingsPage extends Component<any, ISettingsState> {
     }
 
     changeThemeName(theme: string) {
-        this.setState({ selectThemeName: theme});
+        let previewTheme = setHyperspaceTheme(getHyperspaceTheme(theme));
+        this.setState({ selectThemeName: theme, previewTheme });
     }
 
     reset() {
@@ -101,7 +108,7 @@ class SettingsPage extends Component<any, ISettingsState> {
     }
 
     refresh() {
-        let settings = ['darkModeEnabled', 'enablePushNotifications', 'clearNotificationsOnRead', 'theme'];
+        let settings = ['darkModeEnabled', 'enablePushNotifications', 'clearNotificationsOnRead', 'theme', 'displayAllOnNotificationBadge'];
         settings.forEach(setting => {
             localStorage.removeItem(setting);
         })
@@ -109,35 +116,43 @@ class SettingsPage extends Component<any, ISettingsState> {
     }
 
     showThemeDialog() {
+        const {classes} = this.props;
         return (
             <Dialog
                 open={this.state.themeDialogOpen}
                 disableBackdropClick
                 disableEscapeKeyDown
-                maxWidth="sm"
+                maxWidth="md"
                 fullWidth={true}
                 aria-labelledby="confirmation-dialog-title"
             >
                 <DialogTitle id="confirmation-dialog-title">Choose a color scheme</DialogTitle>
                 <DialogContent>
-                    <RadioGroup
-                        aria-label="Color Scheme"
-                        name="ringtone"
-                        value={this.state.selectThemeName}
-                        onChange={(e, value) => this.changeThemeName(value)}
-                    >
-                        {themes.map(theme => (
-                            <FormControlLabel value={theme.key} key={theme.key} control={<Radio />} label={theme.name} />
-                        ))}
-                        ))}
-                    </RadioGroup>
+                    <Grid container spacing={16}>
+                        <Grid item xs={12} md={6}>
+                            <RadioGroup
+                                aria-label="Color Scheme"
+                                name="colorScheme"
+                                value={this.state.selectThemeName}
+                                onChange={(e, value) => this.changeThemeName(value)}
+                            >
+                                {themes.map(theme => (
+                                    <FormControlLabel value={theme.key} key={theme.key} control={<Radio />} label={theme.name} />
+                                ))}
+                                ))}
+                            </RadioGroup>
+                        </Grid>
+                        <Grid item xs={12} md={6} className={classes.desktopOnly}>
+                            <ThemePreview theme={this.state.previewTheme}/>
+                        </Grid>
+                    </Grid>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={this.toggleThemeDialog} color="default">
                         Cancel
                     </Button>
                     <Button onClick={this.changeTheme} color="secondary">
-                        Ok
+                        Set theme
                     </Button>
                 </DialogActions>
             </Dialog>
