@@ -11,7 +11,7 @@ import GroupIcon from '@material-ui/icons/Group';
 import SettingsIcon from '@material-ui/icons/Settings';
 import InfoIcon from '@material-ui/icons/Info';
 import EditIcon from '@material-ui/icons/Edit';
-import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
+//import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {styles} from './AppLayout.styles';
 import { UAccount } from '../../types/Account';
@@ -52,6 +52,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
     
         this.toggleDrawerOnMobile = this.toggleDrawerOnMobile.bind(this);
         this.toggleAcctMenu = this.toggleAcctMenu.bind(this);
+        this.clearBadge = this.clearBadge.bind(this);
       }
 
       componentDidMount() {
@@ -159,6 +160,12 @@ export class AppLayout extends Component<any, IAppLayoutState> {
             localStorage.removeItem(entry);
           })
           window.location.reload();
+        }
+      }
+
+      clearBadge() {
+        if (!getUserDefaultBool('displayAllOnNotificationBadge')) {
+          this.setState({ notificationCount: 0 });
         }
       }
 
@@ -288,7 +295,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
               <div className={classes.appBarFlexGrow}/>
               <div className={classes.appBarActionButtons}>
                   <Tooltip title="Notifications">
-                    <LinkableIconButton color="inherit" to="/notifications" onClick={() => this.setState({ notificationCount: 0 })}>
+                    <LinkableIconButton color="inherit" to="/notifications" onClick={this.clearBadge}>
                       <Badge badgeContent={this.state.notificationCount > 0? this.state.notificationCount: ""} color="secondary">
                         <NotificationsIcon />
                       </Badge>
