@@ -319,7 +319,7 @@ class WelcomePage extends Component<any, IWelcomeState> {
                 </Fade>
                 <br/>
                 <Typography variant="caption">
-                    &copy; 2019 <Link href="https://hyperspace.marquiskurt.net" target="_blank" rel="noreferrer">Hyperspace</Link> developers. All rights reserved.
+                    &copy; {new Date().getFullYear()} {this.state.brandName && this.state.brandName !== "Hyperspace"? `${this.state.brandName} developers and the `: ""}<Link href="https://hyperspace.marquiskurt.net" target="_blank" rel="noreferrer">Hyperspace</Link> developers. All rights reserved.
                 </Typography>
                 <Typography variant="caption">
                 { this.state.repo? <span><Link href={this.state.repo? this.state.repo: "https://github.com/hyperspacedev"} target="_blank" rel="noreferrer">Source code</Link>  | </span>: null}<Link href={this.state.license? this.state.license: "https://www.apache.org/licenses/LICENSE-2.0"} target="_blank" rel="noreferrer">License</Link> | <Link href="https://github.com/hyperspacedev/hyperspace/issues/new" target="_blank" rel="noreferrer">File an Issue</Link>
