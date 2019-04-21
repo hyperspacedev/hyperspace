@@ -42,9 +42,22 @@ export function setHyperspaceTheme(theme: HyperspaceTheme): Theme {
         palette: {
             primary: theme.palette.primary,
             secondary: theme.palette.secondary,
-            type: getUserDefaultBool('darkModeEnabled')? "dark": "light"
+            type: getUserDefaultBool('darkModeEnabled')? "dark": 
+                    getDarkModeFromSystem() === "dark"? "dark": "light"
         }
     })
+}
+
+export function getDarkModeFromSystem(): string {
+    if (getUserDefaultBool('systemDecidesDarkMode')) {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            return "dark";
+        } else {
+            return "light";
+        }
+    } else {
+        return "light";
+    }
 }
 
 /**

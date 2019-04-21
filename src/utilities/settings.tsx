@@ -7,9 +7,11 @@ import { Visibility } from "../types/Visibility";
 type SettingsTemplate = {
     [key:string]: any;
     darkModeEnabled: boolean;
+    systemDecidesDarkMode: boolean;
     enablePushNotifications: boolean;
     clearNotificationsOnRead: boolean;
     displayAllOnNotificationBadge: boolean;
+    defaultVisibility: string;
 }
 
 /**
@@ -89,13 +91,14 @@ export function setUserDefaultTheme(themeName: string) {
 export function createUserDefaults() {
     let defaults: SettingsTemplate = {
         darkModeEnabled: false,
+        systemDecidesDarkMode: true,
         enablePushNotifications: true,
         clearNotificationsOnRead: false,
         displayAllOnNotificationBadge: false,
         defaultVisibility: "public"
     }
 
-    let settings = ["darkModeEnabled", "clearNotificationsOnRead", "displayAllOnNotificationBadge", "defaultVisibility"];
+    let settings = ["darkModeEnabled", "systemDecidesDarkMode", "clearNotificationsOnRead", "displayAllOnNotificationBadge", "defaultVisibility"];
     settings.forEach((setting: string) => {
         if (localStorage.getItem(setting) === null) {
             if (typeof defaults[setting] === "boolean") {

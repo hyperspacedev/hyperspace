@@ -28,10 +28,11 @@ import {canSendNotifications, browserSupportsNotificationRequests} from '../util
 import {themes, defaultTheme} from '../types/HyperspaceTheme';
 import ThemePreview from '../components/ThemePreview';
 import {setHyperspaceTheme, getHyperspaceTheme} from '../utilities/themes';
-import { Visibility, toVisibility } from '../types/Visibility';
+import { Visibility } from '../types/Visibility';
 
 interface ISettingsState {
     darkModeEnabled: boolean;
+    systemDecidesDarkMode: boolean;
     pushNotificationsEnabled: boolean;
     badgeDisplaysAllNotifs: boolean;
     selectThemeName: string;
@@ -50,6 +51,7 @@ class SettingsPage extends Component<any, ISettingsState> {
 
         this.state = {
             darkModeEnabled: getUserDefaultBool('darkModeEnabled'),
+            systemDecidesDarkMode: getUserDefaultBool('systemDecidesDarkMode'),
             pushNotificationsEnabled: canSendNotifications(),
             badgeDisplaysAllNotifs: getUserDefaultBool('displayAllOnNotificationBadge'),
             selectThemeName: getUserDefaultTheme().key,
@@ -62,6 +64,7 @@ class SettingsPage extends Component<any, ISettingsState> {
         }
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
+        this.toggleSystemDarkMode = this.toggleSystemDarkMode.bind(this);
         this.togglePushNotifications = this.togglePushNotifications.bind(this);
         this.toggleBadgeCount = this.toggleBadgeCount.bind(this);
         this.toggleThemeDialog = this.toggleThemeDialog.bind(this);
@@ -74,6 +77,12 @@ class SettingsPage extends Component<any, ISettingsState> {
     toggleDarkMode() {
         this.setState({ darkModeEnabled: !this.state.darkModeEnabled });
         setUserDefaultBool('darkModeEnabled', !this.state.darkModeEnabled);
+        window.location.reload();
+    }
+
+    toggleSystemDarkMode() {
+        this.setState({ systemDecidesDarkMode: !this.state.systemDecidesDarkMode });
+        setUserDefaultBool('systemDecidesDarkMode', !this.state.systemDecidesDarkMode);
         window.location.reload();
     }
 
@@ -270,9 +279,22 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
+                            <ListItemText primary="Match system appearance" secondary="Obey light/dark mode from your system"/>
+                            <ListItemSecondaryAction>
+                                <Switch 
+                                    checked={this.state.systemDecidesDarkMode} 
+                                    onChange={this.toggleSystemDarkMode}
+                                />
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
                             <ListItemText primary="Dark mode"/>
                             <ListItemSecondaryAction>
-                                <Switch checked={this.state.darkModeEnabled} onChange={this.toggleDarkMode}/>
+                                <Switch
+                                    disabled={this.state.systemDecidesDarkMode}
+                                    checked={this.state.darkModeEnabled} 
+                                    onChange={this.toggleDarkMode}
+                                />
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>

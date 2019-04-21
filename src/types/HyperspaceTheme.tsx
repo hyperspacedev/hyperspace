@@ -1,5 +1,5 @@
 import {Color} from '@material-ui/core';
-import { deepPurple, red, lightGreen, yellow, purple, deepOrange, indigo, lightBlue, orange, blue, amber, pink, brown } from '@material-ui/core/colors';
+import { deepPurple, red, lightGreen, yellow, purple, deepOrange, indigo, lightBlue, orange, blue, amber, pink, brown, blueGrey } from '@material-ui/core/colors';
 
 /**
  * Basic theme colors for Hyperspace.
@@ -8,8 +8,12 @@ export type HyperspaceTheme = {
     key: string;
     name: string;
     palette: {
-        primary: Color;
-        secondary: Color;
+        primary: {
+            main: string;
+        } | Color;
+        secondary: {
+            main: string;
+        } | Color;
     }
 }
 
@@ -116,9 +120,24 @@ export const blissTheme: HyperspaceTheme = {
     key: "blissTheme",
     name: "Bliss",
     palette: {
-        primary: brown,
+        primary: {
+            main: "#3e2723"
+        },
         secondary: lightBlue
     }
 }
 
-export const themes = [defaultTheme, gardenerTheme, teacherTheme, jokerTheme, brotherTheme, guardTheme, scientistTheme, entertainerTheme, kingTheme, dragonTheme, memoriumTheme, blissTheme]
+export const attractTheme: HyperspaceTheme = {
+    key: "attractTheme",
+    name: "Attract",
+    palette: {
+        primary: {
+            main: '#f5f5f5',
+        },
+        secondary: {
+            main: "#1a237e",
+        }
+    }
+}
+
+export const themes = [defaultTheme, gardenerTheme, teacherTheme, jokerTheme, brotherTheme, guardTheme, scientistTheme, entertainerTheme, kingTheme, dragonTheme, memoriumTheme, blissTheme, attractTheme]
