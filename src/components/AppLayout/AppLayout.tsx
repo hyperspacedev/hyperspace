@@ -238,9 +238,9 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                 }
                 <Divider/>
                 <ListSubheader>More</ListSubheader>
-                <LinkableListItem button key="recommended" to="/recommended" disabled>
+                <LinkableListItem button key="recommended" to="/recommended">
                   <ListItemIcon><GroupIcon/></ListItemIcon>
-                  <ListItemText primary="Who to follow" secondary="Coming soon!"/>
+                  <ListItemText primary="Who to follow"/>
                 </LinkableListItem>
                 <LinkableListItem button key="settings" to="/settings">
                   <ListItemIcon><SettingsIcon/></ListItemIcon>

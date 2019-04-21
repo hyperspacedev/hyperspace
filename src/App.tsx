@@ -17,6 +17,7 @@ import SearchPage from './pages/Search';
 import Composer from './pages/Compose';
 import WelcomePage from './pages/Welcome';
 import MessagesPage from './pages/Messages';
+import RecommendationsPage from './pages/Recommendations';
 import {withSnackbar} from 'notistack';
 import {PrivateRoute} from './interfaces/overrides';
 import { userLoggedIn } from './utilities/accounts';
@@ -60,6 +61,7 @@ class App extends Component<any, any> {
             <PrivateRoute path="/settings" component={Settings}/>
             <PrivateRoute path="/about" component={AboutPage}/>
             <PrivateRoute path="/compose" component={Composer}/>
+            <PrivateRoute path="/recommended" component={RecommendationsPage}/>
           </div>
 
       </MuiThemeProvider>
