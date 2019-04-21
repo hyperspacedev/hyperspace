@@ -33,7 +33,10 @@ export const styles = (theme: Theme) => createStyles({
         paddingLeft: theme.spacing.unit * 4,
         paddingRight: theme.spacing.unit * 4,
         paddingBottom: theme.spacing.unit * 6,
-        textAlign: 'center'
+        textAlign: 'center',
+        '& a': {
+            color: theme.palette.primary.light
+        }
     },
     flexGrow: {
         flexGrow: 1

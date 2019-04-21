@@ -1,6 +1,21 @@
 import { createMuiTheme, Theme } from '@material-ui/core';
-import { HyperspaceTheme } from '../types/HyperspaceTheme';
+import { HyperspaceTheme, themes, defaultTheme } from '../types/HyperspaceTheme';
 import { getUserDefaultBool } from './settings';
+
+/**
+ * Locates a Hyperspace theme from the themes catalog
+ * @param name The name of the theme to return
+ * @returns Hyperspace theme with name or the default
+ */
+export function getHyperspaceTheme(name: string): HyperspaceTheme {
+    let theme: HyperspaceTheme = defaultTheme;
+    themes.forEach((themeItem: HyperspaceTheme) => {
+        if (themeItem.key === name) {
+            theme = themeItem;
+        }
+    });
+    return theme;
+}
 
 /**
  * Creates a Material-UI theme from a selected Hyperspace theme palette.
@@ -27,9 +42,22 @@ export function setHyperspaceTheme(theme: HyperspaceTheme): Theme {
         palette: {
             primary: theme.palette.primary,
             secondary: theme.palette.secondary,
-            type: getUserDefaultBool('darkModeEnabled')? "dark": "light"
+            type: getUserDefaultBool('darkModeEnabled')? "dark": 
+                    getDarkModeFromSystem() === "dark"? "dark": "light"
         }
     })
+}
+
+export function getDarkModeFromSystem(): string {
+    if (getUserDefaultBool('systemDecidesDarkMode')) {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            return "dark";
+        } else {
+            return "light";
+        }
+    } else {
+        return "light";
+    }
 }
 
 /**

@@ -20,6 +20,7 @@ import ComposeMediaAttachment from '../components/ComposeMediaAttachment';
 import EmojiPicker from '../components/EmojiPicker';
 import { DateTimePicker, MuiPickersUtilsProvider } from 'material-ui-pickers';
 import MomentUtils from '@date-io/moment';
+import { getUserDefaultVisibility } from '../utilities/settings';
 
 interface IComposerState {
     account: UAccount;
@@ -48,7 +49,7 @@ class Composer extends Component<any, IComposerState> {
 
         this.state = {
             account: JSON.parse(localStorage.getItem('account') as string),
-            visibility: "public",
+            visibility: getUserDefaultVisibility(),
             sensitive: false,
             visibilityMenu: false,
             text: '',
@@ -95,7 +96,7 @@ class Composer extends Component<any, IComposerState> {
         let params = this.checkComposerParams(props.location);
         let reply: string = "";
         let acct: string = "";
-        let visibility: Visibility = "public";
+        let visibility= this.state.visibility;
 
         if (params.reply) {
             reply = params.reply.toString();
@@ -347,6 +348,7 @@ class Composer extends Component<any, IComposerState> {
 
     render() {
         const {classes} = this.props;
+        console.log(this.state);
 
         return (
             <Dialog open={true} maxWidth="sm" fullWidth={true} className={classes.dialog} onClose={() => window.history.back()}>

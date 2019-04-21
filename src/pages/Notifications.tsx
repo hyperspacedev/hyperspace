@@ -80,7 +80,8 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
         const div = document.createElement('div');
         div.innerHTML = text;
         let innerContent = div.textContent || div.innerText || "";
-        innerContent = innerContent.slice(0, 85) + "..."
+        if (innerContent.length > 65)
+            innerContent = innerContent.slice(0, 65) + "...";
         return innerContent;
     }
 
@@ -115,6 +116,7 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
     }
 
     createNotification(notif: Notification) {
+        const { classes } = this.props;
         let primary = "";
         let secondary = "";
         switch (notif.type) {
@@ -149,7 +151,16 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                         <PersonIcon/>
                     </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary={primary} secondary={secondary}/>
+                <ListItemText primary={primary} secondary={
+                    <span>
+                        <Typography color="textSecondary" className={classes.mobileOnly}>
+                            {secondary.slice(0, 35) + "..."}
+                        </Typography>
+                        <Typography color="textSecondary" className={classes.desktopOnly}>
+                            {secondary}
+                        </Typography>
+                    </span>
+                }/>
                 <ListItemSecondaryAction>
                     {
                         notif.type === "follow"?

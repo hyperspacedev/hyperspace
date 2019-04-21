@@ -11,7 +11,7 @@ import GroupIcon from '@material-ui/icons/Group';
 import SettingsIcon from '@material-ui/icons/Settings';
 import InfoIcon from '@material-ui/icons/Info';
 import EditIcon from '@material-ui/icons/Edit';
-import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
+//import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {styles} from './AppLayout.styles';
 import { UAccount } from '../../types/Account';
@@ -52,6 +52,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
     
         this.toggleDrawerOnMobile = this.toggleDrawerOnMobile.bind(this);
         this.toggleAcctMenu = this.toggleAcctMenu.bind(this);
+        this.clearBadge = this.clearBadge.bind(this);
       }
 
       componentDidMount() {
@@ -162,6 +163,12 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         }
       }
 
+      clearBadge() {
+        if (!getUserDefaultBool('displayAllOnNotificationBadge')) {
+          this.setState({ notificationCount: 0 });
+        }
+      }
+
       titlebar() {
         const { classes } = this.props;
         if (this.state.developerMode || process.env.NODE_ENV === "development") {
@@ -190,14 +197,6 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                       <Avatar alt="You" src={this.state.currentUser? this.state.currentUser.avatar_static: ""}/>
                     </ListItemAvatar>
                     <ListItemText primary={this.state.currentUser? (this.state.currentUser.display_name || this.state.currentUser.acct): "Loading..."} secondary={this.state.currentUser? this.state.currentUser.acct: "Loading..."}/>
-                  </LinkableListItem>
-                  <LinkableListItem button key="notifications-mobile" to="/notifications">
-                    <ListItemIcon><NotificationsIcon/></ListItemIcon>
-                    <ListItemText primary="Notifications"/>
-                  </LinkableListItem>
-                  <LinkableListItem button key="messages-mobile" to="/messages">
-                    <ListItemIcon><MailIcon/></ListItemIcon>
-                    <ListItemText primary="Messages"/>
                   </LinkableListItem>
                   {/* <LinkableListItem button key="acctSwitch-module" to="/switchacct">
                     <ListItemIcon><SupervisedUserCircleIcon/></ListItemIcon>
@@ -230,10 +229,26 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                     </ListItem>
                 }
                 <Divider/>
+                <div className={classes.drawerDisplayMobile}>
+                  <ListSubheader>Account</ListSubheader>
+                  <LinkableListItem button key="notifications-mobile" to="/notifications">
+                    <ListItemIcon>
+                      <Badge badgeContent={this.state.notificationCount > 0? this.state.notificationCount: ""} color="secondary">
+                        <NotificationsIcon />
+                      </Badge>
+                    </ListItemIcon>
+                    <ListItemText primary="Notifications"/>
+                  </LinkableListItem>
+                  <LinkableListItem button key="messages-mobile" to="/messages">
+                    <ListItemIcon><MailIcon/></ListItemIcon>
+                    <ListItemText primary="Messages"/>
+                  </LinkableListItem>
+                  <Divider/>
+                </div>
                 <ListSubheader>More</ListSubheader>
-                <LinkableListItem button key="recommended" to="/recommended" disabled>
+                <LinkableListItem button key="recommended" to="/recommended">
                   <ListItemIcon><GroupIcon/></ListItemIcon>
-                  <ListItemText primary="Who to follow" secondary="Coming soon!"/>
+                  <ListItemText primary="Who to follow"/>
                 </LinkableListItem>
                 <LinkableListItem button key="settings" to="/settings">
                   <ListItemIcon><SettingsIcon/></ListItemIcon>
@@ -288,7 +303,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
               <div className={classes.appBarFlexGrow}/>
               <div className={classes.appBarActionButtons}>
                   <Tooltip title="Notifications">
-                    <LinkableIconButton color="inherit" to="/notifications" onClick={() => this.setState({ notificationCount: 0 })}>
+                    <LinkableIconButton color="inherit" to="/notifications" onClick={this.clearBadge}>
                       <Badge badgeContent={this.state.notificationCount > 0? this.state.notificationCount: ""} color="secondary">
                         <NotificationsIcon />
                       </Badge>

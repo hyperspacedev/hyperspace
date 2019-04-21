@@ -2,13 +2,16 @@ import { defaultTheme, themes } from "../types/HyperspaceTheme";
 import { getNotificationRequestPermission } from './notifications';
 import axios from 'axios';
 import { Config } from "../types/Config";
+import { Visibility } from "../types/Visibility";
 
 type SettingsTemplate = {
     [key:string]: any;
     darkModeEnabled: boolean;
+    systemDecidesDarkMode: boolean;
     enablePushNotifications: boolean;
     clearNotificationsOnRead: boolean;
     displayAllOnNotificationBadge: boolean;
+    defaultVisibility: string;
 }
 
 /**
@@ -38,6 +41,30 @@ export function setUserDefaultBool(key: string, value: boolean) {
 }
 
 /**
+ * Gets the user default visibility from localStorage
+ * @returns The Visibility value associated with the key
+ */
+export function getUserDefaultVisibility(): Visibility {
+    if (localStorage.getItem("defaultVisibility") === null) {
+        console.warn('This key has not been set before, so the default value is PUBLIC for now.');
+        return "public";
+    } else {
+        return localStorage.getItem("defaultVisibility") as Visibility;
+    }
+}
+
+/**
+ * Set a user default visibility to localStorage
+ * @param key The settings key in localStorage to change
+ */
+export function setUserDefaultVisibility(key: string) {
+    if (localStorage.getItem("defaultVisibility") === null) {
+        console.warn('This key has not been set before.');
+    }
+    localStorage.setItem("defaultVisibility", key.toString());
+}
+
+/**
  * Gets the user's default theme or the default theme
  */
 export function getUserDefaultTheme() {
@@ -64,15 +91,22 @@ export function setUserDefaultTheme(themeName: string) {
 export function createUserDefaults() {
     let defaults: SettingsTemplate = {
         darkModeEnabled: false,
+        systemDecidesDarkMode: true,
         enablePushNotifications: true,
         clearNotificationsOnRead: false,
-        displayAllOnNotificationBadge: false
+        displayAllOnNotificationBadge: false,
+        defaultVisibility: "public"
     }
 
-    let settings = ["darkModeEnabled"];
+    let settings = ["darkModeEnabled", "systemDecidesDarkMode", "clearNotificationsOnRead", "displayAllOnNotificationBadge", "defaultVisibility"];
     settings.forEach((setting: string) => {
         if (localStorage.getItem(setting) === null) {
-            setUserDefaultBool(setting, defaults[setting]);
+            if (typeof defaults[setting] === "boolean") {
+                setUserDefaultBool(setting, defaults[setting]);
+            } else {
+                localStorage.setItem(setting, defaults[setting].toString());
+            }
+
         }
     })
     getNotificationRequestPermission();

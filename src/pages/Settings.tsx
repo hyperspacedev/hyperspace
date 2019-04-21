@@ -17,22 +17,32 @@ import {
     FormControlLabel,
     Radio,
     DialogActions,
-    DialogContentText
+    DialogContentText,
+    Grid,
+    Theme,
+    Typography
 } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import {styles} from './PageLayout.styles';
-import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefaultTheme} from '../utilities/settings';
+import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefaultTheme, getUserDefaultVisibility, setUserDefaultVisibility} from '../utilities/settings';
 import {canSendNotifications, browserSupportsNotificationRequests} from '../utilities/notifications';
-import {themes} from '../types/HyperspaceTheme';
+import {themes, defaultTheme} from '../types/HyperspaceTheme';
+import ThemePreview from '../components/ThemePreview';
+import {setHyperspaceTheme, getHyperspaceTheme} from '../utilities/themes';
+import { Visibility } from '../types/Visibility';
 
 interface ISettingsState {
     darkModeEnabled: boolean;
+    systemDecidesDarkMode: boolean;
     pushNotificationsEnabled: boolean;
     badgeDisplaysAllNotifs: boolean;
     selectThemeName: string;
     themeDialogOpen: boolean;
+    visibilityDialogOpen: boolean;
     resetHyperspaceDialog: boolean;
     resetSettingsDialog: boolean;
+    previewTheme: Theme;
+    defaultVisibility: Visibility;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -42,25 +52,38 @@ class SettingsPage extends Component<any, ISettingsState> {
 
         this.state = {
             darkModeEnabled: getUserDefaultBool('darkModeEnabled'),
+            systemDecidesDarkMode: getUserDefaultBool('systemDecidesDarkMode'),
             pushNotificationsEnabled: canSendNotifications(),
             badgeDisplaysAllNotifs: getUserDefaultBool('displayAllOnNotificationBadge'),
             selectThemeName: getUserDefaultTheme().key,
             themeDialogOpen: false,
+            visibilityDialogOpen: false,
             resetHyperspaceDialog: false,
-            resetSettingsDialog: false
+            resetSettingsDialog: false,
+            previewTheme: setHyperspaceTheme(getUserDefaultTheme()) || setHyperspaceTheme(defaultTheme),
+            defaultVisibility: getUserDefaultVisibility() || "public"
         }
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
+        this.toggleSystemDarkMode = this.toggleSystemDarkMode.bind(this);
         this.togglePushNotifications = this.togglePushNotifications.bind(this);
         this.toggleBadgeCount = this.toggleBadgeCount.bind(this);
         this.toggleThemeDialog = this.toggleThemeDialog.bind(this);
+        this.toggleVisibilityDialog = this.toggleVisibilityDialog.bind(this);
         this.changeThemeName = this.changeThemeName.bind(this);
         this.changeTheme = this.changeTheme.bind(this);
+        this.setVisibility = this.setVisibility.bind(this);
     }
 
     toggleDarkMode() {
         this.setState({ darkModeEnabled: !this.state.darkModeEnabled });
         setUserDefaultBool('darkModeEnabled', !this.state.darkModeEnabled);
+        window.location.reload();
+    }
+
+    toggleSystemDarkMode() {
+        this.setState({ systemDecidesDarkMode: !this.state.systemDecidesDarkMode });
+        setUserDefaultBool('systemDecidesDarkMode', !this.state.systemDecidesDarkMode);
         window.location.reload();
     }
 
@@ -78,6 +101,10 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.setState({ themeDialogOpen: !this.state.themeDialogOpen });
     }
 
+    toggleVisibilityDialog() {
+        this.setState({ visibilityDialogOpen: !this.state.visibilityDialogOpen });
+    }
+
     toggleResetDialog() {
         this.setState({ resetHyperspaceDialog: !this.state.resetHyperspaceDialog });
     }
@@ -92,7 +119,17 @@ class SettingsPage extends Component<any, ISettingsState> {
     }
 
     changeThemeName(theme: string) {
-        this.setState({ selectThemeName: theme});
+        let previewTheme = setHyperspaceTheme(getHyperspaceTheme(theme));
+        this.setState({ selectThemeName: theme, previewTheme });
+    }
+
+    changeVisibility(to: Visibility) {
+        this.setState({ defaultVisibility: to });
+    }
+
+    setVisibility() {
+        setUserDefaultVisibility(this.state.defaultVisibility);
+        this.toggleVisibilityDialog();
     }
 
     reset() {
@@ -101,7 +138,7 @@ class SettingsPage extends Component<any, ISettingsState> {
     }
 
     refresh() {
-        let settings = ['darkModeEnabled', 'enablePushNotifications', 'clearNotificationsOnRead', 'theme'];
+        let settings = ['darkModeEnabled', 'enablePushNotifications', 'clearNotificationsOnRead', 'theme', 'displayAllOnNotificationBadge', 'defaultVisibility'];
         settings.forEach(setting => {
             localStorage.removeItem(setting);
         })
@@ -109,35 +146,80 @@ class SettingsPage extends Component<any, ISettingsState> {
     }
 
     showThemeDialog() {
+        const {classes} = this.props;
         return (
             <Dialog
                 open={this.state.themeDialogOpen}
                 disableBackdropClick
                 disableEscapeKeyDown
-                maxWidth="sm"
+                maxWidth="md"
                 fullWidth={true}
                 aria-labelledby="confirmation-dialog-title"
             >
-                <DialogTitle id="confirmation-dialog-title">Choose a color scheme</DialogTitle>
+                <DialogTitle id="confirmation-dialog-title">Choose a theme</DialogTitle>
                 <DialogContent>
-                    <RadioGroup
-                        aria-label="Color Scheme"
-                        name="ringtone"
-                        value={this.state.selectThemeName}
-                        onChange={(e, value) => this.changeThemeName(value)}
-                    >
-                        {themes.map(theme => (
-                            <FormControlLabel value={theme.key} key={theme.key} control={<Radio />} label={theme.name} />
-                        ))}
-                        ))}
-                    </RadioGroup>
+                    <Grid container spacing={16}>
+                        <Grid item xs={12} md={6}>
+                            <RadioGroup
+                                aria-label="Theme"
+                                name="colorScheme"
+                                value={this.state.selectThemeName}
+                                onChange={(e, value) => this.changeThemeName(value)}
+                            >
+                                {themes.map(theme => (
+                                    <FormControlLabel value={theme.key} key={theme.key} control={<Radio />} label={theme.name} />
+                                ))}
+                                ))}
+                            </RadioGroup>
+                        </Grid>
+                        <Grid item xs={12} md={6} className={classes.desktopOnly}>
+                            <Typography variant="h6" component="p">Theme preview</Typography>
+                            <ThemePreview theme={this.state.previewTheme}/>
+                        </Grid>
+                    </Grid>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={this.toggleThemeDialog} color="default">
                         Cancel
                     </Button>
                     <Button onClick={this.changeTheme} color="secondary">
-                        Ok
+                        Set theme
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+    }
+
+    showVisibilityDialog() {
+        return (
+            <Dialog
+                open={this.state.visibilityDialogOpen}
+                disableBackdropClick
+                disableEscapeKeyDown
+                maxWidth="xs"
+                fullWidth={true}
+                aria-labelledby="confirmation-dialog-title"
+            >
+                <DialogTitle id="confirmation-dialog-title">Set your default visibility</DialogTitle>
+                <DialogContent>
+                    <RadioGroup
+                        aria-label="Visibility"
+                        name="visibility"
+                        value={this.state.defaultVisibility}
+                        onChange={(e, value) => this.changeVisibility(value as Visibility)}
+                    >
+                            <FormControlLabel value={"public"} key={"public"} control={<Radio />} label={"Public"} />
+                            <FormControlLabel value={"unlisted"} key={"unlisted"} control={<Radio />} label={"Unlisted"} />
+                            <FormControlLabel value={"private"} key={"private"} control={<Radio />} label={"Private (followers only)"} />
+                            <FormControlLabel value={"direct"} key={"direct"} control={<Radio />} label={"Direct"} />
+                    </RadioGroup>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.toggleVisibilityDialog} color="default">
+                        Cancel
+                    </Button>
+                    <Button onClick={this.setVisibility} color="secondary">
+                        Set default
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -199,16 +281,57 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
-                            <ListItemText primary="Dark mode"/>
+                            <ListItemText primary="Match system appearance" secondary="Obey light/dark theme from your system"/>
                             <ListItemSecondaryAction>
-                                <Switch checked={this.state.darkModeEnabled} onChange={this.toggleDarkMode}/>
+                                <Switch 
+                                    checked={this.state.systemDecidesDarkMode} 
+                                    onChange={this.toggleSystemDarkMode}
+                                />
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
-                            <ListItemText primary="Color scheme"/>
+                            <ListItemText primary="Dark mode" secondary="Toggles light or dark theme"/>
+                            <ListItemSecondaryAction>
+                                <Switch
+                                    disabled={this.state.systemDecidesDarkMode}
+                                    checked={this.state.darkModeEnabled} 
+                                    onChange={this.toggleDarkMode}
+                                />
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemText primary="Interface theme" secondary="The color palette used for the interface"/>
                             <ListItemSecondaryAction>
                                 <Button onClick={this.toggleThemeDialog}>
                                     Set theme
+                                </Button>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                    </List>
+                </Paper>
+                <br/>
+                <ListSubheader>Accounts</ListSubheader>
+                <Paper className={classes.pageListConstraints}>
+                    <List>
+                        <ListItem>
+                            <ListItemText primary="Configure on Mastodon"/>
+                            <ListItemSecondaryAction>
+                                <IconButton href={(localStorage.getItem("baseurl") as string) + "/settings/preferences"} target="_blank" rel="noreferrer">
+                                    <OpenInNewIcon/>
+                                </IconButton>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                    </List>
+                </Paper>
+                <br/>
+                <ListSubheader>Composer</ListSubheader>
+                <Paper className={classes.pageListConstraints}>
+                    <List>
+                        <ListItem>
+                            <ListItemText primary="Default visibility" secondary="New posts in composer will use this visiblity"/>
+                            <ListItemSecondaryAction>
+                                <Button onClick={this.toggleVisibilityDialog}>
+                                    Change
                                 </Button>
                             </ListItemSecondaryAction>
                         </ListItem>
@@ -237,35 +360,18 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 />
                             </ListItemSecondaryAction>
                         </ListItem>
-                        {
-                            browserSupportsNotificationRequests()?
-                            <ListItem>
-                                <ListItemText 
-                                    primary="Notification badge counts all notifications"
-                                    secondary={
-                                        "Counts all notifications, read or unread."
-                                    }
-                                />
-                                <ListItemSecondaryAction>
-                                    <Switch 
-                                        checked={this.state.badgeDisplaysAllNotifs} 
-                                        onChange={this.toggleBadgeCount}
-                                    />
-                                </ListItemSecondaryAction>
-                            </ListItem>: null
-                        }
-                    </List>
-                </Paper>
-                <br/>
-                <ListSubheader>Accounts</ListSubheader>
-                <Paper className={classes.pageListConstraints}>
-                    <List>
                         <ListItem>
-                            <ListItemText primary="Configure on Mastodon"/>
+                            <ListItemText 
+                                primary="Notification badge counts all notifications"
+                                secondary={
+                                    "Counts all notifications, read or unread."
+                                }
+                            />
                             <ListItemSecondaryAction>
-                                <IconButton href={(localStorage.getItem("baseurl") as string) + "/settings/preferences"} target="_blank" rel="noreferrer">
-                                    <OpenInNewIcon/>
-                                </IconButton>
+                                <Switch 
+                                    checked={this.state.badgeDisplaysAllNotifs} 
+                                    onChange={this.toggleBadgeCount}
+                                />
                             </ListItemSecondaryAction>
                         </ListItem>
                     </List>
@@ -275,7 +381,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
-                            <ListItemText primary="Refresh settings" secondary="Reset Hyperspace to its default settings."/>
+                            <ListItemText primary="Refresh settings" secondary="Reset the settings to defaults."/>
                             <ListItemSecondaryAction>
                                 <Button onClick={() => this.toggleResetSettingsDialog()}>
                                     Refresh
@@ -293,6 +399,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                     </List>
                 </Paper>
                 {this.showThemeDialog()}
+                {this.showVisibilityDialog()}
                 {this.showResetDialog()}
                 {this.showResetSettingsDialog()}
             </div>
