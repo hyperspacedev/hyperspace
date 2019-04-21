@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {withStyles, Typography, List, ListItem, Paper, ListItemText, Avatar, ListItemSecondaryAction, ListItemAvatar, ListSubheader, CircularProgress, IconButton, Divider} from '@material-ui/core';
+import {withStyles, Typography, List, ListItem, Paper, ListItemText, Avatar, ListItemSecondaryAction, ListItemAvatar, ListSubheader, CircularProgress, IconButton, Divider, Tooltip} from '@material-ui/core';
 import {styles} from './PageLayout.styles';
 import Mastodon from 'megalodon';
 import {Account} from '../types/Account';
@@ -124,15 +124,21 @@ class RecommendationsPage extends Component<IRecommendationsPageProps, IRecommen
                                             </ListItemAvatar>
                                             <ListItemText primary={request.display_name || request.acct} secondary={request.acct}/>
                                             <ListItemSecondaryAction>
-                                                <IconButton onClick={() => this.handleFollowRequest(request, "authorize")}>
-                                                    <CheckIcon/>
-                                                </IconButton>
-                                                <IconButton onClick={() => this.handleFollowRequest(request, "reject")}>
-                                                    <CloseIcon/>
-                                                </IconButton>
-                                                <LinkableIconButton to={`/profile/${request.id}`}>
-                                                    <AccountCircleIcon/>
-                                                </LinkableIconButton>
+                                                <Tooltip title="Accept request">
+                                                    <IconButton onClick={() => this.handleFollowRequest(request, "authorize")}>
+                                                        <CheckIcon/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Reject request">
+                                                    <IconButton onClick={() => this.handleFollowRequest(request, "reject")}>
+                                                        <CloseIcon/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="View profile">
+                                                    <LinkableIconButton to={`/profile/${request.id}`}>
+                                                        <AccountCircleIcon/>
+                                                    </LinkableIconButton>
+                                                </Tooltip>
                                             </ListItemSecondaryAction>
                                         </ListItem>
                                     );
@@ -162,12 +168,16 @@ class RecommendationsPage extends Component<IRecommendationsPageProps, IRecommen
                                             </ListItemAvatar>
                                             <ListItemText primary={suggestion.display_name || suggestion.acct} secondary={suggestion.acct}/>
                                             <ListItemSecondaryAction>
-                                                <IconButton onClick={() => this.followMember(suggestion)}>
-                                                    <PersonAddIcon/>
-                                                </IconButton>
-                                                <LinkableIconButton to={`/profile/${suggestion.id}`}>
-                                                    <AccountCircleIcon/>
-                                                </LinkableIconButton>
+                                                <Tooltip title="Follow">
+                                                    <IconButton onClick={() => this.followMember(suggestion)}>
+                                                        <PersonAddIcon/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="View profile">
+                                                    <LinkableIconButton to={`/profile/${suggestion.id}`}>
+                                                        <AccountCircleIcon/>
+                                                    </LinkableIconButton>
+                                                </Tooltip>
                                             </ListItemSecondaryAction>
                                         </ListItem>
                                     );
