@@ -279,7 +279,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
-                            <ListItemText primary="Match system appearance" secondary="Obey light/dark mode from your system"/>
+                            <ListItemText primary="Match system appearance" secondary="Obey light/dark theme from your system"/>
                             <ListItemSecondaryAction>
                                 <Switch 
                                     checked={this.state.systemDecidesDarkMode} 
@@ -288,7 +288,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
-                            <ListItemText primary="Dark mode"/>
+                            <ListItemText primary="Dark mode" secondary="Toggles light or dark theme"/>
                             <ListItemSecondaryAction>
                                 <Switch
                                     disabled={this.state.systemDecidesDarkMode}
@@ -298,7 +298,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
-                            <ListItemText primary="Interface theme"/>
+                            <ListItemText primary="Interface theme" secondary="The color palette used for the interface"/>
                             <ListItemSecondaryAction>
                                 <Button onClick={this.toggleThemeDialog}>
                                     Set theme
