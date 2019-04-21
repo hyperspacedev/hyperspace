@@ -236,8 +236,8 @@ class AboutPage extends Component<any, IAboutPageState> {
                     </List>
                 </Paper>
                 <br/>
-                <div>
-                    <Typography variant="caption">(C) 2019 {this.state? this.state.brandName: "Hyperspace"} developers. All rights reserved.</Typography>
+                <div className={classes.pageLayoutFooter}>
+                    <Typography variant="caption">(C) {new Date().getFullYear()} {this.state? this.state.brandName: "Hyperspace"} developers. All rights reserved.</Typography>
                     <Typography variant="caption" paragraph>{this.state? this.state.brandName: "Hyperspace"} is made possible by the <Link href={"https://material-ui.com"} target="_blank" rel="noreferrer">Material UI</Link> project, <Link href={"https://www.npmjs.com/package/megalodon"} target="_blank" rel="noreferrer">Megalodon</Link> library, and other <Link href={"https://github.com/hyperspacedev/hyperspace/blob/master/package.json"} target="_blank" rel="noreferrer">open source software</Link>.</Typography>
                 </div>
             </div>

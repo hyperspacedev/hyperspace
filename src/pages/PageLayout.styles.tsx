@@ -169,5 +169,10 @@ export const styles = (theme: Theme) => createStyles({
       [theme.breakpoints.up('sm')]: {
         display: 'block'
       }
+    },
+    pageLayoutFooter: {
+      '& a': {
+        color: theme.palette.primary.light
+      }
     }
   });
