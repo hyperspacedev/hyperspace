@@ -199,7 +199,11 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                     <ListItemText primary={this.state.currentUser? (this.state.currentUser.display_name || this.state.currentUser.acct): "Loading..."} secondary={this.state.currentUser? this.state.currentUser.acct: "Loading..."}/>
                   </LinkableListItem>
                   <LinkableListItem button key="notifications-mobile" to="/notifications">
-                    <ListItemIcon><NotificationsIcon/></ListItemIcon>
+                    <ListItemIcon>
+                      <Badge badgeContent={this.state.notificationCount > 0? this.state.notificationCount: ""} color="secondary">
+                        <NotificationsIcon />
+                      </Badge>
+                    </ListItemIcon>
                     <ListItemText primary="Notifications"/>
                   </LinkableListItem>
                   <LinkableListItem button key="messages-mobile" to="/messages">

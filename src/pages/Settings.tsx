@@ -358,23 +358,20 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 />
                             </ListItemSecondaryAction>
                         </ListItem>
-                        {
-                            browserSupportsNotificationRequests()?
-                            <ListItem>
-                                <ListItemText 
-                                    primary="Notification badge counts all notifications"
-                                    secondary={
-                                        "Counts all notifications, read or unread."
-                                    }
+                        <ListItem>
+                            <ListItemText 
+                                primary="Notification badge counts all notifications"
+                                secondary={
+                                    "Counts all notifications, read or unread."
+                                }
+                            />
+                            <ListItemSecondaryAction>
+                                <Switch 
+                                    checked={this.state.badgeDisplaysAllNotifs} 
+                                    onChange={this.toggleBadgeCount}
                                 />
-                                <ListItemSecondaryAction>
-                                    <Switch 
-                                        checked={this.state.badgeDisplaysAllNotifs} 
-                                        onChange={this.toggleBadgeCount}
-                                    />
-                                </ListItemSecondaryAction>
-                            </ListItem>: null
-                        }
+                            </ListItemSecondaryAction>
+                        </ListItem>
                     </List>
                 </Paper>
                 <br/>
