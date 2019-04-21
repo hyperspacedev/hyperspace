@@ -19,7 +19,8 @@ import {
     DialogActions,
     DialogContentText,
     Grid,
-    Theme
+    Theme,
+    Typography
 } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import {styles} from './PageLayout.styles';
@@ -172,6 +173,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </RadioGroup>
                         </Grid>
                         <Grid item xs={12} md={6} className={classes.desktopOnly}>
+                            <Typography variant="h6" component="p">Theme preview</Typography>
                             <ThemePreview theme={this.state.previewTheme}/>
                         </Grid>
                     </Grid>
