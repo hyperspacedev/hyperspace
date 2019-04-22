@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {withStyles, Paper, Typography, Button, TextField, Fade, Link, CircularProgress, Tooltip} from '@material-ui/core';
+import {withStyles, Paper, Typography, Button, TextField, Fade, Link, CircularProgress, Tooltip, Dialog, DialogTitle, DialogActions, DialogContent} from '@material-ui/core';
 import {styles} from './WelcomePage.styles';
 import Mastodon from 'megalodon';
 import {SaveClientSession} from '../types/SessionData';
@@ -26,6 +26,9 @@ interface IWelcomeState {
     license?: string;
     repo?: string;
     defaultRedirectAddress: string;
+    openAuthDialog: boolean;
+    authCode: string;
+    emergencyMode: boolean;
 }
 
 class WelcomePage extends Component<any, IWelcomeState> {
@@ -42,7 +45,10 @@ class WelcomePage extends Component<any, IWelcomeState> {
             foundSavedLogin: false,
             authority: false,
             userInputErrorMessage: '',
-            defaultRedirectAddress: ''
+            defaultRedirectAddress: '',
+            openAuthDialog: false,
+            authCode: '',
+            emergencyMode: false
         }
 
         getConfig().then((result: any) => {
@@ -66,10 +72,11 @@ class WelcomePage extends Component<any, IWelcomeState> {
 
     componentDidMount() {
         if (localStorage.getItem("login")) {
+            this.getSavedSession();
             this.setState({
                 foundSavedLogin: true
             })
-            this.getSavedSession();
+            console.log(this.state.emergencyMode);
             this.checkForToken();
         }
     }
@@ -80,6 +87,7 @@ class WelcomePage extends Component<any, IWelcomeState> {
             let code = parseUrl(location).query.code as string;
             this.setState({ authority: true });
             let loginData = localStorage.getItem("login");
+            console.log(this.state.emergencyMode);
 
             if (loginData) {
                 let clientLoginSession: SaveClientSession = JSON.parse(loginData);
@@ -89,7 +97,11 @@ class WelcomePage extends Component<any, IWelcomeState> {
                     clientLoginSession.clientSecret,
                     code,
                     (localStorage.getItem("baseurl") as string),
-                    `https://${window.location.host}`,
+                    this.state.emergencyMode? 
+                        undefined:
+                        clientLoginSession.authUrl.includes("urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob")?
+                            undefined: 
+                            `https://${window.location.host}`,
                 ).then((tokenData: any) => {
                     localStorage.setItem("access_token", tokenData.access_token);
                     window.location.href=`https://${window.location.host}/#/`;
@@ -102,6 +114,21 @@ class WelcomePage extends Component<any, IWelcomeState> {
 
     updateUserInfo(user: string) {
         this.setState({ user });
+    }
+
+    updateAuthCode(code: string) {
+        this.setState({ authCode: code });
+    }
+
+    toggleAuthDialog() {
+        this.setState({ openAuthDialog: !this.state.openAuthDialog });
+    }
+
+    startEmergencyLogin() {
+        if (!this.state.emergencyMode) {
+            this.createEmergencyLogin();
+        };
+        this.toggleAuthDialog();
     }
 
     getLoginUser(user: string) {
@@ -134,7 +161,8 @@ class WelcomePage extends Component<any, IWelcomeState> {
                 let saveSessionForCrashing: SaveClientSession = {
                     clientId: resp.clientId,
                     clientSecret: resp.clientSecret,
-                    authUrl: resp.url
+                    authUrl: resp.url,
+                    emergency: false
                 }
                 localStorage.setItem("login", JSON.stringify(saveSessionForCrashing));
                 this.setState({
@@ -149,6 +177,30 @@ class WelcomePage extends Component<any, IWelcomeState> {
         }
     }
 
+    createEmergencyLogin() {
+        console.log("Creating an emergency login...")
+        const scopes = "read write follow";
+        const baseurl = localStorage.getItem('baseurl') || this.getLoginUser(this.state.user);
+        createHyperspaceApp(scopes, baseurl, "urn:ietf:wg:oauth:2.0:oob").then((resp: any) => {
+            let saveSessionForCrashing: SaveClientSession = {
+                clientId: resp.clientId,
+                clientSecret: resp.clientSecret,
+                authUrl: resp.url,
+                emergency: true
+            };
+            localStorage.setItem("login", JSON.stringify(saveSessionForCrashing));
+            this.setState({
+                clientId: resp.clientId,
+                clientSecret: resp.clientSecret,
+                authUrl: resp.url
+            });
+        })
+    }
+
+    authorizeEmergencyLogin() {
+        window.location.href = `/?code=${this.state.authCode}#/`;
+    }
+
     resumeLogin() {
         let loginData = localStorage.getItem("login");
         if (loginData) {
@@ -157,6 +209,7 @@ class WelcomePage extends Component<any, IWelcomeState> {
                 clientId: session.clientId,
                 clientSecret: session.clientSecret,
                 authUrl: session.authUrl,
+                emergencyMode: session.emergency,
                 wantsToLogin: true
             })
         }
@@ -169,7 +222,8 @@ class WelcomePage extends Component<any, IWelcomeState> {
             this.setState({
                 clientId: session.clientId,
                 clientSecret: session.clientSecret,
-                authUrl: session.authUrl
+                authUrl: session.authUrl,
+                emergencyMode: session.emergency
             })
         }
     }
@@ -280,7 +334,48 @@ class WelcomePage extends Component<any, IWelcomeState> {
                         <div className={classes.flexGrow}/>
                     </div>
                     <div className={classes.middlePadding}/>
+                    <Typography>Having trouble signing in? <Link onClick={() => this.startEmergencyLogin()}>Sign in with a code.</Link></Typography>
                 </div>
+        );
+    }
+
+    showAuthDialog() {
+        const {classes} = this.props;
+        return (
+            <Dialog
+                open={this.state.openAuthDialog}
+                disableBackdropClick
+                disableEscapeKeyDown
+                maxWidth="sm"
+                fullWidth={true}
+            >
+                <DialogTitle>
+                    Authorize with a code
+                </DialogTitle>
+                <DialogContent>
+                    <Typography paragraph>
+                        If you're having trouble authorizing Hyperspace, you can manually request for an authorization code. Click 'Request Code' and then paste the code in the authorization code box to continue.
+                    </Typography>
+                    <Button
+                        color="primary" 
+                        variant="contained" 
+                        href={this.state.authUrl? this.state.authUrl: ""}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >Request Code</Button>
+                    <br/><br/>
+                    <TextField
+                        variant="outlined"
+                        label="Authorization code"
+                        fullWidth
+                        onChange={(event) => this.updateAuthCode(event.target.value)}
+                    ></TextField>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => this.toggleAuthDialog()}>Cancel</Button>
+                    <Button color="secondary" onClick={() => this.authorizeEmergencyLogin()}>Authorize</Button>
+                </DialogActions>
+            </Dialog>
         );
     }
 
@@ -325,6 +420,7 @@ class WelcomePage extends Component<any, IWelcomeState> {
                 { this.state.repo? <span><Link href={this.state.repo? this.state.repo: "https://github.com/hyperspacedev"} target="_blank" rel="noreferrer">Source code</Link>  | </span>: null}<Link href={this.state.license? this.state.license: "https://www.apache.org/licenses/LICENSE-2.0"} target="_blank" rel="noreferrer">License</Link> | <Link href="https://github.com/hyperspacedev/hyperspace/issues/new" target="_blank" rel="noreferrer">File an Issue</Link>
                 </Typography>
             </Paper>
+            {this.showAuthDialog()}
         </div>
         );
     }
