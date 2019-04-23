@@ -7,6 +7,11 @@ import { createHyperspaceApp } from '../utilities/login';
 import {parseUrl} from 'query-string';
 import { getConfig } from '../utilities/settings';
 import axios from 'axios';
+import {withSnackbar, withSnackbarProps} from 'notistack';
+
+interface IWelcomeProps extends withSnackbarProps {
+    classes: any;
+}
 
 interface IWelcomeState {
     logoUrl?: string;
@@ -31,7 +36,7 @@ interface IWelcomeState {
     emergencyMode: boolean;
 }
 
-class WelcomePage extends Component<any, IWelcomeState> {
+class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
 
     client: any;
 
@@ -70,48 +75,6 @@ class WelcomePage extends Component<any, IWelcomeState> {
         })
     }
 
-    componentDidMount() {
-        if (localStorage.getItem("login")) {
-            this.getSavedSession();
-            this.setState({
-                foundSavedLogin: true
-            })
-            console.log(this.state.emergencyMode);
-            this.checkForToken();
-        }
-    }
-
-    checkForToken() {
-        let location = window.location.href;
-        if (location.includes("?code=")) {
-            let code = parseUrl(location).query.code as string;
-            this.setState({ authority: true });
-            let loginData = localStorage.getItem("login");
-            console.log(this.state.emergencyMode);
-
-            if (loginData) {
-                let clientLoginSession: SaveClientSession = JSON.parse(loginData);
-                console.log(clientLoginSession);
-                Mastodon.fetchAccessToken(
-                    clientLoginSession.clientId,
-                    clientLoginSession.clientSecret,
-                    code,
-                    (localStorage.getItem("baseurl") as string),
-                    this.state.emergencyMode? 
-                        undefined:
-                        clientLoginSession.authUrl.includes("urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob")?
-                            undefined: 
-                            `https://${window.location.host}`,
-                ).then((tokenData: any) => {
-                    localStorage.setItem("access_token", tokenData.access_token);
-                    window.location.href=`https://${window.location.host}/#/`;
-                }).catch((err: Error) => {
-                    console.log(err.message);
-                })
-            }
-        }
-    }
-
     updateUserInfo(user: string) {
         this.setState({ user });
     }
@@ -124,11 +87,50 @@ class WelcomePage extends Component<any, IWelcomeState> {
         this.setState({ openAuthDialog: !this.state.openAuthDialog });
     }
 
+    readyForAuth() {
+        if (localStorage.getItem('baseurl')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    componentDidMount() {
+        if (localStorage.getItem("login")) {
+            this.getSavedSession();
+            this.setState({
+                foundSavedLogin: true
+            })
+            this.checkForToken();
+        }
+    }
+
+    getSavedSession() {
+        let loginData = localStorage.getItem("login");
+        if (loginData) {
+            let session: SaveClientSession = JSON.parse(loginData);
+            this.setState({
+                clientId: session.clientId,
+                clientSecret: session.clientSecret,
+                authUrl: session.authUrl,
+                emergencyMode: session.emergency
+            })
+        }
+    }
+
     startEmergencyLogin() {
         if (!this.state.emergencyMode) {
             this.createEmergencyLogin();
         };
         this.toggleAuthDialog();
+    }
+
+    startRegistration() {
+        if (this.state.registerBase) {
+            return "https://" + this.state.registerBase + "/auth/sign_up";
+        } else {
+            return "https://joinmastodon.org/#getting-started";
+        }
     }
 
     getLoginUser(user: string) {
@@ -140,14 +142,6 @@ class WelcomePage extends Component<any, IWelcomeState> {
             let newUser = `${user}@${this.state.registerBase? this.state.registerBase: "mastodon.social"}`;
             this.setState({ user: newUser });
             return "https://" + (this.state.registerBase? this.state.registerBase: "mastodon.social");
-        }
-    }
-
-    startRegistration() {
-        if (this.state.registerBase) {
-            return "https://" + this.state.registerBase + "/auth/sign_up";
-        } else {
-            return "https://joinmastodon.org/#getting-started";
         }
     }
 
@@ -215,19 +209,6 @@ class WelcomePage extends Component<any, IWelcomeState> {
         }
     }
 
-    getSavedSession() {
-        let loginData = localStorage.getItem("login");
-        if (loginData) {
-            let session: SaveClientSession = JSON.parse(loginData);
-            this.setState({
-                clientId: session.clientId,
-                clientSecret: session.clientSecret,
-                authUrl: session.authUrl,
-                emergencyMode: session.emergency
-            })
-        }
-    }
-
     checkForErrors(): boolean {
         let userInputError = false;
         let userInputErrorMessage = "";
@@ -255,11 +236,32 @@ class WelcomePage extends Component<any, IWelcomeState> {
         
     }
 
-    readyForAuth() {
-        if (localStorage.getItem('baseurl')) {
-            return true;
-        } else {
-            return false;
+    checkForToken() {
+        let location = window.location.href;
+        if (location.includes("?code=")) {
+            let code = parseUrl(location).query.code as string;
+            this.setState({ authority: true });
+            let loginData = localStorage.getItem("login");
+            if (loginData) {
+                let clientLoginSession: SaveClientSession = JSON.parse(loginData);
+                Mastodon.fetchAccessToken(
+                    clientLoginSession.clientId,
+                    clientLoginSession.clientSecret,
+                    code,
+                    (localStorage.getItem("baseurl") as string),
+                    this.state.emergencyMode? 
+                        undefined:
+                        clientLoginSession.authUrl.includes("urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob")?
+                            undefined: 
+                            `https://${window.location.host}`,
+                ).then((tokenData: any) => {
+                    localStorage.setItem("access_token", tokenData.access_token);
+                    window.location.href=`https://${window.location.host}/#/`;
+                }).catch((err: Error) => {
+                    this.props.enqueueSnackbar("Couldn't authorize Hyperspace: " + err.name, {variant: 'error'});
+                    console.error(err.message);
+                })
+            }
         }
     }
 
@@ -426,4 +428,4 @@ class WelcomePage extends Component<any, IWelcomeState> {
     }
 }
 
-export default withStyles(styles)(WelcomePage);
+export default withStyles(styles)(withSnackbar(WelcomePage));
