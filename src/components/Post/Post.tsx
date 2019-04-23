@@ -508,7 +508,7 @@ export class Post extends React.Component<any, IPostState> {
                         </Tooltip>
                             <Typography>{post.reblog? post.reblog.reblogs_count: post.reblogs_count}</Typography>
                         <Tooltip className={classes.desktopOnly} title="View thread">
-                            <LinkableIconButton to={`/conversation/${post.id}`}>
+                            <LinkableIconButton to={`/conversation/${post.reblog? post.reblog.id: post.id}`}>
                                 <ForumIcon />
                             </LinkableIconButton>
                         </Tooltip>
@@ -550,7 +550,7 @@ export class Post extends React.Component<any, IPostState> {
                         }
                             <div className={classes.mobileOnly}>
                                 <Divider/>
-                                <LinkableMenuItem to={`/conversation/${post.id}`}>View thread</LinkableMenuItem>
+                                <LinkableMenuItem to={`/conversation/${post.reblog? post.reblog.id: post.id}`}>View thread</LinkableMenuItem>
                                 <MenuItem component="a" href={this.getMastodonUrl(post)} rel="noreferrer" target="_blank">Open in Web</MenuItem>
                             </div>
                         {
