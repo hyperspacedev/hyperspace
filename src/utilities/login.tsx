@@ -10,8 +10,8 @@ export function createHyperspaceApp(scopes: string, baseurl: string, redirect_ur
     return Mastodon.createApp("Hyperspace", {
         scopes: scopes,
         redirect_uris: redirect_uri,
-        website: 'https://hyperspace.marquiskurt.net'
-    }).then(appData => {
+        website: 'https://hyperspace.marquiskurt.net',
+    }, baseurl).then(appData => {
         return Mastodon.generateAuthUrl(appData.clientId, appData.clientSecret, {
             redirect_uri: redirect_uri,
             scope: scopes
