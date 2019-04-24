@@ -20,11 +20,12 @@ import {
     DialogActions,
     Tooltip
 } from '@material-ui/core';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import PersonIcon from '@material-ui/icons/Person';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {styles} from './PageLayout.styles';
-import {LinkableIconButton} from '../interfaces/overrides';
+import { LinkableIconButton, LinkableAvatar } from '../interfaces/overrides';
 import ForumIcon from '@material-ui/icons/Forum';
 import Mastodon from 'megalodon';
 import { Notification } from '../types/Notification';
@@ -147,9 +148,9 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
         return (
             <ListItem key={notif.id}>
                 <ListItemAvatar>
-                    <Avatar alt={notif.account.username} src={notif.account.avatar_static}>
+                    <LinkableAvatar alt={notif.account.username} src={notif.account.avatar_static} to={`/profile/${notif.account.id}`}>
                         <PersonIcon/>
-                    </Avatar>
+                    </LinkableAvatar>
                 </ListItemAvatar>
                 <ListItemText primary={primary} secondary={
                     <span>
@@ -164,11 +165,18 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                 <ListItemSecondaryAction>
                     {
                         notif.type === "follow"?
-                        <Tooltip title="Follow account">
-                            <IconButton onClick={() => this.followMember(notif.account)}>
-                                <PersonAddIcon/>
-                            </IconButton>
-                        </Tooltip>:
+                        <span>
+                            <Tooltip title="View profile">
+                                <LinkableIconButton to={`/profile/${notif.account.id}`}>
+                                    <AssignmentIndIcon/>
+                                </LinkableIconButton>
+                            </Tooltip>
+                            <Tooltip title="Follow account">
+                                <IconButton onClick={() => this.followMember(notif.account)}>
+                                    <PersonAddIcon/>
+                                </IconButton>
+                            </Tooltip>
+                        </span>:
 
                             notif.status?
                             <Tooltip title="View conversation">
