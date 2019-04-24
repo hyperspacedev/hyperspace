@@ -10,11 +10,15 @@ import {
     Paper, 
     withStyles, 
     Typography,
-    CircularProgress
+    CircularProgress,
+    Tooltip,
+    IconButton
 } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import {styles} from './PageLayout.styles';
-import {LinkableIconButton} from '../interfaces/overrides';
+import {LinkableIconButton, LinkableAvatar} from '../interfaces/overrides';
 import Mastodon from 'megalodon';
 import {parse as parseParams, ParsedQuery} from 'query-string';
 import { Results } from '../types/Search';
@@ -145,6 +149,16 @@ class SearchPage extends Component<any, ISearchPageState> {
         });
     }
 
+    followMemberFromQuery(acct: Account) {
+        let client = new Mastodon(localStorage.getItem('access_token') as string, localStorage.getItem('baseurl') + "/api/v1");
+        client.post(`/accounts/${acct.id}/follow`).then((resp: any) => {
+            this.props.enqueueSnackbar('You are now following this account.');
+        }).catch((err: Error) => {
+            this.props.enqueueSnackbar("Couldn't follow account: " + err.name, { variant: 'error' });
+            console.error(err.message);
+        })
+    }
+
     showAllAccountsFromQuery() {
         const { classes } = this.props;
         return (
@@ -158,13 +172,20 @@ class SearchPage extends Component<any, ISearchPageState> {
                                         return (
                                         <ListItem key={acct.id}>
                                             <ListItemAvatar>
-                                                <Avatar alt={acct.username} src={acct.avatar_static}/>
+                                                <LinkableAvatar to={`/profile/${acct.id}`} alt={acct.username} src={acct.avatar_static}/>
                                             </ListItemAvatar>
                                             <ListItemText primary={acct.display_name || acct.acct} secondary={acct.acct}/>
                                             <ListItemSecondaryAction>
-                                                <LinkableIconButton to={`/profile/${acct.id}`}>
-                                                    <PersonIcon/>
-                                                </LinkableIconButton>
+                                                <Tooltip title="View profile">
+                                                    <LinkableIconButton to={`/profile/${acct.id}`}>
+                                                        <AssignmentIndIcon/>
+                                                    </LinkableIconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Follow">
+                                                    <IconButton onClick={() => this.followMemberFromQuery(acct)}>
+                                                        <PersonAddIcon/>
+                                                    </IconButton>
+                                                </Tooltip>
                                             </ListItemSecondaryAction>
                                         </ListItem>
                                         );
