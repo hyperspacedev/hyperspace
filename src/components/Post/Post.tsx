@@ -21,11 +21,11 @@ import { Visibility } from '../../types/Visibility';
 import moment from 'moment';
 import AttachmentComponent from '../Attachment';
 import Mastodon from 'megalodon';
-import { LinkableChip, LinkableMenuItem, LinkableIconButton } from '../../interfaces/overrides';
+import { LinkableChip, LinkableMenuItem, LinkableIconButton, LinkableAvatar } from '../../interfaces/overrides';
 import {withSnackbar} from 'notistack';
 import ShareMenu from './PostShareMenu';
 import {emojifyString} from '../../utilities/emojis';
-import { PollOption, Poll } from '../../types/Poll';
+import { PollOption } from '../../types/Poll';
 
 interface IPostProps {
     post: Status;
@@ -445,7 +445,7 @@ export class Post extends React.Component<any, IPostState> {
             <Zoom in={true}>
                 <Card className={classes.post} id={`post_${post.id}`}>
                     <CardHeader avatar={
-                        <Avatar src={
+                        <LinkableAvatar to={`/profile/${post.reblog? post.reblog.account.id: post.account.id}`} src={
                             post.reblog? post.reblog.account.avatar_static: post.account.avatar_static
                         } />
                     } action={
