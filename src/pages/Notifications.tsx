@@ -6,7 +6,6 @@ import {
     ListSubheader, 
     ListItemSecondaryAction, 
     ListItemAvatar, 
-    Avatar, 
     Paper, 
     IconButton, 
     withStyles, 
@@ -27,6 +26,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import {styles} from './PageLayout.styles';
 import { LinkableIconButton, LinkableAvatar } from '../interfaces/overrides';
 import ForumIcon from '@material-ui/icons/Forum';
+import ReplyIcon from '@material-ui/icons/Reply';
 import Mastodon from 'megalodon';
 import { Notification } from '../types/Notification';
 import { Account } from '../types/Account';
@@ -196,11 +196,21 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                         </span>:
 
                             notif.status?
-                            <Tooltip title="View conversation">
-                                <LinkableIconButton to={`/conversation/${notif.status.id}`}>
-                                    <ForumIcon/>
-                                </LinkableIconButton>
-                            </Tooltip>:
+                            <span>
+                                <Tooltip title="View conversation">
+                                    <LinkableIconButton to={`/conversation/${notif.status.id}`}>
+                                        <ForumIcon/>
+                                    </LinkableIconButton>
+                                </Tooltip>
+                                {
+                                    notif.type === "mention"?
+                                    <Tooltip title="Reply">
+                                        <LinkableIconButton to={`/compose?reply=${notif.status.reblog? notif.status.reblog.id: notif.status.id}&visibility=${notif.status.visibility}&acct=${notif.status.reblog? notif.status.reblog.account.acct: notif.status.account.acct}`}>
+                                            <ReplyIcon/>
+                                        </LinkableIconButton>
+                                    </Tooltip>: null
+                                }                               
+                            </span>:
                             null
                     }
                     <Tooltip title="Remove notification">
