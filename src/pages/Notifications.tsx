@@ -43,6 +43,7 @@ interface INotificationsPageState  {
 class NotificationsPage extends Component<any, INotificationsPageState> {
 
     client: Mastodon;
+    streamListener: any;
 
     constructor(props: any) {
         super(props);
@@ -69,6 +70,22 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                 viewDidError: true,
                 viewDidErrorCode: err.message
             })
+        })
+    }
+
+    componentDidMount() {
+        this.streamNotifications();
+    }
+
+    streamNotifications() {
+        this.streamListener = this.client.stream('/streaming/user');
+
+        this.streamListener.on('notification', (notif: Notification) => {
+            let notifications = this.state.notifications;
+            if (notifications) {
+                notifications.unshift(notif);
+                this.setState({ notifications });
+            }
         })
     }
 
