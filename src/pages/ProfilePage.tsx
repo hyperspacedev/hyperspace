@@ -152,6 +152,10 @@ class ProfilePage extends Component<any, IProfilePageState> {
             })
         } else {
             this.props.enqueueSnackbar("Reached end of posts", { variant: 'error'} );
+            this.setState({
+                viewIsLoading: false,
+                viewDidLoad: true
+            })
         }
     } 
     
