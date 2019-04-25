@@ -5,7 +5,7 @@ import ForumIcon from '@material-ui/icons/Forum';
 import {styles} from './PageLayout.styles';
 import Mastodon from 'megalodon';
 import { Status } from '../types/Status';
-import { LinkableIconButton } from '../interfaces/overrides';
+import { LinkableIconButton, LinkableAvatar } from '../interfaces/overrides';
 
 interface IMessagesState {
     posts?: [Status];
@@ -73,9 +73,9 @@ class MessagesPage extends Component<any, IMessagesState> {
                                                 return (
                                                     <ListItem>
                                                         <ListItemAvatar>
-                                                            <Avatar alt={message.account.username} src={message.account.avatar_static}>
+                                                            <LinkableAvatar to={`/profile/${message.account.id}`} alt={message.account.username} src={message.account.avatar_static}>
                                                                 <PersonIcon/>
-                                                            </Avatar>
+                                                            </LinkableAvatar>
                                                         </ListItemAvatar>
                                                         <ListItemText primary={message.account.display_name || "@" + message.account.acct} secondary={this.removeHTMLContent(message.content)}/>
                                                         <ListItemSecondaryAction>

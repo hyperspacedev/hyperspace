@@ -3,8 +3,9 @@ import {withStyles, Typography, List, ListItem, Paper, ListItemText, Avatar, Lis
 import {styles} from './PageLayout.styles';
 import Mastodon from 'megalodon';
 import {Account} from '../types/Account';
-import { LinkableIconButton } from '../interfaces/overrides';
+import { LinkableIconButton, LinkableAvatar } from '../interfaces/overrides';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
@@ -120,7 +121,7 @@ class RecommendationsPage extends Component<IRecommendationsPageProps, IRecommen
                                         return (
                                         <ListItem key={request.id}>
                                             <ListItemAvatar>
-                                                <Avatar alt={request.username} src={request.avatar_static}/>
+                                                <LinkableAvatar to={`/profile/${request.id}`} alt={request.username} src={request.avatar_static}/>
                                             </ListItemAvatar>
                                             <ListItemText primary={request.display_name || request.acct} secondary={request.acct}/>
                                             <ListItemSecondaryAction>
@@ -164,19 +165,19 @@ class RecommendationsPage extends Component<IRecommendationsPageProps, IRecommen
                                         return (
                                         <ListItem key={suggestion.id}>
                                             <ListItemAvatar>
-                                                <Avatar alt={suggestion.username} src={suggestion.avatar_static}/>
+                                                <LinkableAvatar to={`/profile/${suggestion.id}`} alt={suggestion.username} src={suggestion.avatar_static}/>
                                             </ListItemAvatar>
                                             <ListItemText primary={suggestion.display_name || suggestion.acct} secondary={suggestion.acct}/>
                                             <ListItemSecondaryAction>
+                                                <Tooltip title="View profile">
+                                                    <LinkableIconButton to={`/profile/${suggestion.id}`}>
+                                                        <AssignmentIndIcon/>
+                                                    </LinkableIconButton>
+                                                </Tooltip>
                                                 <Tooltip title="Follow">
                                                     <IconButton onClick={() => this.followMember(suggestion)}>
                                                         <PersonAddIcon/>
                                                     </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="View profile">
-                                                    <LinkableIconButton to={`/profile/${suggestion.id}`}>
-                                                        <AccountCircleIcon/>
-                                                    </LinkableIconButton>
                                                 </Tooltip>
                                             </ListItemSecondaryAction>
                                         </ListItem>

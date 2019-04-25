@@ -7,6 +7,7 @@ import { MenuItemProps } from '@material-ui/core/MenuItem';
 import { MenuItem } from '@material-ui/core';
 import Button, { ButtonProps } from '@material-ui/core/Button';
 import Fab, { FabProps } from '@material-ui/core/Fab';
+import Avatar, { AvatarProps } from '@material-ui/core/Avatar';
 import { userLoggedIn } from '../utilities/accounts';
 
 export interface ILinkableListItemProps extends ListItemProps {
@@ -39,6 +40,11 @@ export interface ILinkableFabProps extends FabProps {
     replace?: boolean;
 }
 
+export interface ILinkableAvatarProps extends AvatarProps {
+    to: string;
+    replace?: boolean;
+}
+
 export const LinkableListItem = (props: ILinkableListItemProps) => (
     <ListItem {...props} component={Link as any}/>
   )
@@ -61,6 +67,9 @@ export const LinkableButton = (props: ILinkableButtonProps) => (
 
 export const LinkableFab = (props: ILinkableFabProps) => (
     <Fab {...props} component={Link as any}/>
+)
+export const LinkableAvatar = (props: ILinkableAvatarProps) => (
+    <Avatar {...props} component={Link as any}/>
 )
 
 export const ProfileRoute = (rest: any, component: Component) => (
