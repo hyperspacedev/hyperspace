@@ -122,7 +122,7 @@ class ProfilePage extends Component<any, IProfilePageState> {
     loadMoreTimelinePieces() {
         const { match: {params}} = this.props;
         this.setState({ viewDidLoad: false, viewIsLoading: true})
-        if (this.state.posts) {
+        if (this.state.posts && this.state.posts.length > 0) {
             this.client.get(`/accounts/${params.profileId}/statuses`, { max_id: this.state.posts[this.state.posts.length - 1].id, limit: 20 }).then((resp: any) => {
                 let newPosts: [Status] = resp.data;
                 let posts = this.state.posts as [Status];
@@ -150,9 +150,15 @@ class ProfilePage extends Component<any, IProfilePageState> {
                     variant: 'error',
                 });
             })
+        } else {
+            this.props.enqueueSnackbar("Reached end of posts", { variant: 'error'} );
+            this.setState({
+                viewIsLoading: false,
+                viewDidLoad: true
+            })
         }
-    }
-
+    } 
+    
     toggleFollow() {
         if (this.state.relationship) {
             if (this.state.relationship.following) {

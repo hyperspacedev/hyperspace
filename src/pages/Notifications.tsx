@@ -6,7 +6,6 @@ import {
     ListSubheader, 
     ListItemSecondaryAction, 
     ListItemAvatar, 
-    Avatar, 
     Paper, 
     IconButton, 
     withStyles, 
@@ -20,12 +19,14 @@ import {
     DialogActions,
     Tooltip
 } from '@material-ui/core';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import PersonIcon from '@material-ui/icons/Person';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {styles} from './PageLayout.styles';
-import {LinkableIconButton} from '../interfaces/overrides';
+import { LinkableIconButton, LinkableAvatar } from '../interfaces/overrides';
 import ForumIcon from '@material-ui/icons/Forum';
+import ReplyIcon from '@material-ui/icons/Reply';
 import Mastodon from 'megalodon';
 import { Notification } from '../types/Notification';
 import { Account } from '../types/Account';
@@ -43,6 +44,7 @@ interface INotificationsPageState  {
 class NotificationsPage extends Component<any, INotificationsPageState> {
 
     client: Mastodon;
+    streamListener: any;
 
     constructor(props: any) {
         super(props);
@@ -69,6 +71,22 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                 viewDidError: true,
                 viewDidErrorCode: err.message
             })
+        })
+    }
+
+    componentDidMount() {
+        this.streamNotifications();
+    }
+
+    streamNotifications() {
+        this.streamListener = this.client.stream('/streaming/user');
+
+        this.streamListener.on('notification', (notif: Notification) => {
+            let notifications = this.state.notifications;
+            if (notifications) {
+                notifications.unshift(notif);
+                this.setState({ notifications });
+            }
         })
     }
 
@@ -147,9 +165,9 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
         return (
             <ListItem key={notif.id}>
                 <ListItemAvatar>
-                    <Avatar alt={notif.account.username} src={notif.account.avatar_static}>
+                    <LinkableAvatar alt={notif.account.username} src={notif.account.avatar_static} to={`/profile/${notif.account.id}`}>
                         <PersonIcon/>
-                    </Avatar>
+                    </LinkableAvatar>
                 </ListItemAvatar>
                 <ListItemText primary={primary} secondary={
                     <span>
@@ -164,18 +182,35 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                 <ListItemSecondaryAction>
                     {
                         notif.type === "follow"?
-                        <Tooltip title="Follow account">
-                            <IconButton onClick={() => this.followMember(notif.account)}>
-                                <PersonAddIcon/>
-                            </IconButton>
-                        </Tooltip>:
+                        <span>
+                            <Tooltip title="View profile">
+                                <LinkableIconButton to={`/profile/${notif.account.id}`}>
+                                    <AssignmentIndIcon/>
+                                </LinkableIconButton>
+                            </Tooltip>
+                            <Tooltip title="Follow account">
+                                <IconButton onClick={() => this.followMember(notif.account)}>
+                                    <PersonAddIcon/>
+                                </IconButton>
+                            </Tooltip>
+                        </span>:
 
                             notif.status?
-                            <Tooltip title="View conversation">
-                                <LinkableIconButton to={`/conversation/${notif.status.id}`}>
-                                    <ForumIcon/>
-                                </LinkableIconButton>
-                            </Tooltip>:
+                            <span>
+                                <Tooltip title="View conversation">
+                                    <LinkableIconButton to={`/conversation/${notif.status.id}`}>
+                                        <ForumIcon/>
+                                    </LinkableIconButton>
+                                </Tooltip>
+                                {
+                                    notif.type === "mention"?
+                                    <Tooltip title="Reply">
+                                        <LinkableIconButton to={`/compose?reply=${notif.status.reblog? notif.status.reblog.id: notif.status.id}&visibility=${notif.status.visibility}&acct=${notif.status.reblog? notif.status.reblog.account.acct: notif.status.account.acct}`}>
+                                            <ReplyIcon/>
+                                        </LinkableIconButton>
+                                    </Tooltip>: null
+                                }                               
+                            </span>:
                             null
                     }
                     <Tooltip title="Remove notification">

@@ -18,6 +18,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import DomainIcon from '@material-ui/icons/Domain';
 import ChatIcon from '@material-ui/icons/Chat';
 import PersonIcon from '@material-ui/icons/Person';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import NetworkCheckIcon from '@material-ui/icons/NetworkCheck';
 import UpdateIcon from '@material-ui/icons/Update';
 import InfoIcon from '@material-ui/icons/Info';
@@ -25,7 +26,7 @@ import NotesIcon from '@material-ui/icons/Notes';
 import CodeIcon from '@material-ui/icons/Code';
 import {styles} from './PageLayout.styles';
 import {Instance} from '../types/Instance';
-import {LinkableIconButton} from '../interfaces/overrides';
+import {LinkableIconButton, LinkableAvatar} from '../interfaces/overrides';
 import Mastodon from 'megalodon';
 import { UAccount } from '../types/Account';
 import { getConfig } from '../utilities/settings';
@@ -114,7 +115,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                         </ListItem>
                         <ListItem>
                             <ListItemAvatar>
-                                <Avatar alt="Instance admin" src={this.state.instance? this.state.instance.contact_account.avatar_static: ""}/>
+                                <LinkableAvatar to={`/profile/${this.state.instance? this.state.instance.contact_account.id: 0}`} alt="Instance admin" src={this.state.instance? this.state.instance.contact_account.avatar_static: ""}/>
                             </ListItemAvatar>
                             <ListItemText primary="Instance admin" secondary={
                                 this.state.instance ? `${this.state.instance.contact_account.display_name} (@${this.state.instance.contact_account.acct})`:
@@ -128,7 +129,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                                 </Tooltip>
                                 <Tooltip title="View profile">
                                     <LinkableIconButton to={`/profile/${this.state.instance? this.state.instance.contact_account.id: 0}`}>
-                                        <PersonIcon/>
+                                        <AssignmentIndIcon/>
                                     </LinkableIconButton>
                                 </Tooltip>
                             </ListItemSecondaryAction>
@@ -193,9 +194,9 @@ class AboutPage extends Component<any, IAboutPageState> {
                     <List>
                         <ListItem>
                             <ListItemAvatar>
-                                <Avatar src={this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.avatar_static: ""}>
+                                <LinkableAvatar to={`/profile/${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.id: 0}`} src={this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.avatar_static: ""}>
                                     <PersonIcon/>
-                                </Avatar>
+                                </LinkableAvatar>
                             </ListItemAvatar>
                             <ListItemText primary="App provider" secondary={this.state.hyperspaceAdmin && this.state.hyperspaceAdminName? (this.state.hyperspaceAdminName || this.state.hyperspaceAdmin.display_name || "@" + this.state.hyperspaceAdmin.acct): "No provider set in config"}/>
                             <ListItemSecondaryAction>
@@ -206,7 +207,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                                 </Tooltip>
                                 <Tooltip title="View profile">
                                     <LinkableIconButton to={`/profile/${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.id: 0}`}>
-                                        <PersonIcon/>
+                                        <AssignmentIndIcon/>
                                     </LinkableIconButton>
                                 </Tooltip>
                             </ListItemSecondaryAction>
