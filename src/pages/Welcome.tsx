@@ -34,6 +34,7 @@ interface IWelcomeState {
     openAuthDialog: boolean;
     authCode: string;
     emergencyMode: boolean;
+    version: string;
 }
 
 class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
@@ -53,7 +54,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             defaultRedirectAddress: '',
             openAuthDialog: false,
             authCode: '',
-            emergencyMode: false
+            emergencyMode: false,
+            version: ''
         }
 
         getConfig().then((result: any) => {
@@ -68,7 +70,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 federates: result.federated? result.federated === "true": true,
                 license: result.license.url,
                 repo: result.repository,
-                defaultRedirectAddress: result.location != "dynamic"? result.location: `https://${window.location.host}`
+                defaultRedirectAddress: result.location != "dynamic"? result.location: `https://${window.location.host}`,
+                version: result.version
             });
         }).catch(() => {
             console.error('config.json is missing. If you want to customize Hyperspace, please include config.json');
@@ -276,9 +279,9 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     <div className={classes.middlePadding}/>
                     <TextField
                         variant="outlined"
-                        label="Account name"
+                        label="Username"
                         fullWidth
-                        placeholder="example@mastodon.host"
+                        placeholder="example@mastodon.example"
                         onChange={(event) => this.updateUserInfo(event.target.value)}
                         error={this.state.userInputError}
                         onBlur={() => this.checkForErrors()}
@@ -288,7 +291,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     }
                     <br/>
                     {
-                        this.state.registerBase? <Typography variant="caption">If you are from <b>{this.state.registerBase? this.state.registerBase: "noinstance"}</b>, sign in with your username.</Typography>: null
+                        this.state.registerBase? <Typography variant="caption">Not from <b>{this.state.registerBase? this.state.registerBase: "noinstance"}</b>? Sign in with your <Link href="https://docs.joinmastodon.org/usage/decentralization/#addressing-people" target="_blank" rel="noopener noreferrer" color="secondary">full username</Link>.</Typography>: null
                     }
                     <br/>
                     {
@@ -422,6 +425,9 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 </Typography>
                 <Typography variant="caption">
                 { this.state.repo? <span><Link href={this.state.repo? this.state.repo: "https://github.com/hyperspacedev"} target="_blank" rel="noreferrer">Source code</Link>  | </span>: null}<Link href={this.state.license? this.state.license: "https://www.apache.org/licenses/LICENSE-2.0"} target="_blank" rel="noreferrer">License</Link> | <Link href="https://github.com/hyperspacedev/hyperspace/issues/new" target="_blank" rel="noreferrer">File an Issue</Link>
+                </Typography>
+                <Typography variant="caption" color="textSecondary">
+                    {this.state.brandName? this.state.brandName: "Hypersapce"} v.{this.state.version} {this.state.brandName && this.state.brandName !== "Hyperspace"? "(Hyperspace-like)": null}
                 </Typography>
             </Paper>
             {this.showAuthDialog()}
