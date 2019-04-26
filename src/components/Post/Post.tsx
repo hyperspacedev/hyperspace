@@ -388,8 +388,7 @@ export class Post extends React.Component<any, IPostState> {
     toggleReblogged(post: Status) {
         if (post.reblogged) {
             this.client.post(`/statuses/${post.id}/unreblog`).then((resp: any) => {
-                let post = this.state.post;
-                post.reblogged = false;
+                let post: Status = resp.data;
                 this.setState({ post });
             }).catch((err: Error) => {
                 this.props.enqueueSnackbar(`Couldn't unboost post: ${err.name}`, {
@@ -399,8 +398,7 @@ export class Post extends React.Component<any, IPostState> {
             })
         } else {
             this.client.post(`/statuses/${post.id}/reblog`).then((resp: any) => {
-                let post = this.state.post;
-                post.reblogged = true;
+                let post: Status = resp.data;
                 this.setState({ post });
             }).catch((err: Error) => {
                 this.props.enqueueSnackbar(`Couldn't boost post: ${err.name}`, {
