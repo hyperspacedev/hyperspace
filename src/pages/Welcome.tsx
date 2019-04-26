@@ -333,7 +333,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             size="large"
                             href={this.state.authUrl? this.state.authUrl: ""}
                         >
-                            Authorize
+                            <Typography color="textPrimary" variant="button">Authorize</Typography>
                         </Button>
                         <div className={classes.flexGrow}/>
                     </div>
