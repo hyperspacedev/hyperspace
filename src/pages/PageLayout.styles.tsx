@@ -182,4 +182,19 @@ export const styles = (theme: Theme) => createStyles({
     youPaper: {
       padding: theme.spacing.unit * 2,
     },
+    youGrid: {
+      textAlign: "center",
+      '& *': {
+        marginLeft: "auto",
+        marginRight: "auto",
+      }
+    },
+    youGridAvatar: {
+      height: 128,
+      width: 128
+    },
+    youGridImage: {
+      width: 'auto',
+      height: 128
+    },
   });

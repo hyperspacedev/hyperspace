@@ -5,6 +5,8 @@ import {styles} from './PageLayout.styles';
 import { Account } from '../types/Account';
 import Mastodon from 'megalodon';
 
+import PersonIcon from '@material-ui/icons/Person';
+
 interface IYouProps extends withSnackbarProps {
     classes: any;
 }
@@ -41,40 +43,26 @@ class You extends Component<IYouProps, IYouState> {
     render() {
         const {classes} = this.props;
         return (
-            <div className={classes.pageLayoutConstraints}>
-                <div className={classes.pageListConstraints}>
-                    <Paper>
-                        <List>
-                            <ListItem>
-                                <ListItemAvatar>
-                                    <Avatar className={classes.youHeadingAvatar} src={this.state.currentAccount.avatar_static} alt={this.state.currentAccount.acct}/>
-                                </ListItemAvatar>
-                                <ListItemText primary={
-                                    <Typography variant="h5" component="h1"><b>{this.state.currentAccount.display_name || this.state.currentAccount.username} (you)</b></Typography>
-                                } secondary={<Typography variant="h6" color="textSecondary" component="p">{"@" + this.state.currentAccount.acct}</Typography>}/>
-                            </ListItem>
-                        </List>
-                    </Paper>
-                    <br/>
-                    <Paper className={classes.youPaper}>
-                        <Typography variant="h6" component="h2">Update your profile images</Typography>
+            <div className={classes.pageLayoutMinimalConstraints}>
+                <div className={classes.pageHeroBackground}>
+                    <div className={classes.pageHeroBackgroundImage} style={{ backgroundImage: `url("${this.state.currentAccount.header_static}")`}}/>
+                    <div className={classes.pageHeroContent}>
+                        <Avatar className={classes.pageProfileAvatar} src={this.state.currentAccount.avatar_static}/>
+                        <Typography variant="h4" color="inherit" component="h1">Edit your profile</Typography>
                         <br/>
-                        <Grid container spacing={16}>
-                            <Grid xs={12} md={6}>
-                                <Typography>Wut</Typography>
-                            </Grid>
-                            <Grid xs={12} md={6}>
-                                <Typography>Wut</Typography>
-                            </Grid>
-                        </Grid>
+                        <div>
+                            <Button className={classes.pageProfileFollowButton} variant="contained">Edit Avatar</Button>
+                            <Button className={classes.pageProfileFollowButton} variant="contained">Edit Header</Button>
+                        </div>
+                    </div>
+                </div>
+                <div className={classes.pageContentLayoutConstraints}>
+                    <Paper className={classes.youPaper}>
+                        <Typography variant="h5" component="h2">Display name</Typography>
                     </Paper>
                     <br/>
                     <Paper className={classes.youPaper}>
-                        <Typography variant="h6" component="h2">Change your display name</Typography>
-                    </Paper>
-                    <br/>
-                    <Paper className={classes.youPaper}>
-                        <Typography variant="h6" component="h2">Edit your bio</Typography>
+                        <Typography variant="h5" component="h2">About you</Typography>
                     </Paper>
                 </div>
             </div>
