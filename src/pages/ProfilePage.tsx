@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {withStyles, Typography, Avatar, Divider, Button, CircularProgress, Paper, Tooltip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, IconButton} from '@material-ui/core';
+import {withStyles, Typography, Avatar, Divider, Button, CircularProgress, Paper, Tooltip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions} from '@material-ui/core';
 import {styles} from './PageLayout.styles';
 import Mastodon from 'megalodon';
 import { Account } from '../types/Account';
