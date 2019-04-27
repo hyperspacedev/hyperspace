@@ -114,10 +114,10 @@ export const attractTheme: HyperspaceTheme = {
     name: "Attract",
     palette: {
         primary: {
-            main: '#f5f5f5',
+            main: '#E57373',
         },
         secondary: {
-            main: "#1a237e",
+            main: "#78909C",
         }
     }
 }
