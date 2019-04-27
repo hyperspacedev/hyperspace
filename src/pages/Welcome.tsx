@@ -134,7 +134,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
     }
 
     getLoginUser(user: string) {
-        if (user.includes("@")) {
+        if (this.state.federates || user.includes("@")) {
             let newUser = user;
             this.setState({ user: newUser })
             return "https://" + newUser.split("@")[1];
@@ -222,17 +222,28 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             return true;
         } else {
             if (this.state.user.includes("@")) {
-                let baseUrl = this.state.user.split("@")[1];
-                axios.get("https://" + baseUrl + "/api/v1/timelines/public").catch((err: Error) => {
-                    let userInputError = true;
-                    let userInputErrorMessage = "Instance name is invalid.";
+                if (this.state.federates && (this.state.federates === true)) {
+                    let baseUrl = this.state.user.split("@")[1];
+                    axios.get("https://" + baseUrl + "/api/v1/timelines/public").catch((err: Error) => {
+                        let userInputError = true;
+                        let userInputErrorMessage = "Instance name is invalid.";
+                        this.setState({ userInputError, userInputErrorMessage });
+                        return true;
+                    });
+                } else if (this.state.user.includes(this.state.registerBase? this.state.registerBase: "mastodon.social")) {
+                    this.setState({ userInputError, userInputErrorMessage });
+                    return false;
+                } else {
+                    userInputError = true;
+                    userInputErrorMessage = "You cannot sign in with this username.";
                     this.setState({ userInputError, userInputErrorMessage });
                     return true;
-                })
+                }
             } else {
                 this.setState({ userInputError, userInputErrorMessage });
                 return false;
             }
+            this.setState({ userInputError, userInputErrorMessage });
             return false;
         }
         
