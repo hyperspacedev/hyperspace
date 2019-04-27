@@ -174,5 +174,12 @@ export const styles = (theme: Theme) => createStyles({
       '& a': {
         color: theme.palette.primary.light
       }
-    }
+    },
+    youHeadingAvatar: {
+      height: 88,
+      width: 88
+    },
+    youPaper: {
+      padding: theme.spacing.unit * 2,
+    },
   });
