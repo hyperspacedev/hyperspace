@@ -17,6 +17,7 @@
     "emoji-mart": "^2.8.2",
     "file-dialog": "^0.0.7",
     "material-ui-pickers": "^2.2.4",
+    "mdi-material-ui": "^5.11.0",
     "megalodon": "^0.6.3",
     "moment": "^2.24.0",
     "notistack": "^0.5.1",

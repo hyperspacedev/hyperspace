@@ -10,7 +10,7 @@ import {withSnackbar} from 'notistack';
 import { LinkableButton, LinkableIconButton } from '../interfaces/overrides';
 import { emojifyString } from '../utilities/emojis';
 
-import EditIcon from '@material-ui/icons/Edit';
+import AccountEditIcon from 'mdi-material-ui/AccountEdit';
 
 interface IProfilePageState {
     account?: Account;
@@ -230,7 +230,7 @@ class ProfilePage extends Component<any, IProfilePageState> {
                             this.isItMe()?
                             <Tooltip title="Edit profile">
                                 <LinkableIconButton to="/you" color="inherit" className={classes.pageHeroToolbar}>
-                                    <EditIcon/>
+                                    <AccountEditIcon/>
                                 </LinkableIconButton>
                             </Tooltip>: null
                         }
