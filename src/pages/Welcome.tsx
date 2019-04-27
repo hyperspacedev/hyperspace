@@ -302,7 +302,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     }
                     <br/>
                     {
-                        this.state.registerBase? <Typography variant="caption">Not from <b>{this.state.registerBase? this.state.registerBase: "noinstance"}</b>? Sign in with your <Link href="https://docs.joinmastodon.org/usage/decentralization/#addressing-people" target="_blank" rel="noopener noreferrer" color="secondary">full username</Link>.</Typography>: null
+                        this.state.registerBase && this.state.federates? <Typography variant="caption">Not from <b>{this.state.registerBase? this.state.registerBase: "noinstance"}</b>? Sign in with your <Link href="https://docs.joinmastodon.org/usage/decentralization/#addressing-people" target="_blank" rel="noopener noreferrer" color="secondary">full username</Link>.</Typography>: null
                     }
                     <br/>
                     {
