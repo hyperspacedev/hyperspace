@@ -52,6 +52,10 @@ export const styles = (theme: Theme) => createStyles({
         marginLeft: 250,
       },
     },
+    pageLayoutEmptyTextConstraints: {
+      paddingLeft: theme.spacing.unit * 2,
+      paddingRight: theme.spacing.unit * 2
+    },
     pageHeroBackground: {
       position: 'relative',
       height: 'intrinsic',
