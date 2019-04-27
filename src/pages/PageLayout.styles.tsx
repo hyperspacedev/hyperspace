@@ -82,7 +82,13 @@ export const styles = (theme: Theme) => createStyles({
         paddingLeft: '25%',
         paddingRight: '25%',
       },
+      position: "relative",
       zIndex: 1
+    },
+    pageHeroToolbar: {
+      position: "absolute",
+      right: theme.spacing.unit * 2,
+      marginTop: -16,
     },
     pageListConstraints: {
         paddingLeft: theme.spacing.unit,

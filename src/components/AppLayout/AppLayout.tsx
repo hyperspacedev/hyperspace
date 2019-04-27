@@ -10,7 +10,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import GroupIcon from '@material-ui/icons/Group';
 import SettingsIcon from '@material-ui/icons/Settings';
 import InfoIcon from '@material-ui/icons/Info';
-import EditIcon from '@material-ui/icons/Edit';
+import AddCommentIcon from '@material-ui/icons/AddComment';
 //import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {styles} from './AppLayout.styles';
@@ -395,7 +395,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         </Dialog>
         <Tooltip title="Create a new post">
           <LinkableFab to="/compose" className={classes.composeButton} color="secondary" aria-label="Compose">
-            <EditIcon/>
+            <AddCommentIcon/>
           </LinkableFab>
         </Tooltip>
     </div>
