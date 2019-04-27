@@ -297,7 +297,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     {
                         this.state.foundSavedLogin? 
                             <Typography>
-                                Signing in from a previous session? <Link onClick={() => this.resumeLogin()}>Continue login</Link>.
+                                Signing in from a previous session? <Link className={classes.welcomeLink} onClick={() => this.resumeLogin()}>Continue login</Link>.
                             </Typography>: null
                     }
                     
@@ -305,7 +305,6 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     <div style={{ display: "flex" }}>
                         <Tooltip title="Create account on site">
                             <Button
-                                color="primary"
                                 href={this.startRegistration()}
                                 target="_blank"
                                 rel="noreferrer"
@@ -336,12 +335,12 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             size="large"
                             href={this.state.authUrl? this.state.authUrl: ""}
                         >
-                            <Typography color="textPrimary" variant="button">Authorize</Typography>
+                            Authorize
                         </Button>
                         <div className={classes.flexGrow}/>
                     </div>
                     <div className={classes.middlePadding}/>
-                    <Typography>Having trouble signing in? <Link onClick={() => this.startEmergencyLogin()}>Sign in with a code.</Link></Typography>
+                    <Typography>Having trouble signing in? <Link onClick={() => this.startEmergencyLogin()} className={classes.welcomeLink}>Sign in with a code.</Link></Typography>
                 </div>
         );
     }
@@ -421,10 +420,13 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 </Fade>
                 <br/>
                 <Typography variant="caption">
-                    &copy; {new Date().getFullYear()} {this.state.brandName && this.state.brandName !== "Hyperspace"? `${this.state.brandName} developers and the `: ""}<Link href="https://hyperspace.marquiskurt.net" target="_blank" rel="noreferrer">Hyperspace</Link> developers. All rights reserved.
+                    &copy; {new Date().getFullYear()} {this.state.brandName && this.state.brandName !== "Hyperspace"? `${this.state.brandName} developers and the `: ""} <Link className={classes.welcomeLink} href="https://hyperspace.marquiskurt.net" target="_blank" rel="noreferrer">Hyperspace</Link> developers. All rights reserved.
                 </Typography>
                 <Typography variant="caption">
-                { this.state.repo? <span><Link href={this.state.repo? this.state.repo: "https://github.com/hyperspacedev"} target="_blank" rel="noreferrer">Source code</Link>  | </span>: null}<Link href={this.state.license? this.state.license: "https://www.apache.org/licenses/LICENSE-2.0"} target="_blank" rel="noreferrer">License</Link> | <Link href="https://github.com/hyperspacedev/hyperspace/issues/new" target="_blank" rel="noreferrer">File an Issue</Link>
+                { this.state.repo? <span>
+                    <Link className={classes.welcomeLink} href={this.state.repo? this.state.repo: "https://github.com/hyperspacedev"} target="_blank" rel="noreferrer">Source code</Link>  | </span>: null}
+                    <Link className={classes.welcomeLink} href={this.state.license? this.state.license: "https://www.apache.org/licenses/LICENSE-2.0"} target="_blank" rel="noreferrer">License</Link> | 
+                    <Link className={classes.welcomeLink} href="https://github.com/hyperspacedev/hyperspace/issues/new" target="_blank" rel="noreferrer">File an Issue</Link>
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
                     {this.state.brandName? this.state.brandName: "Hypersapce"} v.{this.state.version} {this.state.brandName && this.state.brandName !== "Hyperspace"? "(Hyperspace-like)": null}
