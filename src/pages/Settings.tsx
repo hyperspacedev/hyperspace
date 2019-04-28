@@ -24,7 +24,7 @@ import {
     Typography
 } from '@material-ui/core';
 import {styles} from './PageLayout.styles';
-import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefaultTheme, getUserDefaultVisibility, setUserDefaultVisibility} from '../utilities/settings';
+import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefaultTheme, getUserDefaultVisibility, setUserDefaultVisibility, getConfig} from '../utilities/settings';
 import {canSendNotifications, browserSupportsNotificationRequests} from '../utilities/notifications';
 import {themes, defaultTheme} from '../types/HyperspaceTheme';
 import ThemePreview from '../components/ThemePreview';
@@ -54,6 +54,7 @@ interface ISettingsState {
     resetSettingsDialog: boolean;
     previewTheme: Theme;
     defaultVisibility: Visibility;
+    federated: boolean;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -72,7 +73,8 @@ class SettingsPage extends Component<any, ISettingsState> {
             resetHyperspaceDialog: false,
             resetSettingsDialog: false,
             previewTheme: setHyperspaceTheme(getUserDefaultTheme()) || setHyperspaceTheme(defaultTheme),
-            defaultVisibility: getUserDefaultVisibility() || "public"
+            defaultVisibility: getUserDefaultVisibility() || "public",
+            federated: true
         }
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -84,6 +86,16 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.changeThemeName = this.changeThemeName.bind(this);
         this.changeTheme = this.changeTheme.bind(this);
         this.setVisibility = this.setVisibility.bind(this);
+    }
+
+    componentDidMount() {
+        this.getFederatedStatus();
+    }
+
+    getFederatedStatus() {
+        getConfig().then((config: any) => {
+            this.setState({ federated: config.federated === "true" });
+        })
     }
 
     toggleDarkMode() {
@@ -219,7 +231,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                         value={this.state.defaultVisibility}
                         onChange={(e, value) => this.changeVisibility(value as Visibility)}
                     >
-                            <FormControlLabel value={"public"} key={"public"} control={<Radio />} label={"Public"} />
+                            <FormControlLabel value={"public"} key={"public"} control={<Radio />} label={`Public ${this.state.federated? "": "(disabled by provider)"}`} disabled={!this.state.federated}/>
                             <FormControlLabel value={"unlisted"} key={"unlisted"} control={<Radio />} label={"Unlisted"} />
                             <FormControlLabel value={"private"} key={"private"} control={<Radio />} label={"Private (followers only)"} />
                             <FormControlLabel value={"direct"} key={"direct"} control={<Radio />} label={"Direct"} />
