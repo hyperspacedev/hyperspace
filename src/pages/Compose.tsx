@@ -133,7 +133,7 @@ class Composer extends Component<any, IComposerState> {
         }).then((media: FileList) => {
             let mediaForm = new FormData();
             mediaForm.append('file', media[0]);
-            const uploading = this.props.enqueueSnackbar("Uploading media...", { persist: true })
+            this.props.enqueueSnackbar("Uploading media...", { persist: true, key: "media-upload" })
             this.client.post('/media', mediaForm).then((resp: any) => {
                 let attachment: Attachment = resp.data;
                 let attachments = this.state.attachments;
@@ -143,13 +143,14 @@ class Composer extends Component<any, IComposerState> {
                     attachments = [attachment];
                 }
                 this.setState({ attachments });
-                this.props.closeSnackbar(uploading);
+                this.props.closeSnackbar("media-upload");
                 this.props.enqueueSnackbar('Media uploaded.');
             }).catch((err: Error) => {
-                this.props.enqueueSnackbar("Couldn't upload media: " + err.name);
+                this.props.closeSnackbar("media-upload");
+                this.props.enqueueSnackbar("Couldn't upload media: " + err.name, { variant: "error" });
             })
         }).catch((err: Error) => {
-            this.props.enqueueSnackbar("Couldn't get media: " + err.name);
+            this.props.enqueueSnackbar("Couldn't get media: " + err.name, { variant: "error" });
             console.error(err.message);
         });
     }
