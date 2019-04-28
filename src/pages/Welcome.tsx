@@ -151,7 +151,12 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             const scopes = 'read write follow';
             const baseurl = this.getLoginUser(this.state.user);
             localStorage.setItem("baseurl", baseurl);
-            createHyperspaceApp(scopes, baseurl, this.state.defaultRedirectAddress).then((resp: any) => {
+            createHyperspaceApp(
+                this.state.brandName? this.state.brandName: "Hyperspace", 
+                scopes, 
+                baseurl, 
+                this.state.defaultRedirectAddress
+            ).then((resp: any) => {
                 let saveSessionForCrashing: SaveClientSession = {
                     clientId: resp.clientId,
                     clientSecret: resp.clientSecret,
@@ -175,9 +180,13 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         console.log("Creating an emergency login...")
         const scopes = "read write follow";
         const baseurl = localStorage.getItem('baseurl') || this.getLoginUser(this.state.user);
-        Mastodon.registerApp(this.state.brandName? this.state.brandName: "Hyperspace", {
-            scopes: scopes
-        }, baseurl).then((appData: any) => {
+        Mastodon.registerApp(
+            this.state.brandName? this.state.brandName: "Hyperspace", 
+            {
+                scopes: scopes
+            }, 
+            baseurl
+        ).then((appData: any) => {
             let saveSessionForCrashing: SaveClientSession = {
                 clientId: appData.clientId,
                 clientSecret: appData.clientSecret,
@@ -260,7 +269,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     localStorage.setItem("access_token", tokenData.access_token);
                     window.location.href=`https://${window.location.host}/#/`;
                 }).catch((err: Error) => {
-                    this.props.enqueueSnackbar("Couldn't authorize Hyperspace: " + err.name, {variant: 'error'});
+                    this.props.enqueueSnackbar(`Couldn't authorize ${this.state.brandName? this.state.brandName: "Hyperspace"}: ${err.name}`, {variant: 'error'});
                     console.error(err.message);
                 })
             }
@@ -323,7 +332,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         return (
                 <div>
                     <Typography variant="h5">Howdy, {this.state.user? this.state.user.split("@")[0]: "user"}</Typography>
-                    <Typography>To continue, finish signing in on your instance's website and authorize Hyperspace.</Typography>
+                    <Typography>To continue, finish signing in on your instance's website and authorize {this.state.brandName? this.state.brandName: "Hyperspace"}.</Typography>
                     <div className={classes.middlePadding}/>
                     <div style={{ display: "flex" }}>
                         <div className={classes.flexGrow}/>
