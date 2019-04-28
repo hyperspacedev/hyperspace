@@ -71,12 +71,16 @@ export const entertainerTheme: HyperspaceTheme = {
     }
 }
 
-export const kingTheme: HyperspaceTheme = {
-    key: "kingTheme",
-    name: "Royal II",
+export const classicTheme: HyperspaceTheme = {
+    key: "classicTheme",
+    name: "Classic",
     palette: {
-        primary: deepPurple,
-        secondary: amber
+        primary: {
+            main: "#555555"
+        },
+        secondary: {
+            main: "#5c2d91"
+        }
     }
 }
 
@@ -114,12 +118,12 @@ export const attractTheme: HyperspaceTheme = {
     name: "Attract",
     palette: {
         primary: {
-            main: '#f5f5f5',
+            main: '#E57373',
         },
         secondary: {
-            main: "#1a237e",
+            main: "#78909C",
         }
     }
 }
 
-export const themes = [defaultTheme, gardenerTheme, teacherTheme, jokerTheme, guardTheme, entertainerTheme, kingTheme, dragonTheme, memoriumTheme, blissTheme, attractTheme]
+export const themes = [defaultTheme, gardenerTheme, teacherTheme, jokerTheme, guardTheme, entertainerTheme, classicTheme, dragonTheme, memoriumTheme, blissTheme, attractTheme]

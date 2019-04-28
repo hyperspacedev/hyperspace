@@ -252,7 +252,7 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                                 </List>
                             </Paper>
                         </div>:
-                        <div>
+                        <div className={classes.pageLayoutEmptyTextConstraints}>
                             <Typography variant="h4">All clear!</Typography>
                             <Typography paragraph>It looks like you have no notifications. Why not get the conversation going with a new post?</Typography>
                         </div>:
