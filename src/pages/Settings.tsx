@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
     List, 
-    ListItem, 
+    ListItem,
+    ListItemAvatar,
     ListItemText, 
     ListSubheader, 
     ListItemSecondaryAction, 
@@ -22,7 +23,6 @@ import {
     Theme,
     Typography
 } from '@material-ui/core';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import {styles} from './PageLayout.styles';
 import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefaultTheme, getUserDefaultVisibility, setUserDefaultVisibility} from '../utilities/settings';
 import {canSendNotifications, browserSupportsNotificationRequests} from '../utilities/notifications';
@@ -30,6 +30,17 @@ import {themes, defaultTheme} from '../types/HyperspaceTheme';
 import ThemePreview from '../components/ThemePreview';
 import {setHyperspaceTheme, getHyperspaceTheme} from '../utilities/themes';
 import { Visibility } from '../types/Visibility';
+
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import DevicesIcon from '@material-ui/icons/Devices';
+import Brightness3Icon from '@material-ui/icons/Brightness3';
+import PaletteIcon from '@material-ui/icons/Palette';
+import MastodonIcon from 'mdi-material-ui/Mastodon';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import NotificationActiveIcon from '@material-ui/icons/NotificationsActive';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import UndoIcon from '@material-ui/icons/Undo';
 
 interface ISettingsState {
     darkModeEnabled: boolean;
@@ -281,6 +292,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
+                            <ListItemAvatar>
+                                <DevicesIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Match system appearance" secondary="Obey light/dark theme from your system"/>
                             <ListItemSecondaryAction>
                                 <Switch 
@@ -290,6 +304,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
+                            <ListItemAvatar>
+                                <Brightness3Icon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Dark mode" secondary="Toggles light or dark theme"/>
                             <ListItemSecondaryAction>
                                 <Switch
@@ -300,6 +317,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
+                            <ListItemAvatar>
+                                <PaletteIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Interface theme" secondary="The color palette used for the interface"/>
                             <ListItemSecondaryAction>
                                 <Button onClick={this.toggleThemeDialog}>
@@ -314,6 +334,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
+                            <ListItemAvatar>
+                                <MastodonIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Configure on Mastodon"/>
                             <ListItemSecondaryAction>
                                 <IconButton href={(localStorage.getItem("baseurl") as string) + "/settings/preferences"} target="_blank" rel="noreferrer">
@@ -328,6 +351,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
+                            <ListItemAvatar>
+                                <VisibilityIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Default visibility" secondary="New posts in composer will use this visiblity"/>
                             <ListItemSecondaryAction>
                                 <Button onClick={this.toggleVisibilityDialog}>
@@ -342,6 +368,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
+                            <ListItemAvatar>
+                                <NotificationsIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText 
                                 primary="Enable push notifications"
                                 secondary={
@@ -361,6 +390,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
+                            <ListItemAvatar>
+                                <NotificationActiveIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText 
                                 primary="Notification badge counts all notifications"
                                 secondary={
@@ -381,6 +413,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
+                            <ListItemAvatar>
+                                <RefreshIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Refresh settings" secondary="Reset the settings to defaults."/>
                             <ListItemSecondaryAction>
                                 <Button onClick={() => this.toggleResetSettingsDialog()}>
@@ -389,6 +424,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
+                            <ListItemAvatar>
+                                <UndoIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Reset Hyperspace" secondary="Deletes all data and resets the app"/>
                             <ListItemSecondaryAction>
                                 <Button onClick={() => this.toggleResetDialog()}>
