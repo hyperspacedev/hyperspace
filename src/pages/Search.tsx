@@ -164,11 +164,12 @@ class SearchPage extends Component<any, ISearchPageState> {
         return (
             <div>
                 <ListSubheader>Accounts</ListSubheader>
-                    <Paper className={classes.pageListConstraints}>
-                        <List>
+
                             {
-                                this.state.results?
-                                    this.state.results.accounts.map((acct: Account) => {
+                                this.state.results && this.state.results.accounts.length > 0?
+                                <Paper className={classes.pageListConstraints}>
+                                    <List>
+                                        { this.state.results.accounts.map((acct: Account) => {
                                         return (
                                         <ListItem key={acct.id}>
                                             <ListItemAvatar>
@@ -189,16 +190,19 @@ class SearchPage extends Component<any, ISearchPageState> {
                                             </ListItemSecondaryAction>
                                         </ListItem>
                                         );
-                                    }): null
+                                    })}
+                                    </List>
+                                </Paper>: <Typography variant="caption" className={classes.pageLayoutEmptyTextConstraints}>No results found</Typography>
                             }
-                        </List>
-                    </Paper>
+                            
+
                 <br/>
             </div>
         )
     }
 
     showAllPostsFromQuery() {
+        const {classes} = this.props;
         return (
             <div>
                 <ListSubheader>Posts</ListSubheader>
@@ -207,13 +211,14 @@ class SearchPage extends Component<any, ISearchPageState> {
                             this.state.results.statuses.length > 0?
                                 this.state.results.statuses.map((post: Status) => {
                                     return <Post key={post.id} post={post} client={this.client}/>
-                                }): <Typography variant="caption">No results found.</Typography>: null
+                                }): <Typography variant="caption" className={classes.pageLayoutEmptyTextConstraints}>No results found.</Typography>: null
                     }
             </div>
         );
     }
 
     showAllPostsWithTag() {
+        const {classes} = this.props;
         return (
             <div>
                 <ListSubheader>Tagged posts</ListSubheader>
@@ -222,7 +227,7 @@ class SearchPage extends Component<any, ISearchPageState> {
                             this.state.tagResults.length > 0?
                                 this.state.tagResults.map((post: Status) => {
                                     return <Post key={post.id} post={post} client={this.client}/>
-                                }): <Typography variant="caption">No results found.</Typography>: null
+                                }): <Typography variant="caption" className={classes.pageLayoutEmptyTextConstraints}>No results found.</Typography>: null
                     }
             </div>
         );

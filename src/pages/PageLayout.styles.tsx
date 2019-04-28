@@ -52,6 +52,10 @@ export const styles = (theme: Theme) => createStyles({
         marginLeft: 250,
       },
     },
+    pageLayoutEmptyTextConstraints: {
+      paddingLeft: theme.spacing.unit * 2,
+      paddingRight: theme.spacing.unit * 2
+    },
     pageHeroBackground: {
       position: 'relative',
       height: 'intrinsic',
@@ -174,5 +178,5 @@ export const styles = (theme: Theme) => createStyles({
       '& a': {
         color: theme.palette.primary.light
       }
-    }
+    },
   });

@@ -44,6 +44,7 @@ interface ISettingsState {
     previewTheme: Theme;
     defaultVisibility: Visibility;
     brandName: string;
+    federated: boolean;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -63,7 +64,8 @@ class SettingsPage extends Component<any, ISettingsState> {
             resetSettingsDialog: false,
             previewTheme: setHyperspaceTheme(getUserDefaultTheme()) || setHyperspaceTheme(defaultTheme),
             defaultVisibility: getUserDefaultVisibility() || "public",
-            brandName: "Hyperspace"
+            brandName: "Hyperspace",
+            federated: true
         }
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -84,6 +86,13 @@ class SettingsPage extends Component<any, ISettingsState> {
             })
         }).catch((err: Error) => {
             console.error(err.message);
+        });
+        this.getFederatedStatus();
+    }
+
+    getFederatedStatus() {
+        getConfig().then((config: any) => {
+            this.setState({ federated: config.federated === "true" });
         })
     }
 
@@ -220,7 +229,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                         value={this.state.defaultVisibility}
                         onChange={(e, value) => this.changeVisibility(value as Visibility)}
                     >
-                            <FormControlLabel value={"public"} key={"public"} control={<Radio />} label={"Public"} />
+                            <FormControlLabel value={"public"} key={"public"} control={<Radio />} label={`Public ${this.state.federated? "": "(disabled by provider)"}`} disabled={!this.state.federated}/>
                             <FormControlLabel value={"unlisted"} key={"unlisted"} control={<Radio />} label={"Unlisted"} />
                             <FormControlLabel value={"private"} key={"private"} control={<Radio />} label={"Private (followers only)"} />
                             <FormControlLabel value={"direct"} key={"direct"} control={<Radio />} label={"Direct"} />
