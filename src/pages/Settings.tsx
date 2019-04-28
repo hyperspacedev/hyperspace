@@ -24,7 +24,7 @@ import {
 } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import {styles} from './PageLayout.styles';
-import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefaultTheme, getUserDefaultVisibility, setUserDefaultVisibility} from '../utilities/settings';
+import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefaultTheme, getUserDefaultVisibility, setUserDefaultVisibility, getConfig} from '../utilities/settings';
 import {canSendNotifications, browserSupportsNotificationRequests} from '../utilities/notifications';
 import {themes, defaultTheme} from '../types/HyperspaceTheme';
 import ThemePreview from '../components/ThemePreview';
@@ -43,6 +43,7 @@ interface ISettingsState {
     resetSettingsDialog: boolean;
     previewTheme: Theme;
     defaultVisibility: Visibility;
+    brandName: string;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -61,7 +62,8 @@ class SettingsPage extends Component<any, ISettingsState> {
             resetHyperspaceDialog: false,
             resetSettingsDialog: false,
             previewTheme: setHyperspaceTheme(getUserDefaultTheme()) || setHyperspaceTheme(defaultTheme),
-            defaultVisibility: getUserDefaultVisibility() || "public"
+            defaultVisibility: getUserDefaultVisibility() || "public",
+            brandName: "Hyperspace"
         }
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -73,6 +75,16 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.changeThemeName = this.changeThemeName.bind(this);
         this.changeTheme = this.changeTheme.bind(this);
         this.setVisibility = this.setVisibility.bind(this);
+    }
+
+    componentDidMount() {
+        getConfig().then((config: any) => {
+            this.setState({
+                brandName: config.branding.name
+            })
+        }).catch((err: Error) => {
+            console.error(err.message);
+        })
     }
 
     toggleDarkMode() {
@@ -253,10 +265,10 @@ class SettingsPage extends Component<any, ISettingsState> {
                 open={this.state.resetHyperspaceDialog}
                 onClose={() => this.toggleResetDialog()}
                 >
-                <DialogTitle id="alert-dialog-title">Reset Hyperspace?</DialogTitle>
+                <DialogTitle id="alert-dialog-title">Reset {this.state.brandName}?</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        Are you sure you want to reset Hyperspace? You'll need to sign in again and grant Hyperspace access to use it again.
+                        Are you sure you want to reset {this.state.brandName}? You'll need to re-authorize {this.state.brandName} access again.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -389,7 +401,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
-                            <ListItemText primary="Reset Hyperspace" secondary="Deletes all data and resets the app"/>
+                            <ListItemText primary={`Reset ${this.state.brandName}`} secondary="Deletes all data and resets the app"/>
                             <ListItemSecondaryAction>
                                 <Button onClick={() => this.toggleResetDialog()}>
                                     Reset
