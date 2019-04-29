@@ -137,10 +137,16 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
     }
 
     getLoginUser(user: string) {
-        if (this.state.federates || user.includes("@")) {
-            let newUser = user;
-            this.setState({ user: newUser })
-            return "https://" + newUser.split("@")[1];
+        if (user.includes("@")) {
+            if (this.state.federates) {
+                let newUser = user;
+                this.setState({ user: newUser });
+                return "https://" + newUser.split("@")[1];
+            } else {
+                let newUser = `${user}@${this.state.registerBase? this.state.registerBase: "mastodon.social"}`;
+                this.setState({ user: newUser });
+                return "https://" + (this.state.registerBase? this.state.registerBase: "mastodon.social");
+            }
         } else {
             let newUser = `${user}@${this.state.registerBase? this.state.registerBase: "mastodon.social"}`;
             this.setState({ user: newUser });
