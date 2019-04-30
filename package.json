@@ -2,6 +2,7 @@
   "name": "hyperspace",
   "version": "1.0.0",
   "private": true,
+  "homepage": "./",
   "devDependencies": {
     "@date-io/moment": "^1.3.5",
     "@material-ui/core": "^3.9.3",
@@ -27,11 +28,17 @@
     "react-scripts": "^2.1.8",
     "react-swipeable-views": "^0.13.1",
     "react-web-share-api": "^0.0.2",
-    "typescript": "3.4.1"
+    "typescript": "3.4.1",
+    "electron": "^5.0.0",
+    "electron-builder": "^20.39.0",
+    "electron-updater": "^4.0.6"
   },
+  "main": "public/desktop.js",
   "scripts": {
     "start": "HTTPS=true BROWSER='Safari Technology Preview' react-scripts start",
+    "electrify": "npm run build; electron .",
     "build": "react-scripts build",
+    "build-desktop": "build -mwl deb AppImage snap",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -43,5 +50,40 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "build": {
+    "appId": "net.marquiskurt.hyperspace",
+    "directories": {
+      "buildResources": "desktop"
+    },
+    "mac": {
+      "category": "public.app-category.social-networking",
+      "icon": "desktop/app.icns",
+      "target": [
+        "dmg",
+        "mas"
+      ]
+    },
+    "mas": {
+      "entitlements": "desktop/entitlements.mas.plist",
+      "provisioningProfile": "desktop/embedded.provisionprofile"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "desktop/app.ico"
+    },
+    "linux": {
+      "target": [
+        "${@:1}"
+      ],
+      "icon": "linux",
+      "category": "Network"
+    },
+    "snap": {
+      "confinement": "strict",
+      "summary": "A beautiful, fluffy client for the fediverse"
+    }
+  }
 }
