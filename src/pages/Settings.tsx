@@ -54,6 +54,7 @@ interface ISettingsState {
     resetSettingsDialog: boolean;
     previewTheme: Theme;
     defaultVisibility: Visibility;
+    brandName: string;
     federated: boolean;
 }
 
@@ -74,6 +75,7 @@ class SettingsPage extends Component<any, ISettingsState> {
             resetSettingsDialog: false,
             previewTheme: setHyperspaceTheme(getUserDefaultTheme()) || setHyperspaceTheme(defaultTheme),
             defaultVisibility: getUserDefaultVisibility() || "public",
+            brandName: "Hyperspace",
             federated: true
         }
 
@@ -89,6 +91,13 @@ class SettingsPage extends Component<any, ISettingsState> {
     }
 
     componentDidMount() {
+        getConfig().then((config: any) => {
+            this.setState({
+                brandName: config.branding.name
+            })
+        }).catch((err: Error) => {
+            console.error(err.message);
+        });
         this.getFederatedStatus();
     }
 
@@ -276,10 +285,10 @@ class SettingsPage extends Component<any, ISettingsState> {
                 open={this.state.resetHyperspaceDialog}
                 onClose={() => this.toggleResetDialog()}
                 >
-                <DialogTitle id="alert-dialog-title">Reset Hyperspace?</DialogTitle>
+                <DialogTitle id="alert-dialog-title">Reset {this.state.brandName}?</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        Are you sure you want to reset Hyperspace? You'll need to sign in again and grant Hyperspace access to use it again.
+                        Are you sure you want to reset {this.state.brandName}? You'll need to re-authorize {this.state.brandName} access again.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -439,7 +448,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                             <ListItemAvatar>
                                 <UndoIcon color="action"/>
                             </ListItemAvatar>
-                            <ListItemText primary="Reset Hyperspace" secondary="Deletes all data and resets the app"/>
+                            <ListItemText primary={`Reset ${this.state.brandName}`} secondary="Deletes all data and resets the app"/>
                             <ListItemSecondaryAction>
                                 <Button onClick={() => this.toggleResetDialog()}>
                                     Reset
