@@ -106,12 +106,12 @@ class You extends Component<IYouProps, IYouState> {
             this.setState({currentAccount});
             localStorage.setItem('account', JSON.stringify(currentAccount));
             this.props.closeSnackbar("persistHeader");
-            this.props.enqueueSnackbar("Display Name updated successfully.");
+            this.props.enqueueSnackbar("Display name updated successfully: " + this.state.newDisplayName);
         } ).catch((err:Error) => {
             this.props.closeSnackbar("persistHeader");
-            this.props.enqueueSnackbar("Couldn't update Display Name: " + err.name, { variant: "error" })
+            this.props.enqueueSnackbar("Couldn't update display name: " + err.name, { variant: "error" })
         }).catch((err: Error) => {
-            this.props.enqueueSnackbar("Couldn't update Display Name: " + err.name);
+            this.props.enqueueSnackbar("Couldn't update display name: " + err.name);
         })
     }
 
@@ -130,9 +130,9 @@ class You extends Component<IYouProps, IYouState> {
             this.props.enqueueSnackbar("Bio updated successfully.");
         }).catch((err: Error) => {
             this.props.closeSnackbar("persistHeader");
-            this.props.enqueueSnackbar("Couldn't update Bio: " + err.name, { variant: "error"});
+            this.props.enqueueSnackbar("Couldn't update bio: " + err.name, { variant: "error"});
         }).catch((err:Error) => {
-            this.props.enqueueSnackbar("Couldn't update Bio: " + err.name);
+            this.props.enqueueSnackbar("Couldn't update bio: " + err.name);
         }) 
     }
 
