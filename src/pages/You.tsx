@@ -89,14 +89,55 @@ class You extends Component<IYouProps, IYouState> {
         })
     }
 
+    removeHTMLContent(text: string) {
+        const div = document.createElement('div');
+        div.innerHTML = text;
+        let innerContent = div.textContent || div.innerText || "";
+        return innerContent;
+    }
+
     //TODO: Implement changeDisplayName
     changeDisplayName() {
-        
+        this.client.patch('/accounts/update_credentials', { 
+            display_name: this.state.newDisplayName? this.state.newDisplayName: this.state.currentAccount.display_name
+        })
+        .then((acct: any) =>{
+            let currentAccount: Account = acct.data
+            this.setState({currentAccount});
+            localStorage.setItem('account', JSON.stringify(currentAccount));
+            this.props.closeSnackbar("persistHeader");
+            this.props.enqueueSnackbar("Display Name updated successfully.");
+        } ).catch((err:Error) => {
+            this.props.closeSnackbar("persistHeader");
+            this.props.enqueueSnackbar("Couldn't update Display Name: " + err.name, { variant: "error" })
+        }).catch((err: Error) => {
+            this.props.enqueueSnackbar("Couldn't update Display Name: " + err.name);
+        })
     }
+
+    updateDisplayname(name: string) {
+        this.setState({ newDisplayName: name });
+      };
 
     //TODO: Implement changeBio
     changeBio() {
+        this.client.patch('/accounts/update_credentials', {note: this.state.newBio? this.state.newBio: this.state.currentAccount.note})
+        .then((acct:any) => {
+            let currentAccount: Account = acct.data
+            this.setState({currentAccount});
+            localStorage.setItem('account', JSON.stringify(currentAccount));
+            this.props.closeSnackbar("persistHeader");
+            this.props.enqueueSnackbar("Bio updated successfully.");
+        }).catch((err: Error) => {
+            this.props.closeSnackbar("persistHeader");
+            this.props.enqueueSnackbar("Couldn't update Bio: " + err.name, { variant: "error"});
+        }).catch((err:Error) => {
+            this.props.enqueueSnackbar("Couldn't update Bio: " + err.name);
+        }) 
+    }
 
+    updateBio(bio:string){
+        this.setState({newBio:bio})
     }
 
     render() {
@@ -118,11 +159,35 @@ class You extends Component<IYouProps, IYouState> {
                 </div>
                 <div className={classes.pageContentLayoutConstraints}>
                     <Paper className={classes.youPaper}>
-                        <Typography variant="h5" component="h2">Display name</Typography>
+                    <Typography variant="h5" component="h2">Display Name</Typography>
+                    <br/>
+                    <TextField className = {classes.TextField} 
+                        defaultValue = {this.state.currentAccount.display_name}
+                        rowsMax = "1"
+                        variant = "outlined"
+                        fullWidth
+                        onChange = {(event: any) => this.updateDisplayname(event.target.value)}>
+                        </TextField>
+                    <div style = {{textAlign: "right"}}>
+                        <Button className={classes.pageProfileFollowButton} color = "primary" onClick = {() => this.changeDisplayName()}>Update Display Name</Button>
+                    </div>
                     </Paper>
                     <br/>
                     <Paper className={classes.youPaper}>
                         <Typography variant="h5" component="h2">About you</Typography>
+                        <br/>
+                        <TextField className = {classes.TextField} 
+                            defaultValue = {this.state.currentAccount.note? this.removeHTMLContent(this.state.currentAccount.note): "Tell a little bit about yourself"}
+                            multiline
+                            variant = "outlined"
+                            rows = "2"
+                            rowsMax = "5"
+                            fullWidth
+                            onChange = {(event:any) =>this.updateBio(event.target.value)}>
+                        </TextField>
+                        <div style={{textAlign: "right"}}>
+                            <Button className={classes.pageProfileFollowButton} color = "primary" onClick = {() => this.changeBio()}>Update Biography</Button>
+                        </div>
                     </Paper>
                 </div>
             </div>
