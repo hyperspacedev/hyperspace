@@ -3,7 +3,7 @@ import {withStyles, Paper, Typography, Button, TextField, Fade, Link, CircularPr
 import {styles} from './WelcomePage.styles';
 import Mastodon from 'megalodon';
 import {SaveClientSession} from '../types/SessionData';
-import { createHyperspaceApp } from '../utilities/login';
+import { createHyperspaceApp, getRedirectAddress } from '../utilities/login';
 import {parseUrl} from 'query-string';
 import { getConfig } from '../utilities/settings';
 import axios from 'axios';
@@ -61,6 +61,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         getConfig().then((result: any) => {
             if (result.location === "dynamic") {
                 console.warn("Recirect URI is set to dyanmic, which may affect how sign-in works for some users. Careful!");
+            } else if (result.location === "desktop") {
+                console.warn("Recirect URI is set to desktop, which may affect how sign-in works for some users. This will use https://localhost; careful!");
             }
             this.setState({
                 logoUrl: result.branding? result.branding.logo: "logo.png",
@@ -70,7 +72,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 federates: result.federated? result.federated === "true": true,
                 license: result.license.url,
                 repo: result.repository,
-                defaultRedirectAddress: result.location != "dynamic"? result.location: `https://${window.location.host}`,
+                defaultRedirectAddress: getRedirectAddress(result.location),
                 version: result.version
             });
         }).catch(() => {

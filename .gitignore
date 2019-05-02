@@ -66,3 +66,6 @@ typings/
 # Signing certificates
 desktop/*.provisionprofile
 desktop/*.plist
+
+# Prod dirs
+build/
