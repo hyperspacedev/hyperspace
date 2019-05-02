@@ -62,3 +62,7 @@ typings/
 
 # VSCode dirs
 .vscode/
+
+# Signing certificates
+desktop/*.provisionprofile
+desktop/*.plist
