@@ -36,6 +36,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import DevicesIcon from '@material-ui/icons/Devices';
 import Brightness3Icon from '@material-ui/icons/Brightness3';
 import PaletteIcon from '@material-ui/icons/Palette';
+import AccountEditIcon from 'mdi-material-ui/AccountEdit';
 import MastodonIcon from 'mdi-material-ui/Mastodon';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -357,7 +358,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                     <List>
                         <ListItem>
                             <ListItemAvatar>
-                                <MastodonIcon color="action"/>
+                                <AccountEditIcon color="action"/>
                             </ListItemAvatar>
                             <ListItemText primary="Edit your profile" secondary="Change your bio, display name, and images"/>
                             <ListItemSecondaryAction>
@@ -365,6 +366,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
+                            <ListItemAvatar>
+                                <MastodonIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Configure on Mastodon"/>
                             <ListItemSecondaryAction>
                                 <IconButton href={(localStorage.getItem("baseurl") as string) + "/settings/preferences"} target="_blank" rel="noreferrer">
