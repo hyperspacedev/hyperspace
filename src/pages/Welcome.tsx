@@ -214,7 +214,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
     }
 
     authorizeEmergencyLogin() {
-        window.location.href = `/?code=${this.state.authCode}#/`;
+        window.location.href = `${this.state.defaultRedirectAddress}/?code=${this.state.authCode}#/`;
     }
 
     resumeLogin() {
