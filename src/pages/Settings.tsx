@@ -39,7 +39,7 @@ import PaletteIcon from '@material-ui/icons/Palette';
 import MastodonIcon from 'mdi-material-ui/Mastodon';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import NotificationActiveIcon from '@material-ui/icons/NotificationsActive';
+import BellAlertIcon from 'mdi-material-ui/BellAlert';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import UndoIcon from '@material-ui/icons/Undo';
 
@@ -419,7 +419,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                         </ListItem>
                         <ListItem>
                             <ListItemAvatar>
-                                <NotificationActiveIcon color="action"/>
+                                <BellAlertIcon color="action"/>
                             </ListItemAvatar>
                             <ListItemText 
                                 primary="Notification badge counts all notifications"
