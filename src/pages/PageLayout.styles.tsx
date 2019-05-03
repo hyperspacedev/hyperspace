@@ -52,6 +52,10 @@ export const styles = (theme: Theme) => createStyles({
         marginLeft: 250,
       },
     },
+    pageLayoutEmptyTextConstraints: {
+      paddingLeft: theme.spacing.unit * 2,
+      paddingRight: theme.spacing.unit * 2
+    },
     pageHeroBackground: {
       position: 'relative',
       height: 'intrinsic',
@@ -82,7 +86,13 @@ export const styles = (theme: Theme) => createStyles({
         paddingLeft: '25%',
         paddingRight: '25%',
       },
+      position: "relative",
       zIndex: 1
+    },
+    pageHeroToolbar: {
+      position: "absolute",
+      right: theme.spacing.unit * 2,
+      marginTop: -16,
     },
     pageListConstraints: {
         paddingLeft: theme.spacing.unit,
@@ -174,5 +184,27 @@ export const styles = (theme: Theme) => createStyles({
       '& a': {
         color: theme.palette.primary.light
       }
-    }
+    },
+    youHeadingAvatar: {
+      height: 88,
+      width: 88
+    },
+    youPaper: {
+      padding: theme.spacing.unit * 2,
+    },
+    youGrid: {
+      textAlign: "center",
+      '& *': {
+        marginLeft: "auto",
+        marginRight: "auto",
+      }
+    },
+    youGridAvatar: {
+      height: 128,
+      width: 128
+    },
+    youGridImage: {
+      width: 'auto',
+      height: 128
+    },
   });

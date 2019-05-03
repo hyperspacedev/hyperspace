@@ -34,6 +34,7 @@ interface IWelcomeState {
     openAuthDialog: boolean;
     authCode: string;
     emergencyMode: boolean;
+    version: string;
 }
 
 class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
@@ -53,7 +54,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             defaultRedirectAddress: '',
             openAuthDialog: false,
             authCode: '',
-            emergencyMode: false
+            emergencyMode: false,
+            version: ''
         }
 
         getConfig().then((result: any) => {
@@ -68,7 +70,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 federates: result.federated? result.federated === "true": true,
                 license: result.license.url,
                 repo: result.repository,
-                defaultRedirectAddress: result.location != "dynamic"? result.location: `https://${window.location.host}`
+                defaultRedirectAddress: result.location != "dynamic"? result.location: `https://${window.location.host}`,
+                version: result.version
             });
         }).catch(() => {
             console.error('config.json is missing. If you want to customize Hyperspace, please include config.json');
@@ -135,9 +138,15 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
 
     getLoginUser(user: string) {
         if (user.includes("@")) {
-            let newUser = user;
-            this.setState({ user: newUser })
-            return "https://" + newUser.split("@")[1];
+            if (this.state.federates) {
+                let newUser = user;
+                this.setState({ user: newUser });
+                return "https://" + newUser.split("@")[1];
+            } else {
+                let newUser = `${user}@${this.state.registerBase? this.state.registerBase: "mastodon.social"}`;
+                this.setState({ user: newUser });
+                return "https://" + (this.state.registerBase? this.state.registerBase: "mastodon.social");
+            }
         } else {
             let newUser = `${user}@${this.state.registerBase? this.state.registerBase: "mastodon.social"}`;
             this.setState({ user: newUser });
@@ -151,7 +160,12 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             const scopes = 'read write follow';
             const baseurl = this.getLoginUser(this.state.user);
             localStorage.setItem("baseurl", baseurl);
-            createHyperspaceApp(scopes, baseurl, this.state.defaultRedirectAddress).then((resp: any) => {
+            createHyperspaceApp(
+                this.state.brandName? this.state.brandName: "Hyperspace", 
+                scopes, 
+                baseurl, 
+                this.state.defaultRedirectAddress
+            ).then((resp: any) => {
                 let saveSessionForCrashing: SaveClientSession = {
                     clientId: resp.clientId,
                     clientSecret: resp.clientSecret,
@@ -175,9 +189,13 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         console.log("Creating an emergency login...")
         const scopes = "read write follow";
         const baseurl = localStorage.getItem('baseurl') || this.getLoginUser(this.state.user);
-        Mastodon.registerApp(this.state.brandName? this.state.brandName: "Hyperspace", {
-            scopes: scopes
-        }, baseurl).then((appData: any) => {
+        Mastodon.registerApp(
+            this.state.brandName? this.state.brandName: "Hyperspace", 
+            {
+                scopes: scopes
+            }, 
+            baseurl
+        ).then((appData: any) => {
             let saveSessionForCrashing: SaveClientSession = {
                 clientId: appData.clientId,
                 clientSecret: appData.clientSecret,
@@ -222,17 +240,28 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             return true;
         } else {
             if (this.state.user.includes("@")) {
-                let baseUrl = this.state.user.split("@")[1];
-                axios.get("https://" + baseUrl + "/api/v1/timelines/public").catch((err: Error) => {
-                    let userInputError = true;
-                    let userInputErrorMessage = "Instance name is invalid.";
+                if (this.state.federates && (this.state.federates === true)) {
+                    let baseUrl = this.state.user.split("@")[1];
+                    axios.get("https://" + baseUrl + "/api/v1/timelines/public").catch((err: Error) => {
+                        let userInputError = true;
+                        let userInputErrorMessage = "Instance name is invalid.";
+                        this.setState({ userInputError, userInputErrorMessage });
+                        return true;
+                    });
+                } else if (this.state.user.includes(this.state.registerBase? this.state.registerBase: "mastodon.social")) {
+                    this.setState({ userInputError, userInputErrorMessage });
+                    return false;
+                } else {
+                    userInputError = true;
+                    userInputErrorMessage = "You cannot sign in with this username.";
                     this.setState({ userInputError, userInputErrorMessage });
                     return true;
-                })
+                }
             } else {
                 this.setState({ userInputError, userInputErrorMessage });
                 return false;
             }
+            this.setState({ userInputError, userInputErrorMessage });
             return false;
         }
         
@@ -260,7 +289,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     localStorage.setItem("access_token", tokenData.access_token);
                     window.location.href=`https://${window.location.host}/#/`;
                 }).catch((err: Error) => {
-                    this.props.enqueueSnackbar("Couldn't authorize Hyperspace: " + err.name, {variant: 'error'});
+                    this.props.enqueueSnackbar(`Couldn't authorize ${this.state.brandName? this.state.brandName: "Hyperspace"}: ${err.name}`, {variant: 'error'});
                     console.error(err.message);
                 })
             }
@@ -276,9 +305,9 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     <div className={classes.middlePadding}/>
                     <TextField
                         variant="outlined"
-                        label="Account name"
+                        label="Username"
                         fullWidth
-                        placeholder="example@mastodon.host"
+                        placeholder="example@mastodon.example"
                         onChange={(event) => this.updateUserInfo(event.target.value)}
                         error={this.state.userInputError}
                         onBlur={() => this.checkForErrors()}
@@ -288,13 +317,13 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     }
                     <br/>
                     {
-                        this.state.registerBase? <Typography variant="caption">If you are from <b>{this.state.registerBase? this.state.registerBase: "noinstance"}</b>, sign in with your username.</Typography>: null
+                        this.state.registerBase && this.state.federates? <Typography variant="caption">Not from <b>{this.state.registerBase? this.state.registerBase: "noinstance"}</b>? Sign in with your <Link href="https://docs.joinmastodon.org/usage/decentralization/#addressing-people" target="_blank" rel="noopener noreferrer" color="secondary">full username</Link>.</Typography>: null
                     }
                     <br/>
                     {
                         this.state.foundSavedLogin? 
                             <Typography>
-                                Signing in from a previous session? <Link onClick={() => this.resumeLogin()}>Continue login</Link>.
+                                Signing in from a previous session? <Link className={classes.welcomeLink} onClick={() => this.resumeLogin()}>Continue login</Link>.
                             </Typography>: null
                     }
                     
@@ -302,7 +331,6 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     <div style={{ display: "flex" }}>
                         <Tooltip title="Create account on site">
                             <Button
-                                color="primary"
                                 href={this.startRegistration()}
                                 target="_blank"
                                 rel="noreferrer"
@@ -323,7 +351,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         return (
                 <div>
                     <Typography variant="h5">Howdy, {this.state.user? this.state.user.split("@")[0]: "user"}</Typography>
-                    <Typography>To continue, finish signing in on your instance's website and authorize Hyperspace.</Typography>
+                    <Typography>To continue, finish signing in on your instance's website and authorize {this.state.brandName? this.state.brandName: "Hyperspace"}.</Typography>
                     <div className={classes.middlePadding}/>
                     <div style={{ display: "flex" }}>
                         <div className={classes.flexGrow}/>
@@ -338,7 +366,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         <div className={classes.flexGrow}/>
                     </div>
                     <div className={classes.middlePadding}/>
-                    <Typography>Having trouble signing in? <Link onClick={() => this.startEmergencyLogin()}>Sign in with a code.</Link></Typography>
+                    <Typography>Having trouble signing in? <Link onClick={() => this.startEmergencyLogin()} className={classes.welcomeLink}>Sign in with a code.</Link></Typography>
                 </div>
         );
     }
@@ -418,10 +446,16 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 </Fade>
                 <br/>
                 <Typography variant="caption">
-                    &copy; {new Date().getFullYear()} {this.state.brandName && this.state.brandName !== "Hyperspace"? `${this.state.brandName} developers and the `: ""}<Link href="https://hyperspace.marquiskurt.net" target="_blank" rel="noreferrer">Hyperspace</Link> developers. All rights reserved.
+                    &copy; {new Date().getFullYear()} {this.state.brandName && this.state.brandName !== "Hyperspace"? `${this.state.brandName} developers and the `: ""} <Link className={classes.welcomeLink} href="https://hyperspace.marquiskurt.net" target="_blank" rel="noreferrer">Hyperspace</Link> developers. All rights reserved.
                 </Typography>
                 <Typography variant="caption">
-                { this.state.repo? <span><Link href={this.state.repo? this.state.repo: "https://github.com/hyperspacedev"} target="_blank" rel="noreferrer">Source code</Link>  | </span>: null}<Link href={this.state.license? this.state.license: "https://www.apache.org/licenses/LICENSE-2.0"} target="_blank" rel="noreferrer">License</Link> | <Link href="https://github.com/hyperspacedev/hyperspace/issues/new" target="_blank" rel="noreferrer">File an Issue</Link>
+                { this.state.repo? <span>
+                    <Link className={classes.welcomeLink} href={this.state.repo? this.state.repo: "https://github.com/hyperspacedev"} target="_blank" rel="noreferrer">Source code</Link>  | </span>: null}
+                    <Link className={classes.welcomeLink} href={this.state.license? this.state.license: "https://www.apache.org/licenses/LICENSE-2.0"} target="_blank" rel="noreferrer">License</Link> | 
+                    <Link className={classes.welcomeLink} href="https://github.com/hyperspacedev/hyperspace/issues/new" target="_blank" rel="noreferrer">File an Issue</Link>
+                </Typography>
+                <Typography variant="caption" color="textSecondary">
+                    {this.state.brandName? this.state.brandName: "Hypersapce"} v.{this.state.version} {this.state.brandName && this.state.brandName !== "Hyperspace"? "(Hyperspace-like)": null}
                 </Typography>
             </Paper>
             {this.showAuthDialog()}

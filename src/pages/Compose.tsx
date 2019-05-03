@@ -20,7 +20,7 @@ import ComposeMediaAttachment from '../components/ComposeMediaAttachment';
 import EmojiPicker from '../components/EmojiPicker';
 import { DateTimePicker, MuiPickersUtilsProvider } from 'material-ui-pickers';
 import MomentUtils from '@date-io/moment';
-import { getUserDefaultVisibility } from '../utilities/settings';
+import { getUserDefaultVisibility, getConfig } from '../utilities/settings';
 
 interface IComposerState {
     account: UAccount;
@@ -36,6 +36,7 @@ interface IComposerState {
     poll?: PollWizard;
     pollExpiresDate?: any;
     showEmojis: boolean;
+    federated: boolean;
 }
 
 class Composer extends Component<any, IComposerState> {
@@ -54,20 +55,26 @@ class Composer extends Component<any, IComposerState> {
             visibilityMenu: false,
             text: '',
             remainingChars: 500,
-            showEmojis: false
+            showEmojis: false,
+            federated: true
         }
     }
 
     componentDidMount() {
         let state = this.getComposerParams(this.props);
         let text = state.acct? `@${state.acct}: `: '';
-        this.setState({
-            reply: state.reply,
-            acct: state.acct,
-            visibility: state.visibility,
-            text,
-            remainingChars: 500 - text.length
+        getConfig().then((config: any) => {
+            this.setState({ 
+                federated: config.federated === "true",
+                reply: state.reply,
+                acct: state.acct,
+                visibility: state.visibility,
+                text,
+                remainingChars: 500 - text.length
+            });
         })
+        
+
     }
 
     componentWillReceiveProps(props: any) {
@@ -133,7 +140,7 @@ class Composer extends Component<any, IComposerState> {
         }).then((media: FileList) => {
             let mediaForm = new FormData();
             mediaForm.append('file', media[0]);
-            const uploading = this.props.enqueueSnackbar("Uploading media...", { persist: true })
+            this.props.enqueueSnackbar("Uploading media...", { persist: true, key: "media-upload" })
             this.client.post('/media', mediaForm).then((resp: any) => {
                 let attachment: Attachment = resp.data;
                 let attachments = this.state.attachments;
@@ -143,13 +150,14 @@ class Composer extends Component<any, IComposerState> {
                     attachments = [attachment];
                 }
                 this.setState({ attachments });
-                this.props.closeSnackbar(uploading);
+                this.props.closeSnackbar("media-upload");
                 this.props.enqueueSnackbar('Media uploaded.');
             }).catch((err: Error) => {
-                this.props.enqueueSnackbar("Couldn't upload media: " + err.name);
+                this.props.closeSnackbar("media-upload");
+                this.props.enqueueSnackbar("Couldn't upload media: " + err.name, { variant: "error" });
             })
         }).catch((err: Error) => {
-            this.props.enqueueSnackbar("Couldn't get media: " + err.name);
+            this.props.enqueueSnackbar("Couldn't get media: " + err.name, { variant: "error" });
             console.error(err.message);
         });
     }
@@ -499,7 +507,7 @@ class Composer extends Component<any, IComposerState> {
                         <MenuItem onClick={() => this.changeVisibility('direct')}>Direct (direct message)</MenuItem>
                         <MenuItem onClick={() => this.changeVisibility('private')}>Private (followers only)</MenuItem>
                         <MenuItem onClick={() => this.changeVisibility('unlisted')}>Unlisted</MenuItem>
-                        <MenuItem onClick={() => this.changeVisibility('public')}>Public</MenuItem>
+                        {this.state.federated? <MenuItem onClick={() => this.changeVisibility('public')}>Public</MenuItem>: null}
                     </Menu>
                 </Toolbar>
                 <DialogActions>

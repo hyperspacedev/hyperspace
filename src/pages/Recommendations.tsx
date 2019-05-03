@@ -201,7 +201,7 @@ class RecommendationsPage extends Component<IRecommendationsPageProps, IRecommen
                             {
                                 this.state.requestedFollows && this.state.requestedFollows.length > 0?
                                 this.showFollowRequests():
-                                <div>
+                                <div className={classes.pageLayoutEmptyTextConstraints}>
                                     <Typography variant="h6">You don't have any follow requests.</Typography>
                                     <br/>
                                 </div>
@@ -210,7 +210,7 @@ class RecommendationsPage extends Component<IRecommendationsPageProps, IRecommen
                             <br/>
                             {
                                 this.state.followSuggestions && this.state.followSuggestions.length > 0? this.showFollowSuggestions(): 
-                                <div>
+                                <div className={classes.pageLayoutEmptyTextConstraints}>
                                     <Typography variant="h5">We don't have any suggestions for you.</Typography>
                                     <Typography paragraph>Why not interact with the fediverse a bit by creating a new post?</Typography>
                                 </div>

@@ -19,6 +19,7 @@ import WelcomePage from './pages/Welcome';
 import MessagesPage from './pages/Messages';
 import RecommendationsPage from './pages/Recommendations';
 import Missingno from './pages/Missingno';
+import You from './pages/You';
 import {withSnackbar} from 'notistack';
 import {PrivateRoute} from './interfaces/overrides';
 import { userLoggedIn } from './utilities/accounts';
@@ -60,6 +61,7 @@ class App extends Component<any, any> {
             <PrivateRoute path="/conversation/:conversationId" component={Conversation}/>
             <PrivateRoute path="/search" component={SearchPage}/>
             <PrivateRoute path="/settings" component={Settings}/>
+            <PrivateRoute path="/you" component={You}/>
             <PrivateRoute path="/about" component={AboutPage}/>
             <PrivateRoute path="/compose" component={Composer}/>
             <PrivateRoute path="/recommended" component={RecommendationsPage}/>

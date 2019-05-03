@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
     List, 
-    ListItem, 
+    ListItem,
+    ListItemAvatar,
     ListItemText, 
     ListSubheader, 
     ListItemSecondaryAction, 
@@ -22,14 +23,26 @@ import {
     Theme,
     Typography
 } from '@material-ui/core';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import {styles} from './PageLayout.styles';
-import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefaultTheme, getUserDefaultVisibility, setUserDefaultVisibility} from '../utilities/settings';
+import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefaultTheme, getUserDefaultVisibility, setUserDefaultVisibility, getConfig} from '../utilities/settings';
 import {canSendNotifications, browserSupportsNotificationRequests} from '../utilities/notifications';
 import {themes, defaultTheme} from '../types/HyperspaceTheme';
 import ThemePreview from '../components/ThemePreview';
 import {setHyperspaceTheme, getHyperspaceTheme} from '../utilities/themes';
 import { Visibility } from '../types/Visibility';
+import {LinkableButton} from '../interfaces/overrides';
+
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import DevicesIcon from '@material-ui/icons/Devices';
+import Brightness3Icon from '@material-ui/icons/Brightness3';
+import PaletteIcon from '@material-ui/icons/Palette';
+import AccountEditIcon from 'mdi-material-ui/AccountEdit';
+import MastodonIcon from 'mdi-material-ui/Mastodon';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import BellAlertIcon from 'mdi-material-ui/BellAlert';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import UndoIcon from '@material-ui/icons/Undo';
 
 interface ISettingsState {
     darkModeEnabled: boolean;
@@ -43,6 +56,8 @@ interface ISettingsState {
     resetSettingsDialog: boolean;
     previewTheme: Theme;
     defaultVisibility: Visibility;
+    brandName: string;
+    federated: boolean;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -61,7 +76,9 @@ class SettingsPage extends Component<any, ISettingsState> {
             resetHyperspaceDialog: false,
             resetSettingsDialog: false,
             previewTheme: setHyperspaceTheme(getUserDefaultTheme()) || setHyperspaceTheme(defaultTheme),
-            defaultVisibility: getUserDefaultVisibility() || "public"
+            defaultVisibility: getUserDefaultVisibility() || "public",
+            brandName: "Hyperspace",
+            federated: true
         }
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -73,6 +90,23 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.changeThemeName = this.changeThemeName.bind(this);
         this.changeTheme = this.changeTheme.bind(this);
         this.setVisibility = this.setVisibility.bind(this);
+    }
+
+    componentDidMount() {
+        getConfig().then((config: any) => {
+            this.setState({
+                brandName: config.branding.name
+            })
+        }).catch((err: Error) => {
+            console.error(err.message);
+        });
+        this.getFederatedStatus();
+    }
+
+    getFederatedStatus() {
+        getConfig().then((config: any) => {
+            this.setState({ federated: config.federated === "true" });
+        })
     }
 
     toggleDarkMode() {
@@ -208,7 +242,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                         value={this.state.defaultVisibility}
                         onChange={(e, value) => this.changeVisibility(value as Visibility)}
                     >
-                            <FormControlLabel value={"public"} key={"public"} control={<Radio />} label={"Public"} />
+                            <FormControlLabel value={"public"} key={"public"} control={<Radio />} label={`Public ${this.state.federated? "": "(disabled by provider)"}`} disabled={!this.state.federated}/>
                             <FormControlLabel value={"unlisted"} key={"unlisted"} control={<Radio />} label={"Unlisted"} />
                             <FormControlLabel value={"private"} key={"private"} control={<Radio />} label={"Private (followers only)"} />
                             <FormControlLabel value={"direct"} key={"direct"} control={<Radio />} label={"Direct"} />
@@ -253,10 +287,10 @@ class SettingsPage extends Component<any, ISettingsState> {
                 open={this.state.resetHyperspaceDialog}
                 onClose={() => this.toggleResetDialog()}
                 >
-                <DialogTitle id="alert-dialog-title">Reset Hyperspace?</DialogTitle>
+                <DialogTitle id="alert-dialog-title">Reset {this.state.brandName}?</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        Are you sure you want to reset Hyperspace? You'll need to sign in again and grant Hyperspace access to use it again.
+                        Are you sure you want to reset {this.state.brandName}? You'll need to re-authorize {this.state.brandName} access again.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -281,6 +315,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
+                            <ListItemAvatar>
+                                <DevicesIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Match system appearance" secondary="Obey light/dark theme from your system"/>
                             <ListItemSecondaryAction>
                                 <Switch 
@@ -290,6 +327,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
+                            <ListItemAvatar>
+                                <Brightness3Icon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Dark mode" secondary="Toggles light or dark theme"/>
                             <ListItemSecondaryAction>
                                 <Switch
@@ -300,6 +340,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
+                            <ListItemAvatar>
+                                <PaletteIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Interface theme" secondary="The color palette used for the interface"/>
                             <ListItemSecondaryAction>
                                 <Button onClick={this.toggleThemeDialog}>
@@ -310,10 +353,22 @@ class SettingsPage extends Component<any, ISettingsState> {
                     </List>
                 </Paper>
                 <br/>
-                <ListSubheader>Accounts</ListSubheader>
+                <ListSubheader>Your Account</ListSubheader>
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
+                            <ListItemAvatar>
+                                <AccountEditIcon color="action"/>
+                            </ListItemAvatar>
+                            <ListItemText primary="Edit your profile" secondary="Change your bio, display name, and images"/>
+                            <ListItemSecondaryAction>
+                                <LinkableButton to="/you">Edit</LinkableButton>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <MastodonIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Configure on Mastodon"/>
                             <ListItemSecondaryAction>
                                 <IconButton href={(localStorage.getItem("baseurl") as string) + "/settings/preferences"} target="_blank" rel="noreferrer">
@@ -328,6 +383,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
+                            <ListItemAvatar>
+                                <VisibilityIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Default visibility" secondary="New posts in composer will use this visiblity"/>
                             <ListItemSecondaryAction>
                                 <Button onClick={this.toggleVisibilityDialog}>
@@ -342,6 +400,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
+                            <ListItemAvatar>
+                                <NotificationsIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText 
                                 primary="Enable push notifications"
                                 secondary={
@@ -361,6 +422,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
+                            <ListItemAvatar>
+                                <BellAlertIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText 
                                 primary="Notification badge counts all notifications"
                                 secondary={
@@ -381,6 +445,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
+                            <ListItemAvatar>
+                                <RefreshIcon color="action"/>
+                            </ListItemAvatar>
                             <ListItemText primary="Refresh settings" secondary="Reset the settings to defaults."/>
                             <ListItemSecondaryAction>
                                 <Button onClick={() => this.toggleResetSettingsDialog()}>
@@ -389,7 +456,10 @@ class SettingsPage extends Component<any, ISettingsState> {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
-                            <ListItemText primary="Reset Hyperspace" secondary="Deletes all data and resets the app"/>
+                            <ListItemAvatar>
+                                <UndoIcon color="action"/>
+                            </ListItemAvatar>
+                            <ListItemText primary={`Reset ${this.state.brandName}`} secondary="Deletes all data and resets the app"/>
                             <ListItemSecondaryAction>
                                 <Button onClick={() => this.toggleResetDialog()}>
                                     Reset

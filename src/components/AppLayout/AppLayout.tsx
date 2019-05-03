@@ -10,7 +10,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import GroupIcon from '@material-ui/icons/Group';
 import SettingsIcon from '@material-ui/icons/Settings';
 import InfoIcon from '@material-ui/icons/Info';
-import EditIcon from '@material-ui/icons/Edit';
+import CreateIcon from '@material-ui/icons/Create';
 //import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {styles} from './AppLayout.styles';
@@ -177,10 +177,10 @@ export class AppLayout extends Component<any, IAppLayoutState> {
               <Typography className={classes.titleBarText}>Careful: you're running in developer mode.</Typography>
             </div>
           );
-        } else if ((navigator.userAgent.includes("Hyperspace") || navigator.userAgent.includes("Electron")) && navigator.userAgent.includes("Macintosh")) {
+        } else if ((navigator.userAgent.includes(this.state.brandName || "Hyperspace") || navigator.userAgent.includes("Electron")) && navigator.userAgent.includes("Macintosh")) {
           return (
             <div className={classes.titleBarRoot}>
-              <Typography className={classes.titleBarText}>Hyperspace</Typography>
+              <Typography className={classes.titleBarText}>{this.state.brandName? this.state.brandName: "Hyperspace"}</Typography>
             </div>
           );
         }
@@ -376,10 +376,10 @@ export class AppLayout extends Component<any, IAppLayoutState> {
           open={this.state.logOutOpen}
           onClose={() => this.toggleLogOutDialog()}
           >
-          <DialogTitle id="alert-dialog-title">Log out of Hyperspace?</DialogTitle>
+          <DialogTitle id="alert-dialog-title">Log out of {this.state.brandName? this.state.brandName: "Hyperspace"}</DialogTitle>
           <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                You'll need to remove Hyperspace from your list of authorized apps and log in again if you want to use Hyperspace.
+                You'll need to remove {this.state.brandName? this.state.brandName: "Hyperspace"} from your list of authorized apps and log in again if you want to use {this.state.brandName? this.state.brandName: "Hyperspace"}.
               </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -395,7 +395,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         </Dialog>
         <Tooltip title="Create a new post">
           <LinkableFab to="/compose" className={classes.composeButton} color="secondary" aria-label="Compose">
-            <EditIcon/>
+            <CreateIcon/>
           </LinkableFab>
         </Tooltip>
     </div>
