@@ -95,8 +95,6 @@ class You extends Component<IYouProps, IYouState> {
         let innerContent = div.textContent || div.innerText || "";
         return innerContent;
     }
-
-    //TODO: Implement changeDisplayName
     changeDisplayName() {
         this.client.patch('/accounts/update_credentials', { 
             display_name: this.state.newDisplayName? this.state.newDisplayName: this.state.currentAccount.display_name
@@ -106,20 +104,17 @@ class You extends Component<IYouProps, IYouState> {
             this.setState({currentAccount});
             localStorage.setItem('account', JSON.stringify(currentAccount));
             this.props.closeSnackbar("persistHeader");
-            this.props.enqueueSnackbar("Display name updated successfully: " + this.state.newDisplayName);
+            this.props.enqueueSnackbar("Display name updated to " + this.state.newDisplayName);
         } ).catch((err:Error) => {
+            console.error(err.name)
             this.props.closeSnackbar("persistHeader");
             this.props.enqueueSnackbar("Couldn't update display name: " + err.name, { variant: "error" })
-        }).catch((err: Error) => {
-            this.props.enqueueSnackbar("Couldn't update display name: " + err.name);
         })
     }
 
     updateDisplayname(name: string) {
         this.setState({ newDisplayName: name });
       };
-
-    //TODO: Implement changeBio
     changeBio() {
         this.client.patch('/accounts/update_credentials', {note: this.state.newBio? this.state.newBio: this.state.currentAccount.note})
         .then((acct:any) => {
@@ -129,11 +124,10 @@ class You extends Component<IYouProps, IYouState> {
             this.props.closeSnackbar("persistHeader");
             this.props.enqueueSnackbar("Bio updated successfully.");
         }).catch((err: Error) => {
+            console.error(err.name)
             this.props.closeSnackbar("persistHeader");
             this.props.enqueueSnackbar("Couldn't update bio: " + err.name, { variant: "error"});
-        }).catch((err:Error) => {
-            this.props.enqueueSnackbar("Couldn't update bio: " + err.name);
-        }) 
+        })
     }
 
     updateBio(bio:string){
@@ -169,7 +163,7 @@ class You extends Component<IYouProps, IYouState> {
                         onChange = {(event: any) => this.updateDisplayname(event.target.value)}>
                         </TextField>
                     <div style = {{textAlign: "right"}}>
-                        <Button className={classes.pageProfileFollowButton} color = "primary" onClick = {() => this.changeDisplayName()}>Update Display Name</Button>
+                        <Button className={classes.pageProfileFollowButton} color = "primary" onClick = {() => this.changeDisplayName()}>Update display Name</Button>
                     </div>
                     </Paper>
                     <br/>
@@ -186,7 +180,7 @@ class You extends Component<IYouProps, IYouState> {
                             onChange = {(event:any) =>this.updateBio(event.target.value)}>
                         </TextField>
                         <div style={{textAlign: "right"}}>
-                            <Button className={classes.pageProfileFollowButton} color = "primary" onClick = {() => this.changeBio()}>Update Biography</Button>
+                            <Button className={classes.pageProfileFollowButton} color = "primary" onClick = {() => this.changeBio()}>Update biography</Button>
                         </div>
                     </Paper>
                 </div>
