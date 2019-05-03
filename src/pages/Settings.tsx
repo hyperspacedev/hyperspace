@@ -30,6 +30,7 @@ import {themes, defaultTheme} from '../types/HyperspaceTheme';
 import ThemePreview from '../components/ThemePreview';
 import {setHyperspaceTheme, getHyperspaceTheme} from '../utilities/themes';
 import { Visibility } from '../types/Visibility';
+import {LinkableButton} from '../interfaces/overrides';
 
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import DevicesIcon from '@material-ui/icons/Devices';
@@ -351,13 +352,19 @@ class SettingsPage extends Component<any, ISettingsState> {
                     </List>
                 </Paper>
                 <br/>
-                <ListSubheader>Accounts</ListSubheader>
+                <ListSubheader>Your Account</ListSubheader>
                 <Paper className={classes.pageListConstraints}>
                     <List>
                         <ListItem>
                             <ListItemAvatar>
                                 <MastodonIcon color="action"/>
                             </ListItemAvatar>
+                            <ListItemText primary="Edit your profile" secondary="Change your bio, display name, and images"/>
+                            <ListItemSecondaryAction>
+                                <LinkableButton to="/you">Edit</LinkableButton>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
                             <ListItemText primary="Configure on Mastodon"/>
                             <ListItemSecondaryAction>
                                 <IconButton href={(localStorage.getItem("baseurl") as string) + "/settings/preferences"} target="_blank" rel="noreferrer">
