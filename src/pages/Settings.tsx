@@ -30,6 +30,7 @@ import {themes, defaultTheme} from '../types/HyperspaceTheme';
 import ThemePreview from '../components/ThemePreview';
 import {setHyperspaceTheme, getHyperspaceTheme} from '../utilities/themes';
 import { Visibility } from '../types/Visibility';
+import {LinkableButton} from '../interfaces/overrides';
 
 interface ISettingsState {
     darkModeEnabled: boolean;
@@ -331,9 +332,15 @@ class SettingsPage extends Component<any, ISettingsState> {
                     </List>
                 </Paper>
                 <br/>
-                <ListSubheader>Accounts</ListSubheader>
+                <ListSubheader>Your Account</ListSubheader>
                 <Paper className={classes.pageListConstraints}>
                     <List>
+                        <ListItem>
+                            <ListItemText primary="Edit your profile" secondary="Change your bio, display name, and images"/>
+                            <ListItemSecondaryAction>
+                                <LinkableButton to="/you">Edit</LinkableButton>
+                            </ListItemSecondaryAction>
+                        </ListItem>
                         <ListItem>
                             <ListItemText primary="Configure on Mastodon"/>
                             <ListItemSecondaryAction>

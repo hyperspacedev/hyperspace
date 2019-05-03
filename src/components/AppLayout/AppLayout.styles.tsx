@@ -22,7 +22,9 @@ export const styles = (theme: Theme) => createStyles({
       backgroundColor: theme.palette.primary.dark,
       textAlign: 'center',
       zIndex: 1000,
-      verticalAlign: 'middle'
+      verticalAlign: 'middle',
+      WebkitUserSelect: 'none',
+      WebkitAppRegion: "drag"
     },
     titleBarText: {
       color: theme.palette.common.white,
@@ -148,5 +150,5 @@ export const styles = (theme: Theme) => createStyles({
       bottom: theme.spacing.unit * 2,
       right: theme.spacing.unit * 2,
       zIndex: 50
-    }
+    },
   });
