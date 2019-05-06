@@ -12,18 +12,23 @@ import {
     withStyles, 
     Typography,
     Link,
-    Tooltip
+    Tooltip,
+    Button
 } from '@material-ui/core';
+
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import DomainIcon from '@material-ui/icons/Domain';
 import ChatIcon from '@material-ui/icons/Chat';
 import PersonIcon from '@material-ui/icons/Person';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import NetworkCheckIcon from '@material-ui/icons/NetworkCheck';
 import UpdateIcon from '@material-ui/icons/Update';
 import InfoIcon from '@material-ui/icons/Info';
 import NotesIcon from '@material-ui/icons/Notes';
 import CodeIcon from '@material-ui/icons/Code';
+import TicketAccountIcon from 'mdi-material-ui/TicketAccount';
+import MastodonIcon from 'mdi-material-ui/Mastodon';
+
 import {styles} from './PageLayout.styles';
 import {Instance} from '../types/Instance';
 import {LinkableIconButton, LinkableAvatar} from '../interfaces/overrides';
@@ -33,7 +38,7 @@ import { getConfig } from '../utilities/settings';
 import { License } from '../types/Config';
 
 interface IAboutPageState  {
-    instance?: Instance | any;
+    instance?: Instance;
     federated?: boolean;
     developer?: boolean;
     hyperspaceAdmin?: UAccount;
@@ -64,7 +69,7 @@ class AboutPage extends Component<any, IAboutPageState> {
     componentWillMount() {
         this.client.get('/instance').then((resp: any) => {
             this.setState({
-                instance: resp.data
+                instance: resp.data as Instance
             })
         })
 
@@ -95,24 +100,19 @@ class AboutPage extends Component<any, IAboutPageState> {
         const { classes } = this.props;
         return (
             <div className={classes.pageLayoutConstraints}>
-                <ListSubheader>About your instance</ListSubheader>
-                <Paper className={classes.pageListConstraints}>
-                    <List>
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar>
-                                    <DomainIcon/>
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Instance location (URL)" secondary={this.state.instance ? this.state.instance.uri: "Loading..."}/>
-                            <ListItemSecondaryAction>
-                                <Tooltip title="Open in browser">
-                                    <IconButton href={localStorage.getItem("baseurl") as string} target="_blank" rel="noreferrer">
-                                        <OpenInNewIcon/>
-                                    </IconButton>
-                                </Tooltip>
-                            </ListItemSecondaryAction>
-                        </ListItem>
+                <Paper>
+                    <div 
+                        className={classes.instanceHeaderPaper}
+                        style={{
+                            backgroundImage: `url("${this.state.instance && this.state.instance.thumbnail? this.state.instance.thumbnail: ""}")`
+                        }}
+                    >
+                        <IconButton className={classes.instanceToolbar} href={localStorage.getItem("baseurl") as string} target="_blank" rel="noreferrer" color="inherit">
+                            <OpenInNewIcon/>
+                        </IconButton>
+                        <Typography className={classes.instanceHeaderText} variant="h4" component="p">{this.state.instance ? this.state.instance.uri: "Loading..."}</Typography>
+                    </div>
+                    <List className={classes.pageListConstraints}>
                         <ListItem>
                             <ListItemAvatar>
                                 <LinkableAvatar to={`/profile/${this.state.instance? this.state.instance.contact_account.id: 0}`} alt="Instance admin" src={this.state.instance? this.state.instance.contact_account.avatar_static: ""}/>
@@ -133,6 +133,53 @@ class AboutPage extends Component<any, IAboutPageState> {
                                     </LinkableIconButton>
                                 </Tooltip>
                             </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <AssignmentIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Terms of service"
+                                secondary="View the rules and privacy policies"
+                            />
+                            <ListItemSecondaryAction>
+                                <Tooltip title="Open in browser">
+                                    <IconButton href={localStorage.getItem("baseurl") as string + "/terms"} target="_blank" rel="noreferrer">
+                                        <OpenInNewIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <TicketAccountIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Invite a friend"
+                                secondary="Invite a friend to this instance"
+                            />
+                            <ListItemSecondaryAction>
+                                <Tooltip title="Go to invite settings">
+                                    <Button href={localStorage.getItem("baseurl") as string + "/invites"} target="_blank" rel="noreferrer">
+                                        Invite
+                                    </Button>
+                                </Tooltip>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <MastodonIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Mastodon version"
+                                secondary={this.state.instance? this.state.instance.version: "x.x.x"}
+                            />
                         </ListItem>
                     </List>
                 </Paper>
