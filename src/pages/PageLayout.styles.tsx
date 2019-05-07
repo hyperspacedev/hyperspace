@@ -207,4 +207,28 @@ export const styles = (theme: Theme) => createStyles({
       width: 'auto',
       height: 128
     },
+    instanceHeaderPaper: {
+      height: 200,
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover",
+      position: "relative",
+      backgroundColor: theme.palette.primary.dark,
+      borderTopLeftRadius: theme.shape.borderRadius,
+      borderTopRightRadius: theme.shape.borderRadius
+    },
+    instanceHeaderText: {
+      position: "absolute",
+      bottom: theme.spacing.unit,
+      left: theme.spacing.unit * 2,
+      color: theme.palette.common.white,
+      textShadow: `0 0 4px ${theme.palette.grey[700]}`,
+      fontWeight: 600
+    },
+    instanceToolbar: {
+      position: "absolute",
+      top: theme.spacing.unit,
+      right: theme.spacing.unit,
+      color: theme.palette.common.white
+    }
   });
