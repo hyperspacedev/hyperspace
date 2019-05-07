@@ -45,6 +45,7 @@ interface IAboutPageState  {
     hyperspaceAdminName?: string;
     versionNumber?: string;
     brandName?: string;
+    brandBg?: string;
     license: License;
     repository?: string;
 }
@@ -76,7 +77,6 @@ class AboutPage extends Component<any, IAboutPageState> {
         getConfig().then((config: any) => {
             this.client.get('/accounts/' + (config.admin? config.admin.account: "0")).then((resp: any) => {
                 let account = resp.data;
-                console.log(config);
                 this.setState({
                     hyperspaceAdmin: account,
                     hyperspaceAdminName: config.admin.name,
@@ -84,6 +84,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                     developer: config.developer? config.developer === "true": false,
                     versionNumber: config.version,
                     brandName: config.branding? config.branding.name: "Hyperspace",
+                    brandBg: config.branding.background,
                     license: {
                         name: config.license.name,
                         url: config.license.url
@@ -183,62 +184,31 @@ class AboutPage extends Component<any, IAboutPageState> {
                         </ListItem>
                     </List>
                 </Paper>
+                
                 <br/>
-                <ListSubheader>About this app</ListSubheader>
-                <Paper className={classes.pageListConstraints}>
-                    <List>
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar>
-                                    <InfoIcon/>
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="App version" secondary={`${this.state? this.state.brandName: "Hyperspace"} v${this.state? this.state.versionNumber: "1.0.x"} ${this.state && this.state.brandName !== "Hyperspace"? "(Hyperspace-like)": ""}`}/>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar>
-                                    <NotesIcon/>
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="License" secondary={this.state.license.name}/>
-                            <ListItemSecondaryAction>
-                                <Tooltip title = "View license">
-                                    <IconButton href={this.state.license.url} target="_blank" rel="noreferrer">
-                                        <OpenInNewIcon/>
-                                    </IconButton>
-                                </Tooltip>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        {
-                            this.state.repository?
-                            <ListItem>
-                                <ListItemAvatar>
-                                    <Avatar>
+
+                <Paper>
+                    <div 
+                        className={classes.instanceHeaderPaper}
+                        style={{
+                            backgroundImage: `url("${this.state.brandBg? this.state.brandBg: ""}")`
+                        }}
+                    >
+                        <div className={classes.instanceToolbar}>
+                            {
+                                this.state.repository?
+                                <Tooltip title="View source code">
+                                    <IconButton href={this.state.repository} target="_blank" rel="noreferrer" color="inherit">
                                         <CodeIcon/>
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <ListItemText primary="Source code repository" secondary={this.state.repository? 
-                                    <span>
-                                        <Typography className={classes.mobileOnly} color='textSecondary'>{this.state.repository.slice(0, 25) + "..."}</Typography>
-                                        <Typography className={classes.desktopOnly} color='textSecondary'>{this.state.repository}</Typography>
-                                    </span>: 
-                                    "No repository in config"}/>
-                                <ListItemSecondaryAction>
-                                    <Tooltip title="View source code">
-                                        <IconButton href={this.state.repository? this.state.repository: ""} target="_blank" rel="noreferrer">
-                                            <OpenInNewIcon/>
-                                        </IconButton>
-                                    </Tooltip>
-                                </ListItemSecondaryAction>
-                            </ListItem>: null
-                        }
-                    </List>
-                </Paper>
-                <br/>
-                <ListSubheader>Advanced app info</ListSubheader>
-                <Paper className={classes.pageListConstraints}>
-                    <List>
+                                    </IconButton>
+                                </Tooltip>: null
+                            }
+                        </div>
+                        <Typography className={classes.instanceHeaderText} variant="h4" component="p">
+                            {this.state.brandName? this.state.brandName: "Hyperspace"}
+                        </Typography>
+                    </div>
+                    <List className={classes.pageListConstraints}>
                         <ListItem>
                             <ListItemAvatar>
                                 <LinkableAvatar to={`/profile/${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.id: 0}`} src={this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.avatar_static: ""}>
@@ -262,10 +232,17 @@ class AboutPage extends Component<any, IAboutPageState> {
                         <ListItem>
                             <ListItemAvatar>
                                 <Avatar>
-                                    <NetworkCheckIcon/>
+                                    <NotesIcon/>
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="Federation status" secondary={`This instance of ${this.state? this.state.brandName: "Hyperspace"} ${this.state? this.state.federated? "supports": "doesn't support": "might support"} federation.`}/>
+                            <ListItemText primary="License" secondary={this.state.license.name}/>
+                            <ListItemSecondaryAction>
+                                <Tooltip title = "View license">
+                                    <IconButton href={this.state.license.url} target="_blank" rel="noreferrer">
+                                        <OpenInNewIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                            </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
                             <ListItemAvatar>
@@ -280,6 +257,28 @@ class AboutPage extends Component<any, IAboutPageState> {
                                         "Release":
                                 "Loading..."
                             }/>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <InfoIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="App version" secondary={`${this.state? this.state.brandName: "Hyperspace"} v${this.state? this.state.versionNumber: "1.0.x"} ${this.state && this.state.brandName !== "Hyperspace"? "(Hyperspace-like)": ""}`}/>
+                        </ListItem>
+                    </List>
+                </Paper>
+                <br/>
+                <ListSubheader>Federation status</ListSubheader>
+                <Paper>
+                    <List className={classes.pageListConstraints}>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <NetworkCheckIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Federation status" secondary={`This instance of ${this.state? this.state.brandName: "Hyperspace"} ${this.state? this.state.federated? "supports": "doesn't support": "might support"} federation.`}/>
                         </ListItem>
                     </List>
                 </Paper>
