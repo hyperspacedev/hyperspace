@@ -6,11 +6,11 @@
         "logo": "logo.svg",
         "background": "background.png"
     },
-    "developer": "true",
+    "developer": true,
     "federation": {
-        "universalLogin": "true",
-        "allowPublicPosts": "true",
-        "enablePublicTimeline": "true"
+        "universalLogin": true,
+        "allowPublicPosts": true,
+        "enablePublicTimeline": true
     },
     "registration": {
         "defaultInstance": "mastodon.social"
