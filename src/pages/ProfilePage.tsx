@@ -7,8 +7,10 @@ import { Status } from '../types/Status';
 import { Relationship } from '../types/Relationship';
 import Post from '../components/Post';
 import {withSnackbar} from 'notistack';
-import { LinkableButton } from '../interfaces/overrides';
+import { LinkableButton, LinkableIconButton } from '../interfaces/overrides';
 import { emojifyString } from '../utilities/emojis';
+
+import AccountEditIcon from 'mdi-material-ui/AccountEdit';
 
 interface IProfilePageState {
     account?: Account;
@@ -87,6 +89,14 @@ class ProfilePage extends Component<any, IProfilePageState> {
     componentWillMount() {
         const { match: { params }} = this.props;
         this.getAccountData(params.profileId);
+    }
+
+    isItMe(): boolean {
+        if (this.state.account) {
+            return this.state.account.id === JSON.parse(localStorage.getItem('account') as string).id;
+        } else {
+            return false;
+        }
     }
 
     getRelationships() {
@@ -216,6 +226,14 @@ class ProfilePage extends Component<any, IProfilePageState> {
                 <div className={classes.pageHeroBackground}>
                     <div className={classes.pageHeroBackgroundImage} style={{ backgroundImage: this.state.account? `url("${this.state.account.header}")`: `url("")`}}/>
                     <div className={classes.pageHeroContent}>
+                        {
+                            this.isItMe()?
+                            <Tooltip title="Edit profile">
+                                <LinkableIconButton to="/you" color="inherit" className={classes.pageHeroToolbar}>
+                                    <AccountEditIcon/>
+                                </LinkableIconButton>
+                            </Tooltip>: null
+                        }
                         <Avatar className={classes.pageProfileAvatar} src={this.state.account ? this.state.account.avatar: ""}/>
                         <Typography variant="h4" color="inherit" dangerouslySetInnerHTML={{__html: this.state.account? emojifyString(this.state.account.display_name, this.state.account.emojis, classes.pageProfileNameEmoji): ""}}></Typography>
                         <Typography variant="caption" color="inherit">{this.state.account ? '@' + this.state.account.acct: ""}</Typography>

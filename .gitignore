@@ -63,9 +63,9 @@ typings/
 # VSCode dirs
 .vscode/
 
-# Signing certificates
-desktop/*.provisionprofile
-desktop/*.plist
-
-# Prod dirs
+# Production dirs
 build/
+
+# Electron app files
+desktop/*.plist
+desktop/*.provisionprofile

@@ -86,7 +86,13 @@ export const styles = (theme: Theme) => createStyles({
         paddingLeft: '25%',
         paddingRight: '25%',
       },
+      position: "relative",
       zIndex: 1
+    },
+    pageHeroToolbar: {
+      position: "absolute",
+      right: theme.spacing.unit * 2,
+      marginTop: -16,
     },
     pageListConstraints: {
         paddingLeft: theme.spacing.unit,
@@ -179,4 +185,50 @@ export const styles = (theme: Theme) => createStyles({
         color: theme.palette.primary.light
       }
     },
+    youHeadingAvatar: {
+      height: 88,
+      width: 88
+    },
+    youPaper: {
+      padding: theme.spacing.unit * 2,
+    },
+    youGrid: {
+      textAlign: "center",
+      '& *': {
+        marginLeft: "auto",
+        marginRight: "auto",
+      }
+    },
+    youGridAvatar: {
+      height: 128,
+      width: 128
+    },
+    youGridImage: {
+      width: 'auto',
+      height: 128
+    },
+    instanceHeaderPaper: {
+      height: 200,
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover",
+      position: "relative",
+      backgroundColor: theme.palette.primary.dark,
+      borderTopLeftRadius: theme.shape.borderRadius,
+      borderTopRightRadius: theme.shape.borderRadius
+    },
+    instanceHeaderText: {
+      position: "absolute",
+      bottom: theme.spacing.unit,
+      left: theme.spacing.unit * 2,
+      color: theme.palette.common.white,
+      textShadow: `0 0 4px ${theme.palette.grey[700]}`,
+      fontWeight: 600
+    },
+    instanceToolbar: {
+      position: "absolute",
+      top: theme.spacing.unit,
+      right: theme.spacing.unit,
+      color: theme.palette.common.white
+    }
   });
