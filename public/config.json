@@ -7,7 +7,11 @@
         "background": "background.png"
     },
     "developer": "true",
-    "federated": "true",
+    "federation": {
+        "universalLogin": "true",
+        "allowPublicPosts": "true",
+        "enablePublicTimeline": "true"
+    },
     "registration": {
         "defaultInstance": "mastodon.social"
     },

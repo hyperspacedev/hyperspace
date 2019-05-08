@@ -7,7 +7,7 @@ export type Config = {
         background?: string;
     };
     developer?: string;
-    federated?: string;
+    federation: Federation;
     registration?: {
         defaultInstance?: string;
     };
@@ -22,4 +22,10 @@ export type Config = {
 export type License = {
     name: string;
     url: string;
+}
+
+export type Federation = {
+    universalLogin: boolean;
+    allowPublicPosts: boolean;
+    enablePublicTimeline: boolean;
 }
