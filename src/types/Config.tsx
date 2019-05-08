@@ -16,7 +16,7 @@ export type Config = {
         account?: string;
     };
     license: License;
-    respository?: string;
+    repository?: string;
 }
 
 export type License = {
