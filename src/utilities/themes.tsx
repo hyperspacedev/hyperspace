@@ -1,7 +1,11 @@
 import { createMuiTheme, Theme, Color } from '@material-ui/core';
-import {darken} from '@material-ui/core/styles/colorManipulator';
+import { darken, lighten } from '@material-ui/core/styles/colorManipulator';
 import { HyperspaceTheme, themes, defaultTheme } from '../types/HyperspaceTheme';
 import { getUserDefaultBool } from './settings';
+
+type Incomplete = {
+    main: string;
+}
 
 /**
  * Locates a Hyperspace theme from the themes catalog
@@ -41,16 +45,18 @@ export function setHyperspaceTheme(theme: HyperspaceTheme): Theme {
             useNextVariants: true,
           },
         palette: {
-            primary: getColors()? theme.palette.primary: DarkModeColor,
-            secondary: theme.palette.secondary,
+            primary: getColors()?
+                        getUserDefaultBool('darkModeEnabled') || getDarkModeFromSystem() === "dark"?
+                            { main: giveDarkColor(theme.palette.primary)}:
+                            theme.palette.primary: 
+                        DarkModeColor,
+            secondary: getUserDefaultBool('darkModeEnabled') || getDarkModeFromSystem() === "dark"?
+                            getColors()? theme.palette.secondary:
+                        { main: giveDarkColor(theme.palette.primary) }: theme.palette.secondary,
             type: getUserDefaultBool('darkModeEnabled')? "dark": 
                     getDarkModeFromSystem() === "dark"? "dark": "light"
         }
     });
-}
-
-const DarkModeColor = {
-    main: "#121212",
 }
 
 /**
@@ -83,6 +89,14 @@ export function getColors() {
     }
 }
 
+export function giveDarkColor(color: Color | Incomplete) {
+    if ((color as Incomplete).main !== undefined) {
+        return lighten((color as Incomplete).main, 2*0.2);
+    } else {
+        return (color as Color)[200];
+    }
+}
+
 /**
  * Sets the app's palette type (aka. turns on an off dark mode)
  * @param theme The Material-UI theme to toggle the dark mode on
@@ -95,4 +109,8 @@ export function darkMode(theme: Theme, setting: boolean): Theme {
         theme.palette.type = 'light';
     }
     return theme;
+}
+
+const DarkModeColor = {
+    main: "#121212",
 }
