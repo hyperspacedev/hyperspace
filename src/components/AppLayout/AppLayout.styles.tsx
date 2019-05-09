@@ -37,7 +37,7 @@ export const styles = (theme: Theme) => createStyles({
     },
     appBarMenuButton: {
       marginLeft: -12,
-      marginRight: 20,
+      marginRight: 12,
       [theme.breakpoints.up('md')]: {
         display: 'none'
       }
@@ -56,7 +56,7 @@ export const styles = (theme: Theme) => createStyles({
         backgroundColor: fade(theme.palette.common.white, 0.25)
       },
       width: '100%',
-      marginLeft: theme.spacing.unit,
+      marginLeft: 0,
       marginRight: theme.spacing.unit,
       [theme.breakpoints.up('md')]: {
         marginLeft: theme.spacing.unit * 6,

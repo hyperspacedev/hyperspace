@@ -35,6 +35,7 @@ import {LinkableButton} from '../interfaces/overrides';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import DevicesIcon from '@material-ui/icons/Devices';
 import Brightness3Icon from '@material-ui/icons/Brightness3';
+import InvertColorsIcon from '@material-ui/icons/InvertColors';
 import PaletteIcon from '@material-ui/icons/Palette';
 import AccountEditIcon from 'mdi-material-ui/AccountEdit';
 import MastodonIcon from 'mdi-material-ui/Mastodon';
@@ -47,6 +48,7 @@ import UndoIcon from '@material-ui/icons/Undo';
 interface ISettingsState {
     darkModeEnabled: boolean;
     systemDecidesDarkMode: boolean;
+    useColorsOnDarkMode: boolean;
     pushNotificationsEnabled: boolean;
     badgeDisplaysAllNotifs: boolean;
     selectThemeName: string;
@@ -68,6 +70,7 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.state = {
             darkModeEnabled: getUserDefaultBool('darkModeEnabled'),
             systemDecidesDarkMode: getUserDefaultBool('systemDecidesDarkMode'),
+            useColorsOnDarkMode: getUserDefaultBool('useColorsOnDarkMode'),
             pushNotificationsEnabled: canSendNotifications(),
             badgeDisplaysAllNotifs: getUserDefaultBool('displayAllOnNotificationBadge'),
             selectThemeName: getUserDefaultTheme().key,
@@ -83,6 +86,7 @@ class SettingsPage extends Component<any, ISettingsState> {
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
         this.toggleSystemDarkMode = this.toggleSystemDarkMode.bind(this);
+        this.toggleColorfulDarkMode = this.toggleColorfulDarkMode.bind(this);
         this.togglePushNotifications = this.togglePushNotifications.bind(this);
         this.toggleBadgeCount = this.toggleBadgeCount.bind(this);
         this.toggleThemeDialog = this.toggleThemeDialog.bind(this);
@@ -118,6 +122,12 @@ class SettingsPage extends Component<any, ISettingsState> {
     toggleSystemDarkMode() {
         this.setState({ systemDecidesDarkMode: !this.state.systemDecidesDarkMode });
         setUserDefaultBool('systemDecidesDarkMode', !this.state.systemDecidesDarkMode);
+        window.location.reload();
+    }
+
+    toggleColorfulDarkMode() {
+        this.setState({ useColorsOnDarkMode: !this.state.useColorsOnDarkMode });
+        setUserDefaultBool('useColorsOnDarkMode', !this.state.useColorsOnDarkMode);
         window.location.reload();
     }
 
@@ -341,6 +351,18 @@ class SettingsPage extends Component<any, ISettingsState> {
                         </ListItem>
                         <ListItem>
                             <ListItemAvatar>
+                                <InvertColorsIcon color="action"/>
+                            </ListItemAvatar>
+                            <ListItemText primary="Use colors on dark mode" secondary="Makes dark mode more colorful"/>
+                            <ListItemSecondaryAction>
+                                <Switch
+                                    checked={this.state.useColorsOnDarkMode} 
+                                    onChange={this.toggleColorfulDarkMode}
+                                />
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
                                 <PaletteIcon color="action"/>
                             </ListItemAvatar>
                             <ListItemText primary="Interface theme" secondary="The color palette used for the interface"/>
@@ -369,7 +391,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                             <ListItemAvatar>
                                 <MastodonIcon color="action"/>
                             </ListItemAvatar>
-                            <ListItemText primary="Configure on Mastodon"/>
+                            <ListItemText primary="Configure on Mastodon" secondary="Manage additional settings on Mastodon"/>
                             <ListItemSecondaryAction>
                                 <IconButton href={(localStorage.getItem("baseurl") as string) + "/settings/preferences"} target="_blank" rel="noreferrer">
                                     <OpenInNewIcon/>

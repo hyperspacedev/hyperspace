@@ -1,4 +1,5 @@
-import { createMuiTheme, Theme } from '@material-ui/core';
+import { createMuiTheme, Theme, Color } from '@material-ui/core';
+import {darken} from '@material-ui/core/styles/colorManipulator';
 import { HyperspaceTheme, themes, defaultTheme } from '../types/HyperspaceTheme';
 import { getUserDefaultBool } from './settings';
 
@@ -40,23 +41,35 @@ export function setHyperspaceTheme(theme: HyperspaceTheme): Theme {
             useNextVariants: true,
           },
         palette: {
-            primary: theme.palette.primary,
+            primary: getColors()? theme.palette.primary: DarkModeColor,
             secondary: theme.palette.secondary,
             type: getUserDefaultBool('darkModeEnabled')? "dark": 
                     getDarkModeFromSystem() === "dark"? "dark": "light"
         }
-    })
+    });
+}
+
+const DarkModeColor = {
+    main: "#121212",
+}
+
+export function supportsDarkModeFromSystem() {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
 
 export function getDarkModeFromSystem(): string {
     if (getUserDefaultBool('systemDecidesDarkMode')) {
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            return "dark";
-        } else {
-            return "light";
-        }
+        return supportsDarkModeFromSystem()? "dark": "light"
     } else {
         return "light";
+    }
+}
+
+export function getColors() {
+    if ((getUserDefaultBool("darkModeEnabled") || getDarkModeFromSystem() === "dark") && !(getUserDefaultBool("useColorsOnDarkMode"))) {
+        return false;
+    } else {
+        return true;
     }
 }
 

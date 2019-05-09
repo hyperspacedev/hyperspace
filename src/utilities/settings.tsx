@@ -8,6 +8,7 @@ type SettingsTemplate = {
     [key:string]: any;
     darkModeEnabled: boolean;
     systemDecidesDarkMode: boolean;
+    useColorsOnDarkMode: boolean;
     enablePushNotifications: boolean;
     clearNotificationsOnRead: boolean;
     displayAllOnNotificationBadge: boolean;
@@ -92,13 +93,14 @@ export function createUserDefaults() {
     let defaults: SettingsTemplate = {
         darkModeEnabled: false,
         systemDecidesDarkMode: true,
+        useColorsOnDarkMode: false,
         enablePushNotifications: true,
         clearNotificationsOnRead: false,
         displayAllOnNotificationBadge: false,
         defaultVisibility: "public"
     }
 
-    let settings = ["darkModeEnabled", "systemDecidesDarkMode", "clearNotificationsOnRead", "displayAllOnNotificationBadge", "defaultVisibility"];
+    let settings = ["darkModeEnabled", "systemDecidesDarkMode", "useColorsOnDarkMode", "clearNotificationsOnRead", "displayAllOnNotificationBadge", "defaultVisibility"];
     settings.forEach((setting: string) => {
         if (localStorage.getItem(setting) === null) {
             if (typeof defaults[setting] === "boolean") {
