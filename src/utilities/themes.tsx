@@ -53,10 +53,17 @@ const DarkModeColor = {
     main: "#121212",
 }
 
+/**
+ * Determines if the browser supports the prefers-color-scheme
+ * query and has set prefers-color-scheme to `dark`
+ */
 export function supportsDarkModeFromSystem() {
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
 
+/**
+ * Sets dark mode or light mode from prefers-color-scheme
+ */
 export function getDarkModeFromSystem(): string {
     if (getUserDefaultBool('systemDecidesDarkMode')) {
         return supportsDarkModeFromSystem()? "dark": "light"
@@ -65,6 +72,9 @@ export function getDarkModeFromSystem(): string {
     }
 }
 
+/**
+ * Determine whether to use colors on dark mode or not
+ */
 export function getColors() {
     if ((getUserDefaultBool("darkModeEnabled") || getDarkModeFromSystem() === "dark") && !(getUserDefaultBool("useColorsOnDarkMode"))) {
         return false;
