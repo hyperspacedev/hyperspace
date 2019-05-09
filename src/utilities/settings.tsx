@@ -118,7 +118,7 @@ export function createUserDefaults() {
  * Gets the configuration data from `config.json`
  * @returns The Promise data from getting the config.
  */
-export async function getConfig() {
+export async function getConfig(): Promise<Config | undefined> {
     try {
         const resp = await axios.get('config.json');
         let config: Config = resp.data;

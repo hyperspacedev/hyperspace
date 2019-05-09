@@ -44,6 +44,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import BellAlertIcon from 'mdi-material-ui/BellAlert';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import UndoIcon from '@material-ui/icons/Undo';
+import { Config } from '../types/Config';
 
 interface ISettingsState {
     darkModeEnabled: boolean;
@@ -109,8 +110,12 @@ class SettingsPage extends Component<any, ISettingsState> {
     }
 
     getFederatedStatus() {
-        getConfig().then((config: any) => {
-            this.setState({ federated: config.federated === "true" });
+        getConfig().then((result: any) => {
+            if (result !== undefined) {
+                let config: Config = result;
+                console.log(config.federation.allowPublicPosts === false)
+                this.setState({ federated: config.federation.allowPublicPosts });
+            }
         })
     }
 

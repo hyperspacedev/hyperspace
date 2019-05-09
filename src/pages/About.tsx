@@ -28,6 +28,8 @@ import NotesIcon from '@material-ui/icons/Notes';
 import CodeIcon from '@material-ui/icons/Code';
 import TicketAccountIcon from 'mdi-material-ui/TicketAccount';
 import MastodonIcon from 'mdi-material-ui/Mastodon';
+import EditIcon from '@material-ui/icons/Edit';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 import {styles} from './PageLayout.styles';
 import {Instance} from '../types/Instance';
@@ -35,11 +37,12 @@ import {LinkableIconButton, LinkableAvatar} from '../interfaces/overrides';
 import Mastodon from 'megalodon';
 import { UAccount } from '../types/Account';
 import { getConfig } from '../utilities/settings';
-import { License } from '../types/Config';
+import { License, Federation } from '../types/Config';
 
 interface IAboutPageState  {
     instance?: Instance;
     federated?: boolean;
+    federation?: Federation;
     developer?: boolean;
     hyperspaceAdmin?: UAccount;
     hyperspaceAdminName?: string;
@@ -80,7 +83,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                 this.setState({
                     hyperspaceAdmin: account,
                     hyperspaceAdminName: config.admin.name,
-                    federated: config.federated? config.federated === "true": false,
+                    federation: config.federation,
                     developer: config.developer? config.developer === "true": false,
                     versionNumber: config.version,
                     brandName: config.branding? config.branding.name: "Hyperspace",
@@ -278,7 +281,23 @@ class AboutPage extends Component<any, IAboutPageState> {
                                     <NetworkCheckIcon/>
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="Federation status" secondary={`This instance of ${this.state? this.state.brandName: "Hyperspace"} ${this.state? this.state.federated? "supports": "doesn't support": "might support"} federation.`}/>
+                            <ListItemText primary="General federation" secondary={this.state.federation && this.state.federation.enablePublicTimeline? "This instance is federated.": "This instance is not federated."}/>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <VpnKeyIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Universal login" secondary={this.state.federation && this.state.federation.universalLogin? "This instance supports universal login.": "This instance does not support universal login."}/>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <EditIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Public posting" secondary={this.state.federation && this.state.federation.allowPublicPosts? "This instance allows posting publicly.": "This instance does not allow posting publicly."}/>
                         </ListItem>
                     </List>
                 </Paper>

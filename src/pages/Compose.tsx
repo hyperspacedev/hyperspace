@@ -65,7 +65,7 @@ class Composer extends Component<any, IComposerState> {
         let text = state.acct? `@${state.acct}: `: '';
         getConfig().then((config: any) => {
             this.setState({ 
-                federated: config.federated === "true",
+                federated: config.federation.allowPublicPosts,
                 reply: state.reply,
                 acct: state.acct,
                 visibility: state.visibility,
