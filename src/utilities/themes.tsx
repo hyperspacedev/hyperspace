@@ -47,7 +47,7 @@ export function setHyperspaceTheme(theme: HyperspaceTheme): Theme {
         palette: {
             primary: getColors()?
                         getUserDefaultBool('darkModeEnabled') || getDarkModeFromSystem() === "dark"?
-                            { main: giveDarkColor(theme.palette.primary)}:
+                                theme.palette.primary:
                             theme.palette.primary: 
                         DarkModeColor,
             secondary: getUserDefaultBool('darkModeEnabled') || getDarkModeFromSystem() === "dark"?
