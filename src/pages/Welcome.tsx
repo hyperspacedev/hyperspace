@@ -64,8 +64,6 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 let config: Config = result;
                 if (result.location === "dynamic") {
                     console.warn("Recirect URI is set to dyanmic, which may affect how sign-in works for some users. Careful!");
-                } else if (result.location === "desktop") {
-                    console.warn("Recirect URI is set to desktop, which may affect how sign-in works for some users. This will use https://localhost; careful!");
                 }
                     this.setState({
                         logoUrl: config.branding? result.branding.logo: "logo.png",
@@ -170,7 +168,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 this.state.brandName? this.state.brandName: "Hyperspace", 
                 scopes, 
                 baseurl, 
-                this.state.defaultRedirectAddress
+                getRedirectAddress(this.state.defaultRedirectAddress)
             ).then((resp: any) => {
                 let saveSessionForCrashing: SaveClientSession = {
                     clientId: resp.clientId,
@@ -290,10 +288,10 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         undefined:
                         clientLoginSession.authUrl.includes("urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob")?
                             undefined: 
-                            `https://${window.location.host}`,
+                            window.location.protocol === "hyperspace:"? "hyperspace://hyperspace/app/": `https://${window.location.host}`,
                 ).then((tokenData: any) => {
                     localStorage.setItem("access_token", tokenData.access_token);
-                    window.location.href=`https://${window.location.host}/#/`;
+                    window.location.href = window.location.protocol === "hyperspace:"? "hyperspace://hyperspace/app/": `https://${window.location.host}/#/`;
                 }).catch((err: Error) => {
                     this.props.enqueueSnackbar(`Couldn't authorize ${this.state.brandName? this.state.brandName: "Hyperspace"}: ${err.name}`, {variant: 'error'});
                     console.error(err.message);

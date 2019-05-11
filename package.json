@@ -38,6 +38,7 @@
   "scripts": {
     "start": "HTTPS=true BROWSER='Safari Technology Preview' react-scripts start",
     "electrify": "npm run build; electron .",
+    "electrify-nobuild": "electron .",
     "build": "react-scripts build",
     "build-desktop": "build -mwl deb AppImage snap",
     "test": "react-scripts test",

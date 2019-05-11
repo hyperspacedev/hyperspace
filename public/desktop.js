@@ -9,41 +9,77 @@ const path = require('path');
 // Check for any updates to the app
 autoUpdater.checkForUpdatesAndNotify();
 
-// Create the protocol to use for Hyperspace in redirect URIs
-// Also mark it as secure so that Mastodon is happy
-protocol.registerStandardSchemes(['hyperspace'], {secure: true});
-
 // Create a container for the window
 let mainWindow;
+
+protocol.registerSchemesAsPrivileged([
+    { scheme: 'hyperspace', privileges: { standard: true, secure: true } }
+])
 
 /**
  * Register the protocol for Hyperspace
  */
 function registerProtocol() {
     protocol.registerFileProtocol('hyperspace', (request, callback) => {
-        //Throw a METHOD_NOT_SUPPORTED error if it isn't a GET request
+        
+        // Check to make sure we're doing a GET request
         if (request.method !== "GET") {
             callback({error: -322});
             return null;
         }
 
-        // If the URL scheme doesn't contain the protocol, throw an error
+        // Check to make sure we're actually working with a hyperspace
+        // protocol and that the host is 'hyperspace'
         const parsedUrl = new URL(request.url);
-        if (parsedUrl.protocol !== "hyperspace") {
+        if (parsedUrl.protocol !== "hyperspace:") {
             callback({error: -302});
             return;
         }
-
         if (parsedUrl.host !== "hyperspace") {
             callback({error: -105});
             return;
         }
-    }, (error) => {
-        if (error) {
-            console.error("Failed to register Hyperspace protocol.");
-            console.error(error.message);
+
+        //
+        // Target Checks
+        //
+
+        const target = parsedUrl.pathname.split("/");
+
+        //Check that the target isn't something else
+        if (target[0] !== "") {
+            callback({error: -6});
+            return;
         }
+
+        if (target[target.length -1] === "") {
+            target[target.length -1] = "index.html";
+        }
+
+        let baseDirectory;
+        if (target[1] === "app" || target[1] === "oauth") {
+            baseDirectory = __dirname + "/../build/";
+        } else {
+            callback({error: -6});
+        }
+
+        baseDirectory = path.normalize(baseDirectory);
+
+        const relTarget = path.normalize(path.join(...target.slice(2)));
+        if (relTarget.startsWith('..')) {
+            callback({error: -6});
+            return;
+        }
+        const absTarget = path.join(baseDirectory, relTarget);
+
+        callback({
+            path: absTarget,
+        });
+        
+    }, (error) => {
+        if (error) console.error('Failed to register protocol')
     });
+    
 }
 
 /**
@@ -55,12 +91,12 @@ function createWindow() {
             width: 1000,
             height: 600,
             minWidth: 476, 
-            titleBarStyle: 'hidden',
+            //titleBarStyle: 'hidden',
             webPreferences: {nodeIntegration: true}
         }
     );
     
-    mainWindow.loadURL(`file://${path.join(__dirname, '../build/index.html#/')}`);
+    mainWindow.loadURL("hyperspace://hyperspace/app/");
 
     mainWindow.on('closed', () => {
         mainWindow = null
@@ -186,7 +222,7 @@ function createMenubar() {
 app.on('ready', () => {
     registerProtocol();
     createWindow();
-    createMenubar();
+    //createMenubar();
 });
 
 // Standard quit behavior changes for macOS
@@ -199,7 +235,7 @@ app.on('window-all-closed', () => {
 // When the app is activated, create the window and menu bar
 app.on('activate', () => {
     if (mainWindow === null) {
-        registerProtocol();
+        //registerProtocol();
         createWindow();
         createMenubar();
     }

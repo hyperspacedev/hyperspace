@@ -31,7 +31,7 @@ export function createHyperspaceApp(name: string, scopes: string, baseurl: strin
 export function getRedirectAddress(type: "desktop" | "dynamic" | string): string {
     switch(type) {
         case "desktop":
-            return "hyperspace://";
+            return "hyperspace://hyperspace/app/";
         case "dynamic":
             return `https://${window.location.host}`;
         default:
