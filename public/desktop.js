@@ -1,14 +1,54 @@
-const electron = require('electron');
-const app = electron.app;
-const menu = electron.Menu;
-const BrowserWindow = electron.BrowserWindow;
-const {autoUpdater} = require('electron-updater');
+// desktop.js
+// Electron script to run Hyperspace as an app
+// © 2018 Hyperspace developers. Licensed under Apache 2.0.
 
+const { app, menu, protocol, BrowserWindow } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('path');
+
+// Check for any updates to the app
 autoUpdater.checkForUpdatesAndNotify();
 
+// Create the protocol to use for Hyperspace in redirect URIs
+// Also mark it as secure so that Mastodon is happy
+protocol.registerStandardSchemes(['hyperspace'], {secure: true});
+
+// Create a container for the window
 let mainWindow;
 
+/**
+ * Register the protocol for Hyperspace
+ */
+function registerProtocol() {
+    protocol.registerFileProtocol('hyperspace', (request, callback) => {
+        //Throw a METHOD_NOT_SUPPORTED error if it isn't a GET request
+        if (request.method !== "GET") {
+            callback({error: -322});
+            return null;
+        }
+
+        // If the URL scheme doesn't contain the protocol, throw an error
+        const parsedUrl = new URL(request.url);
+        if (parsedUrl.protocol !== "hyperspace") {
+            callback({error: -302});
+            return;
+        }
+
+        if (parsedUrl.host !== "hyperspace") {
+            callback({error: -105});
+            return;
+        }
+    }, (error) => {
+        if (error) {
+            console.error("Failed to register Hyperspace protocol.");
+            console.error(error.message);
+        }
+    });
+}
+
+/**
+ * Create the window and all of its properties
+ */
 function createWindow() {
     mainWindow = new BrowserWindow(
         { 
@@ -27,6 +67,9 @@ function createWindow() {
     });
 }
 
+/**
+ * Create the menu bar and attach it to a window
+ */
 function createMenubar() {
     const menuBar = [
         {
@@ -36,8 +79,10 @@ function createMenubar() {
                     label: 'New Window',
                     accelerator: 'CmdOrCtrl+N',
                     click() {
-                        if (mainWindow == null)
+                        if (mainWindow == null) {
+                            registerProtocol();
                             createWindow();
+                        }
                     }
                 }
             ]
@@ -137,20 +182,25 @@ function createMenubar() {
     menu.setApplicationMenu(thisMenu);
 }
 
+// When the app is ready, create the window and menu bar
 app.on('ready', () => {
+    registerProtocol();
     createWindow();
     createMenubar();
 });
 
+// Standard quit behavior changes for macOS
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit()
     }
 });
 
+// When the app is activated, create the window and menu bar
 app.on('activate', () => {
     if (mainWindow === null) {
-        createWindow()
-        createMenubar()
+        registerProtocol();
+        createWindow();
+        createMenubar();
     }
 });
