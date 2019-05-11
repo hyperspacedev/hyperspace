@@ -8,6 +8,7 @@ import {parseUrl} from 'query-string';
 import { getConfig } from '../utilities/settings';
 import axios from 'axios';
 import {withSnackbar, withSnackbarProps} from 'notistack';
+import { Config } from '../types/Config';
 
 interface IWelcomeProps extends withSnackbarProps {
     classes: any;
@@ -59,22 +60,25 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         }
 
         getConfig().then((result: any) => {
-            if (result.location === "dynamic") {
-                console.warn("Recirect URI is set to dyanmic, which may affect how sign-in works for some users. Careful!");
-            } else if (result.location === "desktop") {
-                console.warn("Recirect URI is set to desktop, which may affect how sign-in works for some users. This will use https://localhost; careful!");
-            }
-            this.setState({
-                logoUrl: result.branding? result.branding.logo: "logo.png",
-                backgroundUrl: result.branding? result.branding.background: "background.png",
-                brandName: result.branding? result.branding.name: "Hyperspace",
-                registerBase: result.registration? result.registration.defaultInstance: "",
-                federates: result.federated? result.federated === "true": true,
-                license: result.license.url,
-                repo: result.repository,
-                defaultRedirectAddress: getRedirectAddress(result.location),
-                version: result.version
-            });
+            if (result !== undefined) {
+                let config: Config = result;
+                if (result.location === "dynamic") {
+                    console.warn("Recirect URI is set to dyanmic, which may affect how sign-in works for some users. Careful!");
+                } else if (result.location === "desktop") {
+                    console.warn("Recirect URI is set to desktop, which may affect how sign-in works for some users. This will use https://localhost; careful!");
+                }
+                    this.setState({
+                        logoUrl: config.branding? result.branding.logo: "logo.png",
+                        backgroundUrl: config.branding? result.branding.background: "background.png",
+                        brandName: config.branding? result.branding.name: "Hyperspace",
+                        registerBase: config.registration? result.registration.defaultInstance: "",
+                        federates: config.federation.universalLogin,
+                        license: config.license.url,
+                        repo: config.repository,
+                        defaultRedirectAddress: config.location != "dynamic"? config.location: `https://${window.location.host}`,
+                        version: config.version
+                    });
+                }
         }).catch(() => {
             console.error('config.json is missing. If you want to customize Hyperspace, please include config.json');
         })
