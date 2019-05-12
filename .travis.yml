@@ -4,11 +4,35 @@ node_js:
 cache:
   - directories:
     - node_modules
+os:
+  - linux
+  - osx
 
 jobs:
   include:
-    - stage: "Tests"
+    - stage: "Web Build Tests"
       name: "Web Production Build Test"
       script:
         - npm install
         - npm run build
+    - stage: "Desktop Build Tests"
+      name: "All Platforms"
+      script:
+        - npm install
+        - npm run build-desktop
+      name: "Windows"
+      script:
+        - npm install
+        - npm run build
+        - npm run build-desktop-win
+      name: "macOS (All)"
+      if: os = osx
+      script:
+        - npm install
+        - npm run build
+        - npm run build-desktop-macos
+      name: "Linux (All)"
+      script:
+        - npm install
+        - npm run build
+        - npm run build-desktop
