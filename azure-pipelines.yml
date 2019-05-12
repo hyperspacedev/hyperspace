@@ -1,4 +1,12 @@
 jobs:
+  - job: Web
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - template: .azure/setup.yml
+    - template: .azure/build-web.yml
+    displayName: 'Build static files'
+
   - job: Linux
     pool:
       vmImage: 'ubuntu-latest'
