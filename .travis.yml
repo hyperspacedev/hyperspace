@@ -5,8 +5,8 @@ cache:
   - directories:
     - node_modules
 os:
-  - linux
   - osx
+  - linux
 
 stages:
   - name: "Production builds"
