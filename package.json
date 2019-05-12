@@ -37,7 +37,7 @@
     "electron-updater": "^4.0.6",
     "electron-window-state": "^5.0.3"
   },
-  "main": "public/desktop.js",
+  "main": "public/electron.js",
   "scripts": {
     "start": "HTTPS=true BROWSER='Safari Technology Preview' react-scripts start",
     "electrify": "npm run build; electron .",
