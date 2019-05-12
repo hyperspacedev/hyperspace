@@ -11,7 +11,7 @@ jobs:
 
   - job: macOS
     pool:
-      vmImage: 'mac-latest'
+      vmImage: 'macOS-latest'
     steps:
     - template: .azure/setup.yml
     - template: .azure/build-web.yml
