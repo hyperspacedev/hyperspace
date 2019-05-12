@@ -2,7 +2,7 @@
 // Electron script to run Hyperspace as an app
 // © 2018 Hyperspace developers. Licensed under Apache 2.0.
 
-const { app, menu, protocol, BrowserWindow } = require('electron');
+const { app, menu, protocol, BrowserWindow, shell } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
@@ -138,6 +138,13 @@ function createWindow() {
     // Delete the window when closed
     mainWindow.on('closed', () => {
         mainWindow = null
+    });
+
+    // Hijack any links with a blank target and open them in the default
+    // browser instead of a new Electron window
+    mainWindow.webContents.on('new-window', (event, url) => {
+        event.preventDefault();
+        shell.openExternal(url);
     });
 }
 

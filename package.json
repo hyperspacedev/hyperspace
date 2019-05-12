@@ -32,7 +32,8 @@
     "typescript": "3.4.1",
     "electron": "^5.0.0",
     "electron-builder": "^20.39.0",
-    "electron-updater": "^4.0.6"
+    "electron-updater": "^4.0.6",
+    "electron-window-state": "^5.0.3"
   },
   "main": "public/desktop.js",
   "scripts": {
@@ -87,8 +88,5 @@
       "confinement": "strict",
       "summary": "A beautiful, fluffy client for the fediverse"
     }
-  },
-  "dependencies": {
-    "electron-window-state": "^5.0.3"
   }
 }
