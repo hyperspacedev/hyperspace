@@ -9,18 +9,18 @@ os:
   - osx
 
 stages:
-  - "Web builds"
+  - "Production builds"
   - "Darwin builds"
   - "Non-darwin builds"
 
 jobs:
   include:
-    - stage: "Web builds"
+    - stage: "Production builds"
       name: "Web Production build"
       script:
         - npm install
         - npm run build
-    - stage: "All destop builds"
+    - stage: "Production builds"
       name: "Desktop (all) build"
       script:
         - npm install
