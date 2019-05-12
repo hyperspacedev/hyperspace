@@ -26,8 +26,8 @@ jobs:
         - npm install
         - npm run build-desktop
     - stage: "Darwin builds"
-      name: "macOS (all) build"
       if: os = osx
+      name: "macOS (all) build"
       script:
         - npm install
         - npm run build
