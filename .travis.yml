@@ -5,14 +5,16 @@ cache:
   - directories:
     - node_modules
 os:
-  - osx
   - linux
+  - osx
 
 stages:
   - name: "Production builds"
+    if: os = osx
   - name: "Darwin builds"
     if: os = osx
   - name: "Non-darwin builds"
+    if: os = linux
   - name: test
     if: branch = fuckyou
 
