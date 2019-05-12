@@ -7,7 +7,7 @@ cache:
 dist: xenial
 
 before_install:
-  - sudo apt install wine1.8
+  - sudo apt install wine1.6
 
 jobs:
   include:
