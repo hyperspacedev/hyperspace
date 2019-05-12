@@ -7,7 +7,7 @@ jobs:
     - template: .azure/build-web.yml
     - script: |
         npm run build-desktop-linux
-        displayName: 'Build desktop client'
+      displayName: 'Build desktop client'
     displayName: 'Build Linux client'
 
   - job: macOS
@@ -19,11 +19,12 @@ jobs:
         certSecureFile: 'Certificates.p12'
         certPwd: 'asriel32!'
         keychain: 'temp'
+        signingIdentity: 'Marquis Kurt'
     - template: .azure/setup.yml
     - template: .azure/build-web.yml
     - script: |
         npm run build-desktop-darwin
-        displayName: 'Build desktop client'
+      displayName: 'Build desktop client'
     displayName: 'Build macOS client'
 
   - job: Windows
@@ -34,5 +35,5 @@ jobs:
     - template: .azure/build-web.yml
     - script: |
         npm run build-desktop-win
-        displayName: 'Build desktop client'
+      displayName: 'Build desktop client'
     displayName: 'Build Windows client'
