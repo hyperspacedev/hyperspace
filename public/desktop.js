@@ -12,6 +12,10 @@ autoUpdater.checkForUpdatesAndNotify();
 // Create a container for the window
 let mainWindow;
 
+// Register the "hyperspace://" protocol so that it supports
+// HTTPS and acts like a standard protocol instead of a fake
+// file:// protocol, which is necessary for Mastodon to redirect
+// to when authorizing Hyperspace.
 protocol.registerSchemesAsPrivileged([
     { scheme: 'hyperspace', privileges: { standard: true, secure: true } }
 ])
@@ -35,49 +39,56 @@ function registerProtocol() {
             callback({error: -302});
             return;
         }
+
         if (parsedUrl.host !== "hyperspace") {
             callback({error: -105});
             return;
         }
 
-        //
-        // Target Checks
-        //
-
+        // Convert the parsed URL to a list of strings.
         const target = parsedUrl.pathname.split("/");
 
-        //Check that the target isn't something else
+        // Check that the target isn't trying to go somewhere
+        // else. If it is, throw a "FILE_NOT_FOUND" error
         if (target[0] !== "") {
             callback({error: -6});
             return;
         }
 
+        // Check if the last target item in the list is empty.
+        // If so, replace it with "index.html" so that it can
+        // load a page.
         if (target[target.length -1] === "") {
             target[target.length -1] = "index.html";
         }
 
+        // Check the middle target and redirect to the appropriate
+        // build files of the desktop app when running.
         let baseDirectory;
         if (target[1] === "app" || target[1] === "oauth") {
             baseDirectory = __dirname + "/../build/";
         } else {
+            // If it doesn't match above, throw a "FILE_NOT_FOUND" error.
             callback({error: -6});
         }
 
+        // Create a normalized version of the strring.
         baseDirectory = path.normalize(baseDirectory);
 
+        // Check to make sure the target isn't trying to go out of bounds.
+        // If it is, throw a "FILE_NOT_FOUND" error.
         const relTarget = path.normalize(path.join(...target.slice(2)));
         if (relTarget.startsWith('..')) {
             callback({error: -6});
             return;
         }
+        
+        // Create the absolute target path and return it.
         const absTarget = path.join(baseDirectory, relTarget);
-
-        callback({
-            path: absTarget,
-        });
+        callback({ path: absTarget });
         
     }, (error) => {
-        if (error) console.error('Failed to register protocol')
+        if (error) console.error('Failed to register protocol');
     });
     
 }
@@ -86,18 +97,23 @@ function registerProtocol() {
  * Create the window and all of its properties
  */
 function createWindow() {
+    // Create a browser window with some settings
     mainWindow = new BrowserWindow(
         { 
-            width: 1000,
-            height: 600,
-            minWidth: 476, 
-            //titleBarStyle: 'hidden',
-            webPreferences: {nodeIntegration: true}
+            width: 1024,
+            height: 624,
+            minWidth: 300,
+            webPreferences: {nodeIntegration: true},
+
+            // macOS-specific settings
+            titleBarStyle: 'hidden',
         }
     );
     
+    // Load the main app and open the index page.
     mainWindow.loadURL("hyperspace://hyperspace/app/");
 
+    // Delete the window when closed
     mainWindow.on('closed', () => {
         mainWindow = null
     });
@@ -107,6 +123,7 @@ function createWindow() {
  * Create the menu bar and attach it to a window
  */
 function createMenubar() {
+    // Create a menu bar template
     const menuBar = [
         {
             label: 'File',
@@ -214,6 +231,7 @@ function createMenubar() {
         ]
     }
 
+    // Create the template for the menu and attach it to the application
     const thisMenu = menu.buildFromTemplate(menuBar);
     menu.setApplicationMenu(thisMenu);
 }
@@ -222,7 +240,7 @@ function createMenubar() {
 app.on('ready', () => {
     registerProtocol();
     createWindow();
-    //createMenubar();
+    createMenubar();
 });
 
 // Standard quit behavior changes for macOS
@@ -235,7 +253,6 @@ app.on('window-all-closed', () => {
 // When the app is activated, create the window and menu bar
 app.on('activate', () => {
     if (mainWindow === null) {
-        //registerProtocol();
         createWindow();
         createMenubar();
     }
