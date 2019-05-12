@@ -9,9 +9,10 @@ os:
   - osx
 
 stages:
-  - "Production builds"
-  - "Darwin builds"
-  - "Non-darwin builds"
+  - name: "Production builds"
+  - name: "Darwin builds"
+    if: os = osx
+  - name: "Non-darwin builds"
 
 jobs:
   include:
@@ -26,7 +27,6 @@ jobs:
         - npm install
         - npm run build-desktop
     - stage: "Darwin builds"
-      if: os = osx
       name: "macOS (all) build"
       script:
         - npm install
