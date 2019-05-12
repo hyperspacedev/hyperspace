@@ -25,12 +25,6 @@ jobs:
       script:
         - npm install
         - npm run build-desktop
-    - stage: "Non-darwin builds"
-      name: "Windows build"
-      script:
-        - npm install
-        - npm run build
-        - npm run build-desktop-win
     - stage: "Darwin builds"
       name: "macOS (all) build"
       if: os = osx
@@ -38,6 +32,12 @@ jobs:
         - npm install
         - npm run build
         - npm run build-desktop-macos
+    - stage: "Non-darwin builds"
+      name: "Windows build"
+      script:
+        - npm install
+        - npm run build
+        - npm run build-desktop-win
     - stage: "Non-darwin builds"
       name: "Linux (all) build"
       script:
