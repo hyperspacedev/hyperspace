@@ -31,7 +31,9 @@
     "react-web-share-api": "^0.0.2",
     "typescript": "3.4.1",
     "electron": "^5.0.0",
-    "electron-builder": "^20.39.0",
+    "electron-builder": "^20.39.0"
+  },
+  "dependencies": {
     "electron-updater": "^4.0.6",
     "electron-window-state": "^5.0.3"
   },
@@ -42,10 +44,10 @@
     "electrify-nobuild": "electron .",
     "build": "react-scripts build",
     "build-desktop": "npm run build; build -mwl deb AppImage snap",
-    "build-desktop-win": "npm run build; build -w",
-    "build-desktop-darwin": "npm run build; build -m",
-    "build-desktop-linux": "npm run build, build -l deb AppImage snap",
-    "build-desktop-linux-select": "npm run build; build -l ",
+    "build-desktop-win": "build -w",
+    "build-desktop-darwin": "build -m",
+    "build-desktop-linux": "build -l deb AppImage snap",
+    "build-desktop-linux-select": "build -l ",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
