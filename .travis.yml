@@ -10,7 +10,6 @@ os:
 
 stages:
   - name: "Production builds"
-    if: os = osx
   - name: "Darwin builds"
     if: os = osx
   - name: "Non-darwin builds"
