@@ -19,7 +19,7 @@ jobs:
         certSecureFile: 'Certificates.p12'
         certPwd: 'asriel32!'
         keychain: 'temp'
-        signingIdentity: 'Marquis Kurt (FQQXSP79X3)'
+        signingIdentity: 'Marquis Kurt'
     - template: .azure/setup.yml
     - template: .azure/build-web.yml
     - script: |
