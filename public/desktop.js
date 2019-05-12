@@ -3,6 +3,7 @@
 // © 2018 Hyperspace developers. Licensed under Apache 2.0.
 
 const { app, menu, protocol, BrowserWindow } = require('electron');
+const windowStateKeeper = require('electron-window-state');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 
@@ -97,18 +98,39 @@ function registerProtocol() {
  * Create the window and all of its properties
  */
 function createWindow() {
+
+    // Create a window state manager that keeps track of the width
+    // and height of the main window.
+    let mainWindowState = windowStateKeeper({
+        defaultHeight: 624,
+        defaultWidth: 1024
+    });
+
     // Create a browser window with some settings
     mainWindow = new BrowserWindow(
         { 
-            width: 1024,
-            height: 624,
+            // Use the values from the window state keeper
+            // to draw the window exactly as it was left.
+            // If not possible, derive it from the default
+            // values defined earlier.
+            x: mainWindowState.x,
+            y: mainWindowState.y,
+            width: mainWindowState.width,
+            height: mainWindowState.height,
+            
+            // Set a minimum width to prevent element collisions.
             minWidth: 300,
+
+            // Set important web preferences.
             webPreferences: {nodeIntegration: true},
 
-            // macOS-specific settings
+            // Set some preferences that are specific to macOS.
             titleBarStyle: 'hidden',
         }
     );
+
+    // Set up event listeners to track changes in the window state.
+    mainWindowState.manage(mainWindow);
     
     // Load the main app and open the index page.
     mainWindow.loadURL("hyperspace://hyperspace/app/");

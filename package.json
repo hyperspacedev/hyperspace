@@ -87,5 +87,8 @@
       "confinement": "strict",
       "summary": "A beautiful, fluffy client for the fediverse"
     }
+  },
+  "dependencies": {
+    "electron-window-state": "^5.0.3"
   }
 }
