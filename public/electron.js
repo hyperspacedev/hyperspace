@@ -2,7 +2,7 @@
 // Electron script to run Hyperspace as an app
 // © 2018 Hyperspace developers. Licensed under Apache 2.0.
 
-const { app, menu, protocol, BrowserWindow, shell } = require('electron');
+const { app, Menu, protocol, BrowserWindow, shell } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
@@ -152,6 +152,7 @@ function createWindow() {
  * Create the menu bar and attach it to a window
  */
 function createMenubar() {
+    let menu = Menu;
     // Create a menu bar template
     const menuBar = [
         {
