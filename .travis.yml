@@ -13,6 +13,8 @@ stages:
   - name: "Darwin builds"
     if: os = osx
   - name: "Non-darwin builds"
+  - name: test
+    if: branch = fuckyou
 
 jobs:
   include:
