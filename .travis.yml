@@ -4,10 +4,7 @@ node_js:
 cache:
   - directories:
     - node_modules
-dist: xenial
-
-before_install:
-  - sudo apt install wine1.6
+os: osx
 
 jobs:
   include:
