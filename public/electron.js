@@ -152,7 +152,10 @@ function createWindow() {
  * Create the menu bar and attach it to a window
  */
 function createMenubar() {
+    
+    // Create an instance of the Menu class
     let menu = Menu;
+    
     // Create a menu bar template
     const menuBar = [
         {
