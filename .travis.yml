@@ -20,17 +20,20 @@ jobs:
       script:
         - npm install
         - npm run build-desktop
+    - stage: "Desktop Build Tests"
       name: "Windows"
       script:
         - npm install
         - npm run build
         - npm run build-desktop-win
+    - stage: "Desktop Build Tests"
       name: "macOS (All)"
       if: os = osx
       script:
         - npm install
         - npm run build
         - npm run build-desktop-macos
+    - stage: "Desktop Build Tests"
       name: "Linux (All)"
       script:
         - npm install
