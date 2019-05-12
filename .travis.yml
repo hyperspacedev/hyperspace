@@ -10,30 +10,30 @@ os:
 
 jobs:
   include:
-    - stage: test
+    - stage: "Web builds"
       name: "Web Production build"
       script:
         - npm install
         - npm run build
-    - stage: test
+    - stage: "All destop builds"
       name: "Desktop (all) build"
       script:
         - npm install
         - npm run build-desktop
-    - stage: test
+    - stage: "Non-darwin builds"
       name: "Windows build"
       script:
         - npm install
         - npm run build
         - npm run build-desktop-win
-    - stage: test
+    - stage: "Darwin builds"
       name: "macOS (all) build"
       if: os = osx
       script:
         - npm install
         - npm run build
         - npm run build-desktop-macos
-    - stage: test
+    - stage: "Non-darwin builds"
       name: "Linux (all) build"
       script:
         - npm install

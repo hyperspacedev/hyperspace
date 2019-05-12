@@ -53,6 +53,7 @@
     "build-desktop-darwin": "npm run create-mac-icon; build -m",
     "build-desktop-linux": "build -l deb AppImage snap",
     "build-desktop-linux-select": "build -l ",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
