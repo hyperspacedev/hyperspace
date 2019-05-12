@@ -4,18 +4,10 @@ node_js:
 cache:
   - directories:
     - node_modules
-os:
-  - linux
-  - osx
+dist: xenial
 
-stages:
-  - name: "Production builds"
-  - name: "Darwin builds"
-    if: os = osx
-  - name: "Non-darwin builds"
-    if: os = linux
-  - name: test
-    if: branch = fuckyou
+before_install:
+  - sudo apt install wine
 
 jobs:
   include:
