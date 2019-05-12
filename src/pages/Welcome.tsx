@@ -300,6 +300,17 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         }
     }
 
+    titlebar() {
+        const { classes } = this.props;
+        if ((navigator.userAgent.includes(this.state.brandName || "Hyperspace") || navigator.userAgent.includes("Electron")) && navigator.userAgent.includes("Macintosh")) {
+          return (
+            <div className={classes.titleBarRoot}>
+              <Typography className={classes.titleBarText}>{this.state.brandName? this.state.brandName: "Hyperspace"}</Typography>
+            </div>
+          );
+        }
+      }
+
     showLanding() {
         const { classes } = this.props;
         return (
@@ -435,35 +446,38 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
     render() {
         const { classes } = this.props;
         return (
-        <div className={classes.root} style={{ backgroundImage: `url(${this.state !== null? this.state.backgroundUrl: "background.png"})`}}>
-            <Paper className={classes.paper}>
-                <img className={classes.logo} alt={this.state? this.state.brandName: "Hyperspace"} src={this.state? this.state.logoUrl: "logo.png"}/>
-                <br/>
-                <Fade in={true}>
-                    { 
-                        this.state.authority?
-                            this.showAuthority():
-                                this.state.wantsToLogin?
-                                    this.showLoginAuth():
-                                    this.showLanding()
-                    }
-                </Fade>
-                <br/>
-                <Typography variant="caption">
-                    &copy; {new Date().getFullYear()} {this.state.brandName && this.state.brandName !== "Hyperspace"? `${this.state.brandName} developers and the `: ""} <Link className={classes.welcomeLink} href="https://hyperspace.marquiskurt.net" target="_blank" rel="noreferrer">Hyperspace</Link> developers. All rights reserved.
-                </Typography>
-                <Typography variant="caption">
-                { this.state.repo? <span>
-                    <Link className={classes.welcomeLink} href={this.state.repo? this.state.repo: "https://github.com/hyperspacedev"} target="_blank" rel="noreferrer">Source code</Link>  | </span>: null}
-                    <Link className={classes.welcomeLink} href={this.state.license? this.state.license: "https://www.apache.org/licenses/LICENSE-2.0"} target="_blank" rel="noreferrer">License</Link> | 
-                    <Link className={classes.welcomeLink} href="https://github.com/hyperspacedev/hyperspace/issues/new" target="_blank" rel="noreferrer">File an Issue</Link>
-                </Typography>
-                <Typography variant="caption" color="textSecondary">
-                    {this.state.brandName? this.state.brandName: "Hypersapce"} v.{this.state.version} {this.state.brandName && this.state.brandName !== "Hyperspace"? "(Hyperspace-like)": null}
-                </Typography>
-            </Paper>
-            {this.showAuthDialog()}
-        </div>
+            <div>
+                {this.titlebar()}
+                <div className={classes.root} style={{ backgroundImage: `url(${this.state !== null? this.state.backgroundUrl: "background.png"})`}}>
+                    <Paper className={classes.paper}>
+                        <img className={classes.logo} alt={this.state? this.state.brandName: "Hyperspace"} src={this.state? this.state.logoUrl: "logo.png"}/>
+                        <br/>
+                        <Fade in={true}>
+                            { 
+                                this.state.authority?
+                                    this.showAuthority():
+                                        this.state.wantsToLogin?
+                                            this.showLoginAuth():
+                                            this.showLanding()
+                            }
+                        </Fade>
+                        <br/>
+                        <Typography variant="caption">
+                            &copy; {new Date().getFullYear()} {this.state.brandName && this.state.brandName !== "Hyperspace"? `${this.state.brandName} developers and the `: ""} <Link className={classes.welcomeLink} href="https://hyperspace.marquiskurt.net" target="_blank" rel="noreferrer">Hyperspace</Link> developers. All rights reserved.
+                        </Typography>
+                        <Typography variant="caption">
+                        { this.state.repo? <span>
+                            <Link className={classes.welcomeLink} href={this.state.repo? this.state.repo: "https://github.com/hyperspacedev"} target="_blank" rel="noreferrer">Source code</Link>  | </span>: null}
+                            <Link className={classes.welcomeLink} href={this.state.license? this.state.license: "https://www.apache.org/licenses/LICENSE-2.0"} target="_blank" rel="noreferrer">License</Link> | 
+                            <Link className={classes.welcomeLink} href="https://github.com/hyperspacedev/hyperspace/issues/new" target="_blank" rel="noreferrer">File an Issue</Link>
+                        </Typography>
+                        <Typography variant="caption" color="textSecondary">
+                            {this.state.brandName? this.state.brandName: "Hypersapce"} v.{this.state.version} {this.state.brandName && this.state.brandName !== "Hyperspace"? "(Hyperspace-like)": null}
+                        </Typography>
+                    </Paper>
+                    {this.showAuthDialog()}
+                </div>
+            </div>
         );
     }
 }

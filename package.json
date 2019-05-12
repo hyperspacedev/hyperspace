@@ -41,7 +41,11 @@
     "electrify": "npm run build; electron .",
     "electrify-nobuild": "electron .",
     "build": "react-scripts build",
-    "build-desktop": "build -mwl deb AppImage snap",
+    "build-desktop": "npm run build; build -mwl deb AppImage snap",
+    "build-desktop-win": "npm run build; build -w",
+    "build-desktop-darwin": "npm run build; build -m",
+    "build-desktop-linux": "npm run build, build -l deb AppImage snap",
+    "build-desktop-linux-select": "npm run build; build -l ",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
