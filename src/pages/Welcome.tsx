@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ChangeEvent } from 'react';
 import {withStyles, Paper, Typography, Button, TextField, Fade, Link, CircularProgress, Tooltip, Dialog, DialogTitle, DialogActions, DialogContent} from '@material-ui/core';
 import {styles} from './WelcomePage.styles';
 import Mastodon from 'megalodon';
@@ -82,6 +82,16 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         })
     }
 
+    componentDidMount() {
+        if (localStorage.getItem("login")) {
+            this.getSavedSession();
+            this.setState({
+                foundSavedLogin: true
+            })
+            this.checkForToken();
+        }
+    }
+
     updateUserInfo(user: string) {
         this.setState({ user });
     }
@@ -99,16 +109,6 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             return true;
         } else {
             return false;
-        }
-    }
-
-    componentDidMount() {
-        if (localStorage.getItem("login")) {
-            this.getSavedSession();
-            this.setState({
-                foundSavedLogin: true
-            })
-            this.checkForToken();
         }
     }
 
@@ -138,6 +138,16 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         } else {
             return "https://joinmastodon.org/#getting-started";
         }
+    }
+
+    watchUsernameField(event: any) {
+        if (event.keyCode === 13)
+            this.startLogin()
+    }
+
+    watchAuthField(event: any) {
+        if (event.keyCode === 13)
+            this.authorizeEmergencyLogin()
     }
 
     getLoginUser(user: string) {
@@ -313,6 +323,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         fullWidth
                         placeholder="example@mastodon.example"
                         onChange={(event) => this.updateUserInfo(event.target.value)}
+                        onKeyDown={(event) => this.watchUsernameField(event)}
                         error={this.state.userInputError}
                         onBlur={() => this.checkForErrors()}
                     ></TextField>
@@ -405,6 +416,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         label="Authorization code"
                         fullWidth
                         onChange={(event) => this.updateAuthCode(event.target.value)}
+                        onKeyDown={(event) => this.watchAuthField(event)}
                     ></TextField>
                 </DialogContent>
                 <DialogActions>
