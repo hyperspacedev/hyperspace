@@ -45,6 +45,8 @@ Before testing Hyperspace, make the following change in `config.json`, located i
 
 This is necessary to test Hyperspace locally and will need to be reverted after testing or before releasing to `master`.
 
+> Note: if you are testing the **desktop** version of Hyperspace, replace `https://localhost:3000` with `desktop`.
+
 To run a development version of Hyperspace, either run the `start` task from VS Code or run the following in the terminal:
 
 ```npm
@@ -52,6 +54,8 @@ npm start
 ```
 
 The site will be hosted at `https://localhost:3000`, where you can sign in and test Hyperspace using your Mastodon account. If you have signed in before, you will be automatically logged in.
+
+Alternatively, if you are testing the desktop version of Hyperspace, run `npm run electrify` (or `npm run electrify`, if you don't want to make another production build). Hyperspace will open in a window where you can sign in and test Hyperspace with your Mastodon account. You'll be logged in automatically if you've signed in before.
 
 ### Building a release
 
