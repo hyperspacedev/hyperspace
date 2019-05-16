@@ -1,4 +1,5 @@
 import { Theme, createStyles } from "@material-ui/core";
+import { isDarwinApp } from '../../utilities/desktop';
 
 import { fade } from "@material-ui/core/styles/colorManipulator";
 
@@ -19,7 +20,7 @@ export const styles = (theme: Theme) => createStyles({
       left: 0,
       height: 24,
       width: '100%',
-      backgroundColor: theme.palette.primary.dark,
+      backgroundColor: isDarwinApp()? theme.palette.primary.main: theme.palette.primary.dark,
       textAlign: 'center',
       zIndex: 1000,
       verticalAlign: 'middle',
@@ -34,6 +35,8 @@ export const styles = (theme: Theme) => createStyles({
     },
     appBar: {
       zIndex: 1000,
+      backgroundImage: isDarwinApp()? `linear-gradient(${theme.palette.primary.main}, ${theme.palette.primary.dark})`: undefined,
+      backgroundColor: theme.palette.primary.main
     },
     appBarMenuButton: {
       marginLeft: -12,
@@ -112,12 +115,12 @@ export const styles = (theme: Theme) => createStyles({
     },
     drawerPaperWithAppBar: {
       width: 250,
-      zIndex: 0,
+      zIndex: -1,
       marginTop: 64
     },
     drawerPaperWithTitleAndAppBar: {
       width: 250,
-      zIndex: 0,
+      zIndex: -1,
       marginTop: 88
     },
     drawerDisplayMobile: {

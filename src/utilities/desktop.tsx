@@ -5,10 +5,6 @@ interface ElectronWindow extends Window {
     require?: any;
 }
 
-// Lift window to an ElectronWindow and add use require()
-const eWin = window as ElectronWindow;
-const {remote} = eWin.require('electron');
-
 /**
  * Determines whether the app is running from a website or an app.
  * @returns Boolean of whether it is in desktop mode or not
@@ -28,5 +24,8 @@ export function isDarwinApp(): boolean {
  * Determine whether the system is in dark mode or not (macOS)
  */
 export function isDarkMode() {
+    // Lift window to an ElectronWindow and add use require()
+    const eWin = window as ElectronWindow;
+    const {remote} = eWin.require('electron');
     return remote.systemPreferences.isDarkMode()
 }
