@@ -28,7 +28,7 @@ import {setUserDefaultBool, getUserDefaultBool, getUserDefaultTheme, setUserDefa
 import {canSendNotifications, browserSupportsNotificationRequests} from '../utilities/notifications';
 import {themes, defaultTheme} from '../types/HyperspaceTheme';
 import ThemePreview from '../components/ThemePreview';
-import {setHyperspaceTheme, getHyperspaceTheme} from '../utilities/themes';
+import {setHyperspaceTheme, getHyperspaceTheme, getDarkModeFromSystem} from '../utilities/themes';
 import { Visibility } from '../types/Visibility';
 import {LinkableButton} from '../interfaces/overrides';
 
@@ -102,6 +102,7 @@ class SettingsPage extends Component<any, ISettingsState> {
             console.error(err.message);
         });
         this.getFederatedStatus();
+        console.log(getDarkModeFromSystem());
     }
 
     getFederatedStatus() {

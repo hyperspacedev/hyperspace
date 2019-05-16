@@ -2,7 +2,7 @@
 // Electron script to run Hyperspace as an app
 // © 2018 Hyperspace developers. Licensed under Apache 2.0.
 
-const { app, Menu, protocol, BrowserWindow, shell } = require('electron');
+const { app, Menu, protocol, BrowserWindow, shell, systemPreferences } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
@@ -134,6 +134,11 @@ function createWindow() {
     
     // Load the main app and open the index page.
     mainWindow.loadURL("hyperspace://hyperspace/app/");
+
+    // Watch for a change in macOS's dark mode and reload the window to apply changes
+    systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
+        mainWindow.webContents.reload();
+    })
 
     // Delete the window when closed
     mainWindow.on('closed', () => {

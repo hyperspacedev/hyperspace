@@ -76,7 +76,8 @@
       "target": [
         "dmg",
         "mas"
-      ]
+      ],
+      "darkModeSupport": true
     },
     "mas": {
       "entitlements": "desktop/entitlements.mas.plist",
