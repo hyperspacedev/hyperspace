@@ -1,23 +1,16 @@
 # Hyperspace v1.0
 
-The new beautiful, fluffy client for Mastodon written in TypeScript and React
+The new beautiful, fluffy client for the fediverse written in TypeScript and React
 
 ![Screenshot](screenshot.png)
 
-This is the official repository for the Hyperspace 1.0 release. This release includes many more changes and will include a redesign that accomodates for desktop and mobile devices.
+[![Matrix room](https://img.shields.io/matrix/hypermasto:matrix.org.svg)](https://matrix.to/#/#hypermasto:matrix.org)
+[![Discord server](https://img.shields.io/discord/554108687434907660.svg?color=blueviolet&label=discord)](https://discord.gg/c69AXwk)
+[![Build Status](https://dev.azure.com/hyperspacedev/Hyperspace/_apis/build/status/CI%20Tests?branchName=master)](https://dev.azure.com/hyperspacedev/Hyperspace/_build/latest?definitionId=1&branchName=master)
 
-> Note: If you are looking for the current **stable** release of Hyperspace, please look at [hyperspace-classic](https://github.com/hyperspacedev/hyperspace-classic).
+Hyperspace is the fluffiest client for Mastodon and other fediverse networks written in TypeScript and React. Hyperspace offers a fun, clean, fast, and responsive design that scales beautifully across devices and enhances the fediverse experience.
 
-## What makes Hyperspace 1.0 different from the current version
-
-The 1.0 redesign of Hyperspace acts differently from the current classic version of in multiple ways:
-
-- **Pages over panels**. Hyperspace 1.0 uses `react-router-dom` to link components of the app via URLs instead of individual components. This means that one could visit the corresponding URL instead of needing to open a set of panels or buttons to do so.
-- **Material design**. Hyperspace 1.0 uses Material Design to create a UI that scales across device types. The library used for the UI, `material-ui`, natively supports a dark mode and themes, making Hyperspace 1.0 more customizable in nature.
-- **Less intrusive by nature.** Hyperspace 1.0 pushes notifications when the window isn't in focus versus all the time, and the snackbar (toast) notifications are displayed more often when something is happening or when an error occurs. Timelines also no longer keep pushing posts during streaming, letting anyone read the timeline and still be able to get updates with a non-intrusive `View (x) new posts` chip at the top.
-- **Configurable at every level.** Hyperspace 1.0 allows anyone to customize their theme and settings to however they like, and admins can customize Hyperspace further with branding, federation support, registration URLs, and more (done via `config.json`). [Learn more &rsaquo;](https://hyperspace.marquiskurt.net/docs/configure-hyperspace)
-
-This is a growing list and new things will be added over time.
+> Note: For more information on how Hyperspace 1.0 is different from the *Hyperspace Classic (0.x)* series, please see [MIGRATING.md](MIGRATING.md).
 
 ## Build instrictions
 
@@ -69,6 +62,22 @@ npm build
 ```
 
 The built files will be available under `build` as static files. These files should get hosted to a web server.
+
+#### Building desktop releases
+
+You can run any of the following commands to build a release for the desktop:
+
+- `build-desktop`: Builds the desktop apps for all platforms (eg. Windows, macOS, Linux). Will run `npm run build` before building.
+- `build-desktop-win`: Builds the desktop app for Windows without running `npm run build`.
+- `build-desktop-darwin`: Builds the desktop apps for macOS (eg. disk image, Mac App Store) without running `npm run build`.
+- `build-desktop-linux`: Builds the desktop apps for Linux (eg. Debian package, AppImage, and Snap) without running `npm run build`.
+- `build-desktop-linux-select`: Builds the desktop app for Linux without running `npm run build`. _Target is required as a parameter._
+
+> Note: If you are building the macOS version of Hyperspace, add your provisioning profiles and entitlements files in the `desktop` folder and ensure you have installed your developer certificates on your machine before running `build-desktop` or `build-desktop-darwin`.
+>
+> While the command will run without needing the signature, it is recommended that you make a signed copy to protect users.
+
+The built files will be available under `dist` that can be uploaded to your app distributor or website.
 
 ## Contribute
 

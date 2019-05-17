@@ -21,6 +21,25 @@ export const styles = (theme: Theme) => createStyles({
             paddingRight: '35%',
         }
     },
+    titleBarRoot: {
+        top: 0,
+        left: 0,
+        height: 24,
+        width: '100%',
+        backgroundColor: "rgba(0, 0, 0, 0.2)",
+        textAlign: 'center',
+        zIndex: 1000,
+        verticalAlign: 'middle',
+        WebkitUserSelect: 'none',
+        WebkitAppRegion: "drag",
+        position: "absolute"
+    },
+    titleBarText: {
+        color: theme.palette.common.white,
+        fontSize: 12,
+        paddingTop: 2,
+        paddingBottom: 1
+    },
     paper: {
         height: '100%',
         [theme.breakpoints.up('sm')]: {

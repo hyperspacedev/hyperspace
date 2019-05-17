@@ -99,6 +99,9 @@ export function createUserDefaults() {
     }
 
     let settings = ["darkModeEnabled", "systemDecidesDarkMode", "clearNotificationsOnRead", "displayAllOnNotificationBadge", "defaultVisibility"];
+
+    migrateExistingSettings();
+
     settings.forEach((setting: string) => {
         if (localStorage.getItem(setting) === null) {
             if (typeof defaults[setting] === "boolean") {
@@ -124,5 +127,11 @@ export async function getConfig(): Promise<Config | undefined> {
     }
     catch (err) {
         console.error("Couldn't configure Hyperspace with the config file. Reason: " + err.name);
+    }
+}
+
+export function migrateExistingSettings() {
+    if (localStorage.getItem('prefers-dark-mode')) {
+        setUserDefaultBool('darkModeEnabled', localStorage.getItem('prefers-dark-mode') === "true")
     }
 }

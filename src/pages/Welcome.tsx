@@ -3,7 +3,7 @@ import {withStyles, Paper, Typography, Button, TextField, Fade, Link, CircularPr
 import {styles} from './WelcomePage.styles';
 import Mastodon from 'megalodon';
 import {SaveClientSession} from '../types/SessionData';
-import { createHyperspaceApp } from '../utilities/login';
+import { createHyperspaceApp, getRedirectAddress } from '../utilities/login';
 import {parseUrl} from 'query-string';
 import { getConfig } from '../utilities/settings';
 import axios from 'axios';
@@ -62,21 +62,21 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         getConfig().then((result: any) => {
             if (result !== undefined) {
                 let config: Config = result;
-                if (config.location === "dynamic") {
+                if (result.location === "dynamic") {
                     console.warn("Recirect URI is set to dyanmic, which may affect how sign-in works for some users. Careful!");
                 }
-                this.setState({
-                    logoUrl: config.branding? result.branding.logo: "logo.png",
-                    backgroundUrl: config.branding? result.branding.background: "background.png",
-                    brandName: config.branding? result.branding.name: "Hyperspace",
-                    registerBase: config.registration? result.registration.defaultInstance: "",
-                    federates: config.federation.universalLogin,
-                    license: config.license.url,
-                    repo: config.repository,
-                    defaultRedirectAddress: config.location != "dynamic"? config.location: `https://${window.location.host}`,
-                    version: config.version
-                });
-            }
+                    this.setState({
+                        logoUrl: config.branding? result.branding.logo: "logo.png",
+                        backgroundUrl: config.branding? result.branding.background: "background.png",
+                        brandName: config.branding? result.branding.name: "Hyperspace",
+                        registerBase: config.registration? result.registration.defaultInstance: "",
+                        federates: config.federation.universalLogin,
+                        license: config.license.url,
+                        repo: config.repository,
+                        defaultRedirectAddress: config.location != "dynamic"? config.location: `https://${window.location.host}`,
+                        version: config.version
+                    });
+                }
         }).catch(() => {
             console.error('config.json is missing. If you want to customize Hyperspace, please include config.json');
         })
@@ -178,7 +178,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 this.state.brandName? this.state.brandName: "Hyperspace", 
                 scopes, 
                 baseurl, 
-                this.state.defaultRedirectAddress
+                getRedirectAddress(this.state.defaultRedirectAddress)
             ).then((resp: any) => {
                 let saveSessionForCrashing: SaveClientSession = {
                     clientId: resp.clientId,
@@ -226,7 +226,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
     }
 
     authorizeEmergencyLogin() {
-        window.location.href = `/?code=${this.state.authCode}#/`;
+        window.location.href = `${this.state.defaultRedirectAddress}/?code=${this.state.authCode}#/`;
     }
 
     resumeLogin() {
@@ -298,10 +298,10 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         undefined:
                         clientLoginSession.authUrl.includes("urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob")?
                             undefined: 
-                            `https://${window.location.host}`,
+                            window.location.protocol === "hyperspace:"? "hyperspace://hyperspace/app/": `https://${window.location.host}`,
                 ).then((tokenData: any) => {
                     localStorage.setItem("access_token", tokenData.access_token);
-                    window.location.href=`https://${window.location.host}/#/`;
+                    window.location.href = window.location.protocol === "hyperspace:"? "hyperspace://hyperspace/app/": `https://${window.location.host}/#/`;
                 }).catch((err: Error) => {
                     this.props.enqueueSnackbar(`Couldn't authorize ${this.state.brandName? this.state.brandName: "Hyperspace"}: ${err.name}`, {variant: 'error'});
                     console.error(err.message);
@@ -309,6 +309,17 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             }
         }
     }
+
+    titlebar() {
+        const { classes } = this.props;
+        if ((navigator.userAgent.includes(this.state.brandName || "Hyperspace") || navigator.userAgent.includes("Electron")) && navigator.userAgent.includes("Macintosh")) {
+          return (
+            <div className={classes.titleBarRoot}>
+              <Typography className={classes.titleBarText}>{this.state.brandName? this.state.brandName: "Hyperspace"}</Typography>
+            </div>
+          );
+        }
+      }
 
     showLanding() {
         const { classes } = this.props;
@@ -447,35 +458,38 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
     render() {
         const { classes } = this.props;
         return (
-        <div className={classes.root} style={{ backgroundImage: `url(${this.state !== null? this.state.backgroundUrl: "background.png"})`}}>
-            <Paper className={classes.paper}>
-                <img className={classes.logo} alt={this.state? this.state.brandName: "Hyperspace"} src={this.state? this.state.logoUrl: "logo.png"}/>
-                <br/>
-                <Fade in={true}>
-                    { 
-                        this.state.authority?
-                            this.showAuthority():
-                                this.state.wantsToLogin?
-                                    this.showLoginAuth():
-                                    this.showLanding()
-                    }
-                </Fade>
-                <br/>
-                <Typography variant="caption">
-                    &copy; {new Date().getFullYear()} {this.state.brandName && this.state.brandName !== "Hyperspace"? `${this.state.brandName} developers and the `: ""} <Link className={classes.welcomeLink} href="https://hyperspace.marquiskurt.net" target="_blank" rel="noreferrer">Hyperspace</Link> developers. All rights reserved.
-                </Typography>
-                <Typography variant="caption">
-                { this.state.repo? <span>
-                    <Link className={classes.welcomeLink} href={this.state.repo? this.state.repo: "https://github.com/hyperspacedev"} target="_blank" rel="noreferrer">Source code</Link>  | </span>: null}
-                    <Link className={classes.welcomeLink} href={this.state.license? this.state.license: "https://www.apache.org/licenses/LICENSE-2.0"} target="_blank" rel="noreferrer">License</Link> | 
-                    <Link className={classes.welcomeLink} href="https://github.com/hyperspacedev/hyperspace/issues/new" target="_blank" rel="noreferrer">File an Issue</Link>
-                </Typography>
-                <Typography variant="caption" color="textSecondary">
-                    {this.state.brandName? this.state.brandName: "Hypersapce"} v.{this.state.version} {this.state.brandName && this.state.brandName !== "Hyperspace"? "(Hyperspace-like)": null}
-                </Typography>
-            </Paper>
-            {this.showAuthDialog()}
-        </div>
+            <div>
+                {this.titlebar()}
+                <div className={classes.root} style={{ backgroundImage: `url(${this.state !== null? this.state.backgroundUrl: "background.png"})`}}>
+                    <Paper className={classes.paper}>
+                        <img className={classes.logo} alt={this.state? this.state.brandName: "Hyperspace"} src={this.state? this.state.logoUrl: "logo.png"}/>
+                        <br/>
+                        <Fade in={true}>
+                            { 
+                                this.state.authority?
+                                    this.showAuthority():
+                                        this.state.wantsToLogin?
+                                            this.showLoginAuth():
+                                            this.showLanding()
+                            }
+                        </Fade>
+                        <br/>
+                        <Typography variant="caption">
+                            &copy; {new Date().getFullYear()} {this.state.brandName && this.state.brandName !== "Hyperspace"? `${this.state.brandName} developers and the `: ""} <Link className={classes.welcomeLink} href="https://hyperspace.marquiskurt.net" target="_blank" rel="noreferrer">Hyperspace</Link> developers. All rights reserved.
+                        </Typography>
+                        <Typography variant="caption">
+                        { this.state.repo? <span>
+                            <Link className={classes.welcomeLink} href={this.state.repo? this.state.repo: "https://github.com/hyperspacedev"} target="_blank" rel="noreferrer">Source code</Link>  | </span>: null}
+                            <Link className={classes.welcomeLink} href={this.state.license? this.state.license: "https://www.apache.org/licenses/LICENSE-2.0"} target="_blank" rel="noreferrer">License</Link> | 
+                            <Link className={classes.welcomeLink} href="https://github.com/hyperspacedev/hyperspace/issues/new" target="_blank" rel="noreferrer">File an Issue</Link>
+                        </Typography>
+                        <Typography variant="caption" color="textSecondary">
+                            {this.state.brandName? this.state.brandName: "Hypersapce"} v.{this.state.version} {this.state.brandName && this.state.brandName !== "Hyperspace"? "(Hyperspace-like)": null}
+                        </Typography>
+                    </Paper>
+                    {this.showAuthDialog()}
+                </div>
+            </div>
         );
     }
 }

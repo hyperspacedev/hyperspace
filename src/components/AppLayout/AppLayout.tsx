@@ -175,19 +175,19 @@ export class AppLayout extends Component<any, IAppLayoutState> {
 
       titlebar() {
         const { classes } = this.props;
-        if (this.state.developerMode || process.env.NODE_ENV === "development") {
+        if ((navigator.userAgent.includes(this.state.brandName || "Hyperspace") || navigator.userAgent.includes("Electron")) && navigator.userAgent.includes("Macintosh")) {
+          return (
+            <div className={classes.titleBarRoot}>
+              <Typography className={classes.titleBarText}>{this.state.brandName? this.state.brandName: "Hyperspace"} {this.state.developerMode? "(beta)": null}</Typography>
+            </div>
+          );
+        } else if (this.state.developerMode || process.env.NODE_ENV === "development") {
           return (
             <div className={classes.titleBarRoot}>
               <Typography className={classes.titleBarText}>Careful: you're running in developer mode.</Typography>
             </div>
           );
-        } else if ((navigator.userAgent.includes(this.state.brandName || "Hyperspace") || navigator.userAgent.includes("Electron")) && navigator.userAgent.includes("Macintosh")) {
-          return (
-            <div className={classes.titleBarRoot}>
-              <Typography className={classes.titleBarText}>{this.state.brandName? this.state.brandName: "Hyperspace"}</Typography>
-            </div>
-          );
-        }
+        } 
       }
 
       appDrawer() {
