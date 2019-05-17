@@ -22,6 +22,13 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 /**
+ * Determine whether the desktop app is on macOS
+ */
+function darwin() {
+    return process.platform === "darwin";
+}
+
+/**
  * Register the protocol for Hyperspace
  */
 function registerProtocol() {
@@ -126,7 +133,9 @@ function createWindow() {
 
             // Set some preferences that are specific to macOS.
             titleBarStyle: 'hidden',
-            vibrancy: systemPreferences.isDarkMode()? "dark": "light"
+            vibrancy: systemPreferences.isDarkMode()? "ultra-dark": "light",
+            transparent: darwin(),
+            backgroundColor: darwin()? "#80FFFFFF": "#FFF"
         }
     );
 
@@ -138,8 +147,10 @@ function createWindow() {
 
     // Watch for a change in macOS's dark mode and reload the window to apply changes
     systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
-        if (mainWindow != null)
+        if (mainWindow != null) {
+            mainWindow.setVibrancy(systemPreferences.isDarkMode()? "ultra-dark": "light");
             mainWindow.webContents.reload();
+        }
     })
 
     // Delete the window when closed
@@ -199,18 +210,18 @@ function createMenubar() {
             submenu: [
                 { role: 'reload' },
                 { role: 'forcereload' },
-                // {
-                //     label: 'Open Dev Tools',
-                //     click () {
-                //         try {
-                //             mainWindow.webContents.openDevTools({mode: 'undocked'});
-                //         } catch (err) {
-                //             console.error("Couldn't open dev tools: " + err);
-                //         }
+                {
+                    label: 'Open Dev Tools',
+                    click () {
+                        try {
+                            mainWindow.webContents.openDevTools({mode: 'undocked'});
+                        } catch (err) {
+                            console.error("Couldn't open dev tools: " + err);
+                        }
                         
-                //     },
-                //     accelerator: 'Shift+CmdOrCtrl+I'
-                // },
+                    },
+                    accelerator: 'Shift+CmdOrCtrl+I'
+                },
                 { type: 'separator' },
                 { role: 'togglefullscreen' }
             ]
@@ -285,7 +296,7 @@ app.on('ready', () => {
 
 // Standard quit behavior changes for macOS
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
+    if (!darwin()) {
         app.quit()
     }
 });

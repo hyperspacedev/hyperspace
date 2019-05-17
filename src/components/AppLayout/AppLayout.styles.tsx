@@ -1,4 +1,5 @@
 import { Theme, createStyles } from "@material-ui/core";
+import { darken } from "@material-ui/core/styles/colorManipulator";
 import { isDarwinApp } from '../../utilities/desktop';
 
 import { fade } from "@material-ui/core/styles/colorManipulator";
@@ -36,7 +37,11 @@ export const styles = (theme: Theme) => createStyles({
     appBar: {
       zIndex: 1000,
       backgroundImage: isDarwinApp()? `linear-gradient(${theme.palette.primary.main}, ${theme.palette.primary.dark})`: undefined,
-      backgroundColor: theme.palette.primary.main
+      backgroundColor: theme.palette.primary.main,
+      borderBottomColor: darken(theme.palette.primary.dark, 0.2),
+      borderBottomWidth: 1,
+      borderBottomStyle: isDarwinApp()? "solid": "none",
+      boxShadow: isDarwinApp()? "none": "inherit"
     },
     appBarMenuButton: {
       marginLeft: -12,
