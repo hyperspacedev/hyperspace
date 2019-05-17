@@ -24,7 +24,7 @@ export const styles = (theme: Theme) => createStyles({
       zIndex: 1000,
       verticalAlign: 'middle',
       WebkitUserSelect: 'none',
-      WebkitAppRegion: "drag"
+      WebkitAppRegion: "drag",
     },
     titleBarText: {
       color: theme.palette.common.white,

@@ -1,6 +1,6 @@
 {
     "version": "1.0.0beta4",
-    "location": "https://hyperspaceapp-next.herokuapp.com",
+    "location": "desktop",
     "branding": {
         "name": "Hyperspace",
         "logo": "logo.svg",

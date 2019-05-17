@@ -65,6 +65,7 @@ typings/
 
 # Production dirs
 build/
+dist/
 
 # Electron app files
 desktop/*.plist

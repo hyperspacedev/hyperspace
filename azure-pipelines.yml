@@ -1,0 +1,48 @@
+jobs:
+  - job: Web
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - template: .azure/setup.yml
+    - template: .azure/build-web.yml
+    displayName: 'Build static files'
+
+  - job: Linux
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - template: .azure/setup.yml
+    - template: .azure/build-web.yml
+    - script: |
+        npm run build-desktop-linux
+      displayName: 'Build desktop client'
+    displayName: 'Build Linux client'
+
+  - job: macOS
+    pool:
+      vmImage: 'macOS-latest'
+    steps:
+    - task: InstallAppleCertificate@2
+      inputs:
+        certSecureFile: 'Certificates.p12'
+        certPwd: $(P12password)
+        keychain: 'temp'
+        signingIdentity: 'Marquis Kurt'
+    - template: .azure/setup.yml
+    - template: .azure/build-web.yml
+    - template: .azure/mac-files.yml
+    - script: |
+        npm run build-desktop-darwin
+      displayName: 'Build desktop client'
+    displayName: 'Build macOS client'
+
+  - job: Windows
+    pool:
+      vmImage: 'vs2017-win2016'
+    steps:
+    - template: .azure/setup.yml
+    - template: .azure/build-web.yml
+    - script: |
+        npm run build-desktop-win
+      displayName: 'Build desktop client'
+    displayName: 'Build Windows client'
