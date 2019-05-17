@@ -138,7 +138,8 @@ function createWindow() {
 
     // Watch for a change in macOS's dark mode and reload the window to apply changes
     systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
-        mainWindow.webContents.reload();
+        if (mainWindow != null)
+            mainWindow.webContents.reload();
     })
 
     // Delete the window when closed
