@@ -1,10 +1,13 @@
 import { Theme, createStyles } from "@material-ui/core";
+import { isDarwinApp } from './utilities/desktop';
 
 export const styles = (theme: Theme) => createStyles({
     root: {
       width: '100%',
       display: 'flex',
-      height: '100%'
+      height: '100%',
+      minHeight: '100vh',
+      backgroundColor: isDarwinApp()? "transparent": theme.palette.background.default,
     },
     content: {
       marginTop: 72,
@@ -14,5 +17,5 @@ export const styles = (theme: Theme) => createStyles({
         marginLeft: 250,
         marginTop: 88,
       },
-    }
+    },
   });

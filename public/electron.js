@@ -2,7 +2,7 @@
 // Electron script to run Hyperspace as an app
 // © 2018 Hyperspace developers. Licensed under Apache 2.0.
 
-const { app, Menu, protocol, BrowserWindow, shell } = require('electron');
+const { app, Menu, protocol, BrowserWindow, shell, systemPreferences } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
@@ -20,6 +20,13 @@ let mainWindow;
 protocol.registerSchemesAsPrivileged([
     { scheme: 'hyperspace', privileges: { standard: true, secure: true } }
 ])
+
+/**
+ * Determine whether the desktop app is on macOS
+ */
+function darwin() {
+    return process.platform === "darwin";
+}
 
 /**
  * Register the protocol for Hyperspace
@@ -126,6 +133,9 @@ function createWindow() {
 
             // Set some preferences that are specific to macOS.
             titleBarStyle: 'hidden',
+            vibrancy: systemPreferences.isDarkMode()? "ultra-dark": "light",
+            transparent: darwin(),
+            backgroundColor: darwin()? "#80FFFFFF": "#FFF"
         }
     );
 
@@ -134,6 +144,14 @@ function createWindow() {
     
     // Load the main app and open the index page.
     mainWindow.loadURL("hyperspace://hyperspace/app/");
+
+    // Watch for a change in macOS's dark mode and reload the window to apply changes
+    systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
+        if (mainWindow != null) {
+            mainWindow.setVibrancy(systemPreferences.isDarkMode()? "ultra-dark": "light");
+            mainWindow.webContents.reload();
+        }
+    })
 
     // Delete the window when closed
     mainWindow.on('closed', () => {
@@ -278,7 +296,7 @@ app.on('ready', () => {
 
 // Standard quit behavior changes for macOS
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
+    if (!darwin()) {
         app.quit()
     }
 });

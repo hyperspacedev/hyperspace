@@ -21,6 +21,7 @@ import { Notification } from '../../types/Notification';
 import {sendNotificationRequest} from '../../utilities/notifications';
 import {withSnackbar} from 'notistack';
 import { getConfig, getUserDefaultBool } from '../../utilities/settings';
+import { isDarwinApp } from '../../utilities/desktop';
 import { Config } from '../../types/Config';
 
 interface IAppLayoutState {
@@ -175,7 +176,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
 
       titlebar() {
         const { classes } = this.props;
-        if ((navigator.userAgent.includes(this.state.brandName || "Hyperspace") || navigator.userAgent.includes("Electron")) && navigator.userAgent.includes("Macintosh")) {
+        if (isDarwinApp()) {
           return (
             <div className={classes.titleBarRoot}>
               <Typography className={classes.titleBarText}>{this.state.brandName? this.state.brandName: "Hyperspace"} {this.state.developerMode? "(beta)": null}</Typography>

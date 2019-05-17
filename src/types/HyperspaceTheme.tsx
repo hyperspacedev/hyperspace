@@ -1,5 +1,6 @@
 import {Color} from '@material-ui/core';
 import { deepPurple, red, lightGreen, yellow, purple, deepOrange, indigo, lightBlue, orange, blue, amber, pink, brown, blueGrey } from '@material-ui/core/colors';
+import { isDarwinApp } from '../utilities/desktop';
 
 /**
  * Basic theme colors for Hyperspace.

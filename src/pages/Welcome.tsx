@@ -6,6 +6,7 @@ import {SaveClientSession} from '../types/SessionData';
 import { createHyperspaceApp, getRedirectAddress } from '../utilities/login';
 import {parseUrl} from 'query-string';
 import { getConfig } from '../utilities/settings';
+import { isDarwinApp } from '../utilities/desktop';
 import axios from 'axios';
 import {withSnackbar, withSnackbarProps} from 'notistack';
 import { Config } from '../types/Config';
@@ -63,7 +64,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             if (result !== undefined) {
                 let config: Config = result;
                 if (result.location === "dynamic") {
-                    console.warn("Recirect URI is set to dyanmic, which may affect how sign-in works for some users. Careful!");
+                    console.warn("Recirect URI is set to dynamic, which may affect how sign-in works for some users. Careful!");
                 }
                     this.setState({
                         logoUrl: config.branding? result.branding.logo: "logo.png",
@@ -312,7 +313,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
 
     titlebar() {
         const { classes } = this.props;
-        if ((navigator.userAgent.includes(this.state.brandName || "Hyperspace") || navigator.userAgent.includes("Electron")) && navigator.userAgent.includes("Macintosh")) {
+        if (isDarwinApp()) {
           return (
             <div className={classes.titleBarRoot}>
               <Typography className={classes.titleBarText}>{this.state.brandName? this.state.brandName: "Hyperspace"}</Typography>

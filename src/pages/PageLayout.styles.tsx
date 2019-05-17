@@ -1,4 +1,5 @@
 import { Theme, createStyles } from "@material-ui/core";
+import { isDarwinApp } from "../utilities/desktop";
 
 export const styles = (theme: Theme) => createStyles({
     root: {
@@ -18,6 +19,8 @@ export const styles = (theme: Theme) => createStyles({
         paddingLeft: theme.spacing.unit * 24,
         paddingRight: theme.spacing.unit * 24
       },
+      backgroundColor: theme.palette.background.default,
+      minHeight: isDarwinApp()? "100vh": 'auto',
     },
     pageLayoutMaxConstraints: {
       marginTop: 72,
@@ -45,12 +48,16 @@ export const styles = (theme: Theme) => createStyles({
         paddingLeft: theme.spacing.unit * 40,
         paddingRight: theme.spacing.unit * 40,
       },
+      backgroundColor: theme.palette.background.default,
+      minHeight: isDarwinApp()? "100vh": 'auto',
     },
     pageLayoutMinimalConstraints: {
       flexGrow: 1,
       [theme.breakpoints.up('md')]: {
         marginLeft: 250,
       },
+      backgroundColor: theme.palette.background.default,
+      minHeight: isDarwinApp()? "100vh": 'auto',
     },
     pageLayoutEmptyTextConstraints: {
       paddingLeft: theme.spacing.unit * 2,
@@ -100,7 +107,8 @@ export const styles = (theme: Theme) => createStyles({
         [theme.breakpoints.up('sm')]: {
             paddingLeft: theme.spacing.unit * 2,
             paddingRight: theme.spacing.unit * 2
-        }
+        },
+        //backgroundColor: theme.palette.background.default
     },
     pageProfileAvatar: {
       width: 128,
@@ -137,6 +145,7 @@ export const styles = (theme: Theme) => createStyles({
         paddingLeft: theme.spacing.unit * 32,
         paddingRight: theme.spacing.unit * 32
       },
+      //backgroundColor: theme.palette.background.default,
     },
     errorCard: {
       padding: theme.spacing.unit * 4,

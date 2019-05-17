@@ -1,6 +1,7 @@
 import { createMuiTheme, Theme } from '@material-ui/core';
 import { HyperspaceTheme, themes, defaultTheme } from '../types/HyperspaceTheme';
 import { getUserDefaultBool } from './settings';
+import { isDarwinApp, isDarkMode } from './desktop';
 
 /**
  * Locates a Hyperspace theme from the themes catalog
@@ -53,7 +54,11 @@ export function getDarkModeFromSystem(): string {
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
             return "dark";
         } else {
-            return "light";
+            if (isDarwinApp()) {
+                return isDarkMode()? "dark": "light";
+            } else {
+                return "light";
+            }
         }
     } else {
         return "light";
