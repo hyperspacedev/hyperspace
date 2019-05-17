@@ -1,13 +1,17 @@
 {
-    "version": "1.0.0beta3",
-    "location": "https://hyperspaceapp-next.herokuapp.com",
+    "version": "1.0.0beta4",
+    "location": "desktop",
     "branding": {
         "name": "Hyperspace",
         "logo": "logo.svg",
         "background": "background.png"
     },
-    "developer": "true",
-    "federated": "true",
+    "developer": true,
+    "federation": {
+        "universalLogin": true,
+        "allowPublicPosts": true,
+        "enablePublicTimeline": true
+    },
     "registration": {
         "defaultInstance": "mastodon.social"
     },

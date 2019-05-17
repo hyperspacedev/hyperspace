@@ -6,8 +6,8 @@ export type Config = {
         logo?: string;
         background?: string;
     };
-    developer?: string;
-    federated?: string;
+    developer?: boolean;
+    federation: Federation;
     registration?: {
         defaultInstance?: string;
     };
@@ -16,10 +16,16 @@ export type Config = {
         account?: string;
     };
     license: License;
-    respository?: string;
+    repository?: string;
 }
 
 export type License = {
     name: string;
     url: string;
+}
+
+export type Federation = {
+    universalLogin: boolean;
+    allowPublicPosts: boolean;
+    enablePublicTimeline: boolean;
 }

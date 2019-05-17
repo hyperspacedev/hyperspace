@@ -23,6 +23,7 @@ import You from './pages/You';
 import {withSnackbar} from 'notistack';
 import {PrivateRoute} from './interfaces/overrides';
 import { userLoggedIn } from './utilities/accounts';
+import { isDarwinApp } from './utilities/desktop';
 let theme = setHyperspaceTheme(getUserDefaultTheme());
 
 class App extends Component<any, any> {
@@ -42,8 +43,26 @@ class App extends Component<any, any> {
     this.setState({ theme: newTheme });
   }
 
+  componentDidMount() {
+    this.removeBodyBackground()
+  }
+
+  componentDidUpdate() {
+    this.removeBodyBackground()
+  }
+
+  removeBodyBackground() {
+    if (isDarwinApp()) {
+      document.body.style.backgroundColor = "transparent";
+      console.log("Changed!")
+      console.log(`New color: ${document.body.style.backgroundColor}`)
+    }
+  }
+
   render() {
     const { classes } = this.props;
+
+    this.removeBodyBackground()
     
     return (
       <MuiThemeProvider theme={this.state.theme}>

@@ -99,6 +99,9 @@ export function createUserDefaults() {
     }
 
     let settings = ["darkModeEnabled", "systemDecidesDarkMode", "clearNotificationsOnRead", "displayAllOnNotificationBadge", "defaultVisibility"];
+
+    migrateExistingSettings();
+
     settings.forEach((setting: string) => {
         if (localStorage.getItem(setting) === null) {
             if (typeof defaults[setting] === "boolean") {
@@ -116,7 +119,7 @@ export function createUserDefaults() {
  * Gets the configuration data from `config.json`
  * @returns The Promise data from getting the config.
  */
-export async function getConfig() {
+export async function getConfig(): Promise<Config | undefined> {
     try {
         const resp = await axios.get('config.json');
         let config: Config = resp.data;
@@ -124,5 +127,11 @@ export async function getConfig() {
     }
     catch (err) {
         console.error("Couldn't configure Hyperspace with the config file. Reason: " + err.name);
+    }
+}
+
+export function migrateExistingSettings() {
+    if (localStorage.getItem('prefers-dark-mode')) {
+        setUserDefaultBool('darkModeEnabled', localStorage.getItem('prefers-dark-mode') === "true")
     }
 }

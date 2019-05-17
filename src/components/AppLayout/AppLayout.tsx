@@ -21,6 +21,8 @@ import { Notification } from '../../types/Notification';
 import {sendNotificationRequest} from '../../utilities/notifications';
 import {withSnackbar} from 'notistack';
 import { getConfig, getUserDefaultBool } from '../../utilities/settings';
+import { isDarwinApp } from '../../utilities/desktop';
+import { Config } from '../../types/Config';
 
 interface IAppLayoutState {
     acctMenuOpen: boolean;
@@ -70,12 +72,15 @@ export class AppLayout extends Component<any, IAppLayoutState> {
           })
         }
 
-        getConfig().then((config: any) => {
-          this.setState({ 
-            enableFederation: config.federated === "true",
-            brandName: config.branding? config.branding.name: "Hyperspace",
-            developerMode: config.developer === "true"
-          });
+        getConfig().then((result: any) => {
+          if (result !== undefined) {
+            let config: Config = result;
+            this.setState({ 
+              enableFederation: config.federation.enablePublicTimeline,
+              brandName: config.branding? config.branding.name: "Hyperspace",
+              developerMode: config.developer
+            });
+          }
         })
 
         this.streamNotifications()
@@ -171,19 +176,19 @@ export class AppLayout extends Component<any, IAppLayoutState> {
 
       titlebar() {
         const { classes } = this.props;
-        if (this.state.developerMode || process.env.NODE_ENV === "development") {
+        if (isDarwinApp()) {
+          return (
+            <div className={classes.titleBarRoot}>
+              <Typography className={classes.titleBarText}>{this.state.brandName? this.state.brandName: "Hyperspace"} {this.state.developerMode? "(beta)": null}</Typography>
+            </div>
+          );
+        } else if (this.state.developerMode || process.env.NODE_ENV === "development") {
           return (
             <div className={classes.titleBarRoot}>
               <Typography className={classes.titleBarText}>Careful: you're running in developer mode.</Typography>
             </div>
           );
-        } else if ((navigator.userAgent.includes(this.state.brandName || "Hyperspace") || navigator.userAgent.includes("Electron")) && navigator.userAgent.includes("Macintosh")) {
-          return (
-            <div className={classes.titleBarRoot}>
-              <Typography className={classes.titleBarText}>{this.state.brandName? this.state.brandName: "Hyperspace"}</Typography>
-            </div>
-          );
-        }
+        } 
       }
 
       appDrawer() {

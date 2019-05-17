@@ -1,21 +1,48 @@
-# Node.js with React
-# Build a Node.js project that uses React.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+jobs:
+  - job: Web
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - template: .azure/setup.yml
+    - template: .azure/build-web.yml
+    displayName: 'Build static files'
 
-trigger:
-- master
+  - job: Linux
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - template: .azure/setup.yml
+    - template: .azure/build-web.yml
+    - script: |
+        npm run build-desktop-linux
+      displayName: 'Build desktop client'
+    displayName: 'Build Linux client'
 
-pool:
-  vmImage: 'ubuntu-latest'
+  - job: macOS
+    pool:
+      vmImage: 'macOS-latest'
+    steps:
+    - task: InstallAppleCertificate@2
+      inputs:
+        certSecureFile: 'Certificates.p12'
+        certPwd: $(P12password)
+        keychain: 'temp'
+        signingIdentity: 'Marquis Kurt'
+    - template: .azure/setup.yml
+    - template: .azure/build-web.yml
+    - template: .azure/mac-files.yml
+    - script: |
+        npm run build-desktop-darwin
+      displayName: 'Build desktop client'
+    displayName: 'Build macOS client'
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
-
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+  - job: Windows
+    pool:
+      vmImage: 'vs2017-win2016'
+    steps:
+    - template: .azure/setup.yml
+    - template: .azure/build-web.yml
+    - script: |
+        npm run build-desktop-win
+      displayName: 'Build desktop client'
+    displayName: 'Build Windows client'
