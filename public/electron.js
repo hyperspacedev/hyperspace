@@ -126,6 +126,7 @@ function createWindow() {
 
             // Set some preferences that are specific to macOS.
             titleBarStyle: 'hidden',
+            vibrancy: systemPreferences.isDarkMode()? "dark": "light"
         }
     );
 
@@ -197,18 +198,18 @@ function createMenubar() {
             submenu: [
                 { role: 'reload' },
                 { role: 'forcereload' },
-                {
-                    label: 'Open Dev Tools',
-                    click () {
-                        try {
-                            mainWindow.webContents.openDevTools({mode: 'undocked'});
-                        } catch (err) {
-                            console.error("Couldn't open dev tools: " + err);
-                        }
+                // {
+                //     label: 'Open Dev Tools',
+                //     click () {
+                //         try {
+                //             mainWindow.webContents.openDevTools({mode: 'undocked'});
+                //         } catch (err) {
+                //             console.error("Couldn't open dev tools: " + err);
+                //         }
                         
-                    },
-                    accelerator: 'Shift+CmdOrCtrl+I'
-                },
+                //     },
+                //     accelerator: 'Shift+CmdOrCtrl+I'
+                // },
                 { type: 'separator' },
                 { role: 'togglefullscreen' }
             ]

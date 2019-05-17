@@ -116,12 +116,14 @@ export const styles = (theme: Theme) => createStyles({
     drawerPaperWithAppBar: {
       width: 250,
       zIndex: -1,
-      marginTop: 64
+      marginTop: 64,
+      backgroundColor: isDarwinApp()? "transparent": theme.palette.background.paper
     },
     drawerPaperWithTitleAndAppBar: {
       width: 250,
       zIndex: -1,
-      marginTop: 88
+      marginTop: 88,
+      backgroundColor: isDarwinApp()? "transparent": theme.palette.background.paper
     },
     drawerDisplayMobile: {
       [theme.breakpoints.up('md')]: {
