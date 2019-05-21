@@ -87,6 +87,6 @@ The built files will be available under `dist` that can be uploaded to your app 
 
 Contrubition guidelines are available in the [contributing file](.github/contributing.md) and when you make an issue/pull request. Additionally, you can access our [Code of Conduct](.github/code_of_conduct.md).
 
-If you want to aid the project in other ways, consider supporting the project on [Patreon](https://patreon.com/marquiskurt).
+If you want to aid the project in other ways, consider supporting the project on [Patreon](https://patreon.com/marquiskurt). You can also [view all of our contributors](patreon.md) that help make Hyperspace possible.
 
 If you have Matrix, you can join the Hyperspace community ([+hyperspace-masto:matrix.org](https://matrix.to/#/+hyperspace-masto:matrix.org)).
