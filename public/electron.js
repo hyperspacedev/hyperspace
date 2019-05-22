@@ -69,6 +69,10 @@ function registerProtocol() {
         if (target[target.length -1] === "") {
             target[target.length -1] = "index.html";
         }
+                                  
+        if (target[0] === "#") {
+            target[0] = "app";
+        }
 
         // Check the middle target and redirect to the appropriate
         // build files of the desktop app when running.
@@ -164,6 +168,10 @@ function createWindow() {
         event.preventDefault();
         shell.openExternal(url);
     });
+    
+    mainWindow.webContents.on('will-navigate', (event, url) => {
+        console.log(url)
+    })
 }
 
 /**
