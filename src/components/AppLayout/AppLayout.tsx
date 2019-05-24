@@ -21,7 +21,7 @@ import { Notification } from '../../types/Notification';
 import {sendNotificationRequest} from '../../utilities/notifications';
 import {withSnackbar} from 'notistack';
 import { getConfig, getUserDefaultBool } from '../../utilities/settings';
-import { isDarwinApp } from '../../utilities/desktop';
+import { isDesktopApp, isDarwinApp } from '../../utilities/desktop';
 import { Config } from '../../types/Config';
 
 interface IAppLayoutState {
@@ -84,6 +84,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         })
 
         this.streamNotifications()
+        
       }
 
       streamNotifications() {
@@ -153,7 +154,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
       }
 
       searchForQuery(what: string) {
-        window.location.href = "/#/search?query=" + what;
+        window.location.href = isDesktopApp()? "hyperspace://hyperspace/app/index.html#/search?query=" + what: "/#/search?query=" + what;
         window.location.reload;
       }
 

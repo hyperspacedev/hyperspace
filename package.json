@@ -1,7 +1,7 @@
 {
   "name": "hyperspace",
   "productName": "Hyperspace",
-  "version": "1.0.0-beta4",
+  "version": "1.0.0-beta5",
   "description": "A beautiful, fluffy client for the fediverse",
   "author": "Marquis Kurt <hyperspacedev@marquiskurt.net>",
   "repository": "https://github.com/hyperspacedev/hyperspace.git",
