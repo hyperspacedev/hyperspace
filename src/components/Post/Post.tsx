@@ -151,10 +151,15 @@ export class Post extends React.Component<any, IPostState> {
                             <CardActionArea href={status.card.url} target="_blank" rel="noreferrer">
                                 <CardContent>
                                     <Typography gutterBottom variant="h6" component="h2">{status.card.title}</Typography>
-                                    <Typography>{status.card.description || "No description provided. Click with caution."}</Typography>
+                                    <Typography>
+                                        {
+                                            status.card.description.slice(0, 500) + (status.card.description.length > 500? "...": "") 
+                                            || "No description provided. Click with caution."
+                                        }
+                                    </Typography>
                                 </CardContent>
                                 {
-                                    status.card.image?
+                                    status.card.image && status.media_attachments.length <= 0?
                                     <CardMedia className={classes.postMedia} image={status.card.image}/>: <span/>
                                 }
                                 <CardContent>
