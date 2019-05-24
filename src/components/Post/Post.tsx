@@ -154,7 +154,7 @@ export class Post extends React.Component<any, IPostState> {
                                     <Typography>{status.card.description || "No description provided. Click with caution."}</Typography>
                                 </CardContent>
                                 {
-                                    status.card.image?
+                                    status.card.image && status.media_attachments.length <= 0?
                                     <CardMedia className={classes.postMedia} image={status.card.image}/>: <span/>
                                 }
                                 <CardContent>
