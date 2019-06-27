@@ -148,6 +148,7 @@ function createWindow() {
     // Watch for a change in macOS's dark mode and reload the window to apply changes
     systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
         if (mainWindow != null) {
+            console.log(`Dark mode: ${systemPreferences.isDarkMode()}`)
             mainWindow.setVibrancy(systemPreferences.isDarkMode()? "ultra-dark": "light");
             mainWindow.webContents.reload();
         }
