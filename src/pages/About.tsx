@@ -102,6 +102,7 @@ class AboutPage extends Component<any, IAboutPageState> {
 
     render() {
         const { classes } = this.props;
+        
         return (
             <div className={classes.pageLayoutConstraints}>
                 <Paper>
@@ -117,7 +118,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                         <Typography className={classes.instanceHeaderText} variant="h4" component="p">{this.state.instance ? this.state.instance.uri: "Loading..."}</Typography>
                     </div>
                     <List className={classes.pageListConstraints}>
-                        <ListItem>
+                        {(localStorage['isPleroma'] == "false") && <ListItem>
                             <ListItemAvatar>
                                 <LinkableAvatar to={`/profile/${this.state.instance? this.state.instance.contact_account.id: 0}`} alt="Instance admin" src={this.state.instance? this.state.instance.contact_account.avatar_static: ""}/>
                             </ListItemAvatar>
@@ -137,7 +138,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                                     </LinkableIconButton>
                                 </Tooltip>
                             </ListItemSecondaryAction>
-                        </ListItem>
+                        </ListItem>}
                         <ListItem>
                             <ListItemAvatar>
                                 <Avatar>
