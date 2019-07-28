@@ -69,6 +69,7 @@
   "build": {
     "appId": "net.marquiskurt.hyperspace",
   	"afterSign": "desktop/notarize.js",
+  	"publish": "never",
     "directories": {
       "buildResources": "desktop"
     },
