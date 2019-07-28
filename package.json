@@ -49,11 +49,11 @@
     "electrify-nobuild": "electron .",
     "build": "react-scripts build",
     "create-mac-icon": "cd desktop; iconutil -c icns app.iconset; cd ..",
-    "build-desktop": "npm run build; npm run create-mac-icon; electron-builder -mwl deb AppImage snap",
-    "build-desktop-win": "electron-builder -w",
-    "build-desktop-darwin": "npm run create-mac-icon; electron-builder -m",
-    "build-desktop-linux": "electron-builder -l deb AppImage snap",
-    "build-desktop-linux-select": "electron-builder -l ",
+    "build-desktop": "npm run build; npm run create-mac-icon; electron-builder -p 'never' -mwl deb AppImage snap",
+    "build-desktop-win": "electron-builder -p 'never' -w",
+    "build-desktop-darwin": "npm run create-mac-icon; electron-builder -p 'never' -m",
+    "build-desktop-linux": "electron-builder -p 'never' -l deb AppImage snap",
+    "build-desktop-linux-select": "electron-builder -p 'never' -l ",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -69,7 +69,6 @@
   "build": {
     "appId": "net.marquiskurt.hyperspace",
   	"afterSign": "desktop/notarize.js",
-  	"publish": "never",
     "directories": {
       "buildResources": "desktop"
     },
