@@ -50,7 +50,7 @@
     "build": "react-scripts build",
     "create-mac-icon": "cd desktop; iconutil -c icns app.iconset; cd ..",
     "build-desktop": "npm run build; npm run create-mac-icon; electron-builder -mwl deb AppImage snap",
-    "build-desktop-win": "build -w",
+    "build-desktop-win": "electron-builder -w",
     "build-desktop-darwin": "npm run create-mac-icon; electron-builder -m",
     "build-desktop-linux": "electron-builder -l deb AppImage snap",
     "build-desktop-linux-select": "electron-builder -l ",

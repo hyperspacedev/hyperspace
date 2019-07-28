@@ -15,6 +15,8 @@ exports.default = async function notarizing(context) {
     return;
   }
 
+  console.log("Notarizing Hyperspace...");
+
   const appName = context.packager.appInfo.productFilename;
 
   return await notarize({
