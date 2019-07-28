@@ -24,7 +24,7 @@ jobs:
     steps:
     - task: CmdLine@2
       inputs:
-        script: 'security add-generic-password -a "appleseed@marquiskurt.net" -w $(ascPassword) -s "AC_PASSWORD"'
+        script: 'security add-generic-password -a "appleseed@marquiskurt.net" -w "$(ascPassword)" -s "AC_PASSWORD"'
     - task: InstallAppleCertificate@2
       inputs:
         certSecureFile: 'Certificates.p12'
