@@ -35,7 +35,7 @@ jobs:
     - template: .azure/build-web.yml
     - template: .azure/mac-files.yml
     - script: |
-        npm run build-desktop-darwin
+        npm run build-desktop-darwin-nosign
       displayName: 'Build desktop client'
     displayName: 'Build macOS client'
 
