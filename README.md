@@ -37,7 +37,7 @@ npm install
 
 ### Testing changes
 
-Before testing Hyperspace, make the following change in `config.json`, located in the public directory:
+Before testing Hyperspace, make the following change in `config.json`, located in the `public` directory:
 
 ```json
     "location": "https://localhost:3000"
@@ -55,7 +55,7 @@ npm start
 
 The site will be hosted at `https://localhost:3000`, where you can sign in and test Hyperspace using your Mastodon account. If you have signed in before, you will be automatically logged in.
 
-Alternatively, if you are testing the desktop version of Hyperspace, run `npm run electrify` (or `npm run electrify`, if you don't want to make another production build). Hyperspace will open in a window where you can sign in and test Hyperspace with your Mastodon account. You'll be logged in automatically if you've signed in before.
+Alternatively, if you are testing the desktop version of Hyperspace, run `npm run electrify` (or `npm run electrify-nobuild`, if you don't want to make another production build). Hyperspace will open in a window where you can sign in and test Hyperspace with your Mastodon account. You'll be logged in automatically if you've signed in before.
 
 ### Building a release
 
