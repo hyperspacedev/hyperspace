@@ -145,13 +145,15 @@ function createWindow() {
     // Load the main app and open the index page.
     mainWindow.loadURL("hyperspace://hyperspace/app/");
 
-    // Watch for a change in macOS's dark mode and reload the window to apply changes
-    systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
-        if (mainWindow != null) {
-            mainWindow.setVibrancy(systemPreferences.isDarkMode()? "ultra-dark": "light");
-            mainWindow.webContents.reload();
-        }
-    })
+    if (darwin()) {
+      // Watch for a change in macOS's dark mode and reload the window to apply changes
+      systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
+          if (mainWindow != null) {
+              mainWindow.setVibrancy(systemPreferences.isDarkMode()? "ultra-dark": "light");
+              mainWindow.webContents.reload();
+          }
+      })
+    }
 
     // Delete the window when closed
     mainWindow.on('closed', () => {
