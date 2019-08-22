@@ -85,7 +85,7 @@ export const styles = (theme: Theme) => createStyles({
     },
     pageHeroContent: {
       padding: 16,
-      paddingTop: 116,
+      paddingTop: 24,
       textAlign: 'center',
       width: '100%',
       height: '100%',
@@ -109,6 +109,10 @@ export const styles = (theme: Theme) => createStyles({
             paddingRight: theme.spacing.unit * 2
         },
         //backgroundColor: theme.palette.background.default
+    },
+    profileToolbar: {
+        zIndex: 2,
+        paddingTop: 108,
     },
     pageProfileAvatar: {
       width: 128,
@@ -239,5 +243,8 @@ export const styles = (theme: Theme) => createStyles({
       top: theme.spacing.unit,
       right: theme.spacing.unit,
       color: theme.palette.common.white
+    },
+    pageGrow: {
+        flexGrow: 1
     }
   });

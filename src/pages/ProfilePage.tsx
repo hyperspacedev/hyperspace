@@ -1,5 +1,21 @@
 import React, {Component} from 'react';
-import {withStyles, Typography, Avatar, Divider, Button, CircularProgress, Paper, Tooltip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions} from '@material-ui/core';
+import {
+    withStyles,
+    Typography,
+    Avatar,
+    Divider,
+    Button,
+    CircularProgress,
+    Paper,
+    Tooltip,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
+    Toolbar,
+    IconButton
+} from '@material-ui/core';
 import {styles} from './PageLayout.styles';
 import Mastodon from 'megalodon';
 import { Account } from '../types/Account';
@@ -11,6 +27,13 @@ import { LinkableButton, LinkableIconButton } from '../interfaces/overrides';
 import { emojifyString } from '../utilities/emojis';
 
 import AccountEditIcon from 'mdi-material-ui/AccountEdit';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
+import AccountMinusIcon from 'mdi-material-ui/AccountMinus';
+import ChatIcon from '@material-ui/icons/Chat';
+import CancelIcon from '@material-ui/icons/Cancel';
+
+
 
 interface IProfilePageState {
     account?: Account;
@@ -225,17 +248,47 @@ class ProfilePage extends Component<any, IProfilePageState> {
             <div className={classes.pageLayoutMinimalConstraints}>
                 <div className={classes.pageHeroBackground}>
                     <div className={classes.pageHeroBackgroundImage} style={{ backgroundImage: this.state.account? `url("${this.state.account.header}")`: `url("")`}}/>
+                    <Toolbar className={classes.profileToolbar}>
+                        <div className={classes.pageGrow}/>
+                            <Tooltip title={
+                                this.isItMe()?
+                                    "You can't follow yourself.":
+                                    this.state.relationship && this.state.relationship.following?
+                                        "Unfollow":
+                                        "Follow"
+                            }>
+                                <IconButton color={"inherit"} disabled={this.isItMe()} onClick={() => this.toggleFollow()}>
+                                    {
+                                        this.isItMe()?
+                                            <PersonAddDisabledIcon/>:
+                                            this.state.relationship && this.state.relationship.following?
+                                                <AccountMinusIcon/>:
+                                                <PersonAddIcon/>
+                                    }
+                                </IconButton>
+                            </Tooltip>
+                        <Tooltip title={"Send a message or post"}>
+                            <LinkableIconButton to={`/compose?mention=${this.state.account? this.state.account.acct: ""}`} color={"inherit"}>
+                                <ChatIcon/>
+                            </LinkableIconButton>
+                        </Tooltip>
+                        <Tooltip title={this.state.relationship && this.state.relationship.blocking? "Unblock this account": "Block this account"}>
+                            <IconButton color={"inherit"} disabled={this.isItMe()} onClick={() => this.toggleBlockDialog()}>
+                                <CancelIcon/>
+                            </IconButton>
+                        </Tooltip>
+                            {
+                                this.isItMe()?
+                                    <Tooltip title="Edit profile">
+                                        <LinkableIconButton to="/you" color="inherit">
+                                            <AccountEditIcon/>
+                                        </LinkableIconButton>
+                                    </Tooltip>: null
+                            }
+                    </Toolbar>
                     <div className={classes.pageHeroContent}>
-                        {
-                            this.isItMe()?
-                            <Tooltip title="Edit profile">
-                                <LinkableIconButton to="/you" color="inherit" className={classes.pageHeroToolbar}>
-                                    <AccountEditIcon/>
-                                </LinkableIconButton>
-                            </Tooltip>: null
-                        }
                         <Avatar className={classes.pageProfileAvatar} src={this.state.account ? this.state.account.avatar: ""}/>
-                        <Typography variant="h4" color="inherit" dangerouslySetInnerHTML={{__html: this.state.account? emojifyString(this.state.account.display_name, this.state.account.emojis, classes.pageProfileNameEmoji): ""}}></Typography>
+                        <Typography variant="h4" color="inherit" dangerouslySetInnerHTML={{__html: this.state.account? emojifyString(this.state.account.display_name, this.state.account.emojis, classes.pageProfileNameEmoji): ""}}/>
                         <Typography variant="caption" color="inherit">{this.state.account ? '@' + this.state.account.acct: ""}</Typography>
                         <Typography paragraph color="inherit">{this.state.account ? this.state.account.note: ""}</Typography>
                         <Divider/>
@@ -244,31 +297,6 @@ class ProfilePage extends Component<any, IProfilePageState> {
                             {this.statElement(classes, 'following')}
                             {this.statElement(classes, 'posts')}
                         </div>
-                        <Divider/>
-                        {
-                            this.state.relationship?
-                            <div>
-                                <Button
-                                    variant="contained" 
-                                    color="primary" 
-                                    className={classes.pageProfileFollowButton}
-                                    onClick={() => this.toggleFollow()}
-                                    disabled={this.state.account? this.state.account.id === JSON.parse(localStorage.getItem('account') as string).id: false}
-                                >
-                                    {this.state.relationship.following? "Unfollow": "Follow"}
-                                </Button>
-                                
-                                <LinkableButton to={`/compose?mention=${this.state.account? this.state.account.acct: ""}`} variant="contained" className={classes.pageProfileFollowButton}>Mention</LinkableButton>
-                                <Button 
-                                    variant="contained" 
-                                    className={classes.pageProfileFollowButton}
-                                    disabled={this.state.account? this.state.account.id === JSON.parse(localStorage.getItem('account') as string).id: false}
-                                    onClick={() => this.toggleBlockDialog()}
-                                >
-                                    {this.state.relationship.blocking? "Unblock": "Block"}
-                                </Button>
-                            </div>: null
-                        }
                     </div>
                 </div>
                 <div className={classes.pageContentLayoutConstraints}>
