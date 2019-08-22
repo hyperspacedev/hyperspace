@@ -85,13 +85,13 @@ export const styles = (theme: Theme) => createStyles({
     },
     pageHeroContent: {
       padding: 16,
-      paddingTop: 24,
+      paddingTop: 116,
       textAlign: 'center',
       width: '100%',
       height: '100%',
       [theme.breakpoints.up('md')]: {
-        paddingLeft: '25%',
-        paddingRight: '25%',
+        paddingLeft: '5%',
+        paddingRight: '5%',
       },
       position: "relative",
       zIndex: 1
@@ -112,7 +112,33 @@ export const styles = (theme: Theme) => createStyles({
     },
     profileToolbar: {
         zIndex: 2,
-        paddingTop: 108,
+        paddingTop: 100,
+    },
+    profileContent: {
+        padding: 16,
+        [theme.breakpoints.up('md')]: {
+            paddingLeft: '5%',
+            paddingRight: '5%'
+        },
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        zIndex: 1,
+        display: 'flex',
+        paddingBottom: 24,
+        paddingTop: 0
+    },
+    profileAvatar: {
+        width: 64,
+        height: 64,
+        [theme.breakpoints.up('md')]: {
+            width: 128,
+            height: 128,
+        },
+        backgroundColor: theme.palette.primary.main
+    },
+    profileUserBox: {
+        paddingLeft: theme.spacing.unit * 2
     },
     pageProfileAvatar: {
       width: 128,
@@ -123,7 +149,7 @@ export const styles = (theme: Theme) => createStyles({
       backgroundColor: theme.palette.primary.main
     },
     pageProfileNameEmoji: {
-      height: theme.typography.h4.fontSize,
+      height: theme.typography.h4.fontSize
     },
     pageProfileStatsDiv: {
       display: 'inline-flex',
@@ -145,7 +171,7 @@ export const styles = (theme: Theme) => createStyles({
       paddingRight: theme.spacing.unit,
       paddingTop: theme.spacing.unit * 4,
       paddingBottom: theme.spacing.unit * 2,
-      [theme.breakpoints.up('md')]: {
+      [theme.breakpoints.up('lg')]: {
         paddingLeft: theme.spacing.unit * 32,
         paddingRight: theme.spacing.unit * 32
       },

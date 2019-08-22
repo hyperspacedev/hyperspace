@@ -135,23 +135,6 @@ class ProfilePage extends Component<any, IProfilePageState> {
         });
     }
 
-    statElement(classes: any, stat: 'following' | 'followers' | 'posts') {
-        let number = 0;
-        if (this.state.account) {
-            if (stat == 'following') {
-                number = this.state.account.following_count;
-            } else if (stat == 'followers') {
-                number = this.state.account.followers_count;
-            } else if (stat == 'posts') {
-                number = this.state.account.statuses_count;
-            }
-        }
-        return <div className={classes.pageProfileStat}>
-            <Typography variant="h6" color="inherit">{number}</Typography>
-            <Typography color="inherit">{stat}</Typography>
-        </div>;
-    }
-
     loadMoreTimelinePieces() {
         const { match: {params}} = this.props;
         this.setState({ viewDidLoad: false, viewIsLoading: true})
@@ -268,7 +251,7 @@ class ProfilePage extends Component<any, IProfilePageState> {
                                 </IconButton>
                             </Tooltip>
                         <Tooltip title={"Send a message or post"}>
-                            <LinkableIconButton to={`/compose?mention=${this.state.account? this.state.account.acct: ""}`} color={"inherit"}>
+                            <LinkableIconButton to={`/compose?acct=${this.state.account? this.state.account.acct: ""}`} color={"inherit"}>
                                 <ChatIcon/>
                             </LinkableIconButton>
                         </Tooltip>
@@ -286,16 +269,15 @@ class ProfilePage extends Component<any, IProfilePageState> {
                                     </Tooltip>: null
                             }
                     </Toolbar>
-                    <div className={classes.pageHeroContent}>
-                        <Avatar className={classes.pageProfileAvatar} src={this.state.account ? this.state.account.avatar: ""}/>
-                        <Typography variant="h4" color="inherit" dangerouslySetInnerHTML={{__html: this.state.account? emojifyString(this.state.account.display_name, this.state.account.emojis, classes.pageProfileNameEmoji): ""}}/>
-                        <Typography variant="caption" color="inherit">{this.state.account ? '@' + this.state.account.acct: ""}</Typography>
-                        <Typography paragraph color="inherit">{this.state.account ? this.state.account.note: ""}</Typography>
-                        <Divider/>
-                        <div className={classes.pageProfileStatsDiv}>
-                            {this.statElement(classes, 'followers')}
-                            {this.statElement(classes, 'following')}
-                            {this.statElement(classes, 'posts')}
+                    <div className={classes.profileContent}>
+                        <Avatar className={classes.profileAvatar} src={this.state.account ? this.state.account.avatar: ""}/>
+                        <div className={classes.profileUserBox}>
+                            <Typography variant="h4" color="inherit" dangerouslySetInnerHTML={{__html: this.state.account? emojifyString(this.state.account.display_name, this.state.account.emojis, classes.pageProfileNameEmoji): ""}}/>
+                            <Typography variant="caption" color="inherit">{this.state.account ? '@' + this.state.account.acct: ""}</Typography>
+                            <Typography paragraph color="inherit">{this.state.account ? this.state.account.note: ""}</Typography>
+                            <Typography color={"inherit"}>
+                                {this.state.account? this.state.account.followers_count: 0} followers | {this.state.account? this.state.account.following_count: 0} following | {this.state.account? this.state.account.statuses_count: 0} posts
+                            </Typography>
                         </div>
                     </div>
                 </div>
