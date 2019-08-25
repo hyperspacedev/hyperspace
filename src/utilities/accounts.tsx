@@ -15,4 +15,7 @@ export function refreshUserAccountData() {
     }).catch((err: Error) => {
         console.error(err.message);
     });
+    client.get('/instance').then((resp: any) => {
+        localStorage.setItem('isPleroma', (resp.data.version.match(/Pleroma/) ? "true" : "false"))
+    })
 }
