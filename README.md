@@ -81,6 +81,10 @@ You can run any of the following commands to build a release for the desktop:
 >
 > While the command will run without needing the signature, it is recommended that you make a signed copy to protect users.
 
+> ⚠️ **Notarization**: If you are building the macOS version of Hyperspace, you will also need to set up notarization processes. Hyperspace will _not_ run on devices running macOS Catalina or later without this notarization; please ensure you have the correct certificates and updated notarization scripts in `desktop/notarize.js`.
+> 
+> When building, the script will aotumatically notarize the app for you after signing it.
+
 The built files will be available under `dist` that can be uploaded to your app distributor or website.
 
 ## Contribute

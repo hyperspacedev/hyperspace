@@ -6,6 +6,7 @@ const { app, Menu, protocol, BrowserWindow, shell, systemPreferences } = require
 const windowStateKeeper = require('electron-window-state');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
+const os = require('os');
 
 // Check for any updates to the app
 autoUpdater.checkForUpdatesAndNotify();
@@ -26,6 +27,10 @@ protocol.registerSchemesAsPrivileged([
  */
 function darwin() {
     return process.platform === "darwin";
+}
+
+function catalina() {
+    return os.release() >= "19.0.0";
 }
 
 /**
@@ -133,7 +138,7 @@ function createWindow() {
 
             // Set some preferences that are specific to macOS.
             titleBarStyle: 'hidden',
-            vibrancy: systemPreferences.isDarkMode()? "ultra-dark": "light",
+            vibrancy: catalina()? "sidebar": systemPreferences.isDarkMode()? "ultra-dark": "light",
             transparent: darwin(),
             backgroundColor: darwin()? "#80FFFFFF": "#FFF"
         }
@@ -148,7 +153,10 @@ function createWindow() {
     // Watch for a change in macOS's dark mode and reload the window to apply changes
     systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
         if (mainWindow != null) {
-            mainWindow.setVibrancy(systemPreferences.isDarkMode()? "ultra-dark": "light");
+            console.log(`Dark mode: ${systemPreferences.isDarkMode()}`)
+            if (!catalina()) {
+                mainWindow.setVibrancy(systemPreferences.isDarkMode()? "ultra-dark": "light");
+            }
             mainWindow.webContents.reload();
         }
     })
