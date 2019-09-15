@@ -1,5 +1,6 @@
 import { Theme, createStyles } from "@material-ui/core";
 import { isDarwinApp } from "../utilities/desktop";
+import { isAppbarExpanded } from "../utilities/appbar";
 
 export const styles = (theme: Theme) => createStyles({
     root: {
@@ -69,7 +70,8 @@ export const styles = (theme: Theme) => createStyles({
       backgroundColor: theme.palette.primary.dark,
       width: '100%',
       color: theme.palette.common.white,
-      zIndex: 1
+      zIndex: 1,
+      top: isAppbarExpanded()? 80: 64,
     },
     pageHeroBackgroundImage: {
       position: 'absolute',
@@ -80,12 +82,13 @@ export const styles = (theme: Theme) => createStyles({
       backgroundSize: 'cover',
       height: '100%',
       width: '100%',
-      opacity: 0.40,
-      zIndex: -1
+      opacity: 0.35,
+      zIndex: -1,
+      filter: 'blur(2px)'
     },
     pageHeroContent: {
       padding: 16,
-      paddingTop: 116,
+      paddingTop: 8,
       textAlign: 'center',
       width: '100%',
       height: '100%',
@@ -112,13 +115,15 @@ export const styles = (theme: Theme) => createStyles({
     },
     profileToolbar: {
         zIndex: 2,
-        paddingTop: 100,
+        paddingTop: 8,
     },
     profileContent: {
         padding: 16,
         [theme.breakpoints.up('md')]: {
             paddingLeft: '5%',
-            paddingRight: '5%'
+            paddingRight: '5%',
+            paddingBottom: 48,
+            paddingTop: 24,
         },
         width: '100%',
         height: '100%',
@@ -126,7 +131,7 @@ export const styles = (theme: Theme) => createStyles({
         zIndex: 1,
         display: 'flex',
         paddingBottom: 24,
-        paddingTop: 0
+        paddingTop: 24,
     },
     profileAvatar: {
         width: 64,
@@ -149,7 +154,8 @@ export const styles = (theme: Theme) => createStyles({
       backgroundColor: theme.palette.primary.main
     },
     pageProfileNameEmoji: {
-      height: theme.typography.h4.fontSize
+      height: theme.typography.h4.fontSize,
+      fontWeight: theme.typography.fontWeightMedium,
     },
     pageProfileStatsDiv: {
       display: 'inline-flex',
@@ -169,7 +175,7 @@ export const styles = (theme: Theme) => createStyles({
     pageContentLayoutConstraints: {
       paddingLeft: theme.spacing.unit,
       paddingRight: theme.spacing.unit,
-      paddingTop: theme.spacing.unit * 4,
+      paddingTop: theme.spacing.unit * 12,
       paddingBottom: theme.spacing.unit * 2,
       [theme.breakpoints.up('lg')]: {
         paddingLeft: theme.spacing.unit * 32,

@@ -23,7 +23,7 @@ import { Status } from '../types/Status';
 import { Relationship } from '../types/Relationship';
 import Post from '../components/Post';
 import {withSnackbar} from 'notistack';
-import { LinkableButton, LinkableIconButton } from '../interfaces/overrides';
+import { LinkableIconButton } from '../interfaces/overrides';
 import { emojifyString } from '../utilities/emojis';
 
 import AccountEditIcon from 'mdi-material-ui/AccountEdit';
@@ -31,7 +31,9 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import AccountMinusIcon from 'mdi-material-ui/AccountMinus';
 import ChatIcon from '@material-ui/icons/Chat';
-import CancelIcon from '@material-ui/icons/Cancel';
+import AccountRemoveIcon from 'mdi-material-ui/AccountRemove';
+import AccountHeartIcon from 'mdi-material-ui/AccountHeart';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 
 
@@ -257,7 +259,14 @@ class ProfilePage extends Component<any, IProfilePageState> {
                         </Tooltip>
                         <Tooltip title={this.state.relationship && this.state.relationship.blocking? "Unblock this account": "Block this account"}>
                             <IconButton color={"inherit"} disabled={this.isItMe()} onClick={() => this.toggleBlockDialog()}>
-                                <CancelIcon/>
+                                {
+                                    this.state.relationship && this.state.relationship.blocking? <AccountHeartIcon/>: <AccountRemoveIcon/>
+                                }
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Open in web">
+                            <IconButton href={this.state.account? this.state.account.url: ""} target="_blank" rel={"nofollower noreferrer noopener"} color={"inherit"}>
+                                <OpenInNewIcon/>
                             </IconButton>
                         </Tooltip>
                             {
@@ -272,9 +281,21 @@ class ProfilePage extends Component<any, IProfilePageState> {
                     <div className={classes.profileContent}>
                         <Avatar className={classes.profileAvatar} src={this.state.account ? this.state.account.avatar: ""}/>
                         <div className={classes.profileUserBox}>
-                            <Typography variant="h4" color="inherit" dangerouslySetInnerHTML={{__html: this.state.account? emojifyString(this.state.account.display_name, this.state.account.emojis, classes.pageProfileNameEmoji): ""}}/>
+                            <Typography variant="h4" color="inherit" dangerouslySetInnerHTML={
+                                {__html: this.state.account?
+                                        this.state.account.display_name?
+                                            emojifyString(this.state.account.display_name, this.state.account.emojis, classes.pageProfileNameEmoji)
+                                            : this.state.account.username
+                                        : ""}}
+                                        className={classes.pageProfileNameEmoji}/>
                             <Typography variant="caption" color="inherit">{this.state.account ? '@' + this.state.account.acct: ""}</Typography>
-                            <Typography paragraph color="inherit">{this.state.account ? this.state.account.note: ""}</Typography>
+                            <Typography paragraph color="inherit">{
+                                this.state.account ?
+                                    this.state.account.note?
+                                        this.state.account.note
+                                        : "No bio provided by user."
+                                    : "No bio available."
+                            }</Typography>
                             <Typography color={"inherit"}>
                                 {this.state.account? this.state.account.followers_count: 0} followers | {this.state.account? this.state.account.following_count: 0} following | {this.state.account? this.state.account.statuses_count: 0} posts
                             </Typography>
