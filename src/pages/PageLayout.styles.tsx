@@ -1,5 +1,6 @@
 import { Theme, createStyles } from "@material-ui/core";
 import { isDarwinApp } from "../utilities/desktop";
+import { isAppbarExpanded } from "../utilities/appbar";
 
 export const styles = (theme: Theme) => createStyles({
     root: {
@@ -69,7 +70,8 @@ export const styles = (theme: Theme) => createStyles({
       backgroundColor: theme.palette.primary.dark,
       width: '100%',
       color: theme.palette.common.white,
-      zIndex: 1
+      zIndex: 1,
+      top: isAppbarExpanded()? 80: 64,
     },
     pageHeroBackgroundImage: {
       position: 'absolute',
@@ -80,18 +82,19 @@ export const styles = (theme: Theme) => createStyles({
       backgroundSize: 'cover',
       height: '100%',
       width: '100%',
-      opacity: 0.40,
-      zIndex: -1
+      opacity: 0.35,
+      zIndex: -1,
+      filter: 'blur(2px)'
     },
     pageHeroContent: {
       padding: 16,
-      paddingTop: 116,
+      paddingTop: 8,
       textAlign: 'center',
       width: '100%',
       height: '100%',
       [theme.breakpoints.up('md')]: {
-        paddingLeft: '25%',
-        paddingRight: '25%',
+        paddingLeft: '5%',
+        paddingRight: '5%',
       },
       position: "relative",
       zIndex: 1
@@ -110,6 +113,38 @@ export const styles = (theme: Theme) => createStyles({
         },
         //backgroundColor: theme.palette.background.default
     },
+    profileToolbar: {
+        zIndex: 2,
+        paddingTop: 8,
+    },
+    profileContent: {
+        padding: 16,
+        [theme.breakpoints.up('md')]: {
+            paddingLeft: '5%',
+            paddingRight: '5%',
+            paddingBottom: 48,
+            paddingTop: 24,
+        },
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        zIndex: 1,
+        display: 'flex',
+        paddingBottom: 24,
+        paddingTop: 24,
+    },
+    profileAvatar: {
+        width: 64,
+        height: 64,
+        [theme.breakpoints.up('md')]: {
+            width: 128,
+            height: 128,
+        },
+        backgroundColor: theme.palette.primary.main
+    },
+    profileUserBox: {
+        paddingLeft: theme.spacing.unit * 2
+    },
     pageProfileAvatar: {
       width: 128,
       height: 128,
@@ -120,6 +155,7 @@ export const styles = (theme: Theme) => createStyles({
     },
     pageProfileNameEmoji: {
       height: theme.typography.h4.fontSize,
+      fontWeight: theme.typography.fontWeightMedium,
     },
     pageProfileStatsDiv: {
       display: 'inline-flex',
@@ -139,9 +175,9 @@ export const styles = (theme: Theme) => createStyles({
     pageContentLayoutConstraints: {
       paddingLeft: theme.spacing.unit,
       paddingRight: theme.spacing.unit,
-      paddingTop: theme.spacing.unit * 4,
+      paddingTop: theme.spacing.unit * 12,
       paddingBottom: theme.spacing.unit * 2,
-      [theme.breakpoints.up('md')]: {
+      [theme.breakpoints.up('lg')]: {
         paddingLeft: theme.spacing.unit * 32,
         paddingRight: theme.spacing.unit * 32
       },
@@ -239,5 +275,8 @@ export const styles = (theme: Theme) => createStyles({
       top: theme.spacing.unit,
       right: theme.spacing.unit,
       color: theme.palette.common.white
+    },
+    pageGrow: {
+        flexGrow: 1
     }
   });
