@@ -6,6 +6,7 @@ const { app, Menu, protocol, BrowserWindow, shell, systemPreferences } = require
 const windowStateKeeper = require('electron-window-state');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
+const os = require('os');
 
 // Check for any updates to the app
 autoUpdater.checkForUpdatesAndNotify();
@@ -23,9 +24,14 @@ protocol.registerSchemesAsPrivileged([
 
 /**
  * Determine whether the desktop app is on macOS
+ * - Returns: Boolean of whether platform is Darwin
  */
 function darwin() {
     return process.platform === "darwin";
+}
+
+function catalina() {
+    return os.release() >= "19.0.0";
 }
 
 /**
@@ -133,7 +139,7 @@ function createWindow() {
 
             // Set some preferences that are specific to macOS.
             titleBarStyle: 'hidden',
-            vibrancy: systemPreferences.isDarkMode()? "ultra-dark": "light",
+            vibrancy: catalina()? "sidebar": systemPreferences.isDarkMode()? "ultra-dark": "light",
             transparent: darwin(),
             backgroundColor: darwin()? "#80FFFFFF": "#FFF"
         }
@@ -144,14 +150,18 @@ function createWindow() {
     
     // Load the main app and open the index page.
     mainWindow.loadURL("hyperspace://hyperspace/app/");
-
+    
     // Watch for a change in macOS's dark mode and reload the window to apply changes
-    systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
+    if (darwin()) {
+        systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
         if (mainWindow != null) {
-            mainWindow.setVibrancy(systemPreferences.isDarkMode()? "ultra-dark": "light");
+            if (!catalina()) {
+                mainWindow.setVibrancy(systemPreferences.isDarkMode()? "ultra-dark": "light");
+            }
             mainWindow.webContents.reload();
         }
     })
+    }
 
     // Delete the window when closed
     mainWindow.on('closed', () => {

@@ -22,6 +22,9 @@ jobs:
     pool:
       vmImage: 'macOS-latest'
     steps:
+    - task: CmdLine@2
+      inputs:
+        script: 'security add-generic-password -a "appleseed@marquiskurt.net" -w "$(ascPassword)" -s "AC_PASSWORD"'
     - task: InstallAppleCertificate@2
       inputs:
         certSecureFile: 'Certificates.p12'
@@ -32,7 +35,7 @@ jobs:
     - template: .azure/build-web.yml
     - template: .azure/mac-files.yml
     - script: |
-        npm run build-desktop-darwin
+        npm run build-desktop-darwin-nosign
       displayName: 'Build desktop client'
     displayName: 'Build macOS client'
 

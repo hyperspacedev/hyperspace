@@ -37,7 +37,7 @@ npm install
 
 ### Testing changes
 
-Before testing Hyperspace, make the following change in `config.json`, located in the public directory:
+Before testing Hyperspace, make the following change in `config.json`, located in the `public` directory:
 
 ```json
     "location": "https://localhost:3000"
@@ -55,7 +55,7 @@ npm start
 
 The site will be hosted at `https://localhost:3000`, where you can sign in and test Hyperspace using your Mastodon account. If you have signed in before, you will be automatically logged in.
 
-Alternatively, if you are testing the desktop version of Hyperspace, run `npm run electrify` (or `npm run electrify`, if you don't want to make another production build). Hyperspace will open in a window where you can sign in and test Hyperspace with your Mastodon account. You'll be logged in automatically if you've signed in before.
+Alternatively, if you are testing the desktop version of Hyperspace, run `npm run electrify` (or `npm run electrify-nobuild`, if you don't want to make another production build). Hyperspace will open in a window where you can sign in and test Hyperspace with your Mastodon account. You'll be logged in automatically if you've signed in before.
 
 ### Building a release
 
@@ -80,6 +80,10 @@ You can run any of the following commands to build a release for the desktop:
 > Note: If you are building the macOS version of Hyperspace, add your provisioning profiles and entitlements files in the `desktop` folder and ensure you have installed your developer certificates on your machine before running `build-desktop` or `build-desktop-darwin`.
 >
 > While the command will run without needing the signature, it is recommended that you make a signed copy to protect users.
+
+> ⚠️ **Notarization**: If you are building the macOS version of Hyperspace, you will also need to set up notarization processes. Hyperspace will _not_ run on devices running macOS Catalina or later without this notarization; please ensure you have the correct certificates and updated notarization scripts in `desktop/notarize.js`.
+> 
+> When building, the script will aotumatically notarize the app for you after signing it.
 
 The built files will be available under `dist` that can be uploaded to your app distributor or website.
 
