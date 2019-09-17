@@ -284,11 +284,8 @@ function createMenubar() {
             ]
         },
         {
-            role: 'window',
+            label: "Places",
             submenu: [
-                { role: 'minimize' },
-                { role: 'close' },
-                { type: 'separator' },
                 {
                     label: 'Home',
                     accelerator: "CmdOrCtrl+0",
@@ -332,6 +329,14 @@ function createMenubar() {
                         safelyGoTo("hyperspace://hyperspace/app/#/messages")
                     }
                 },
+            ]
+        },
+        {
+            role: 'window',
+            submenu: [
+                { role: 'minimize' },
+                { role: 'close' },
+                { type: 'separator' },
             ]
         },
         {
@@ -396,54 +401,10 @@ function createMenubar() {
         )
 
         // Window menu
-        menuBar[4].submenu = [
+        menuBar[5].submenu = [
             { role: 'close' },
             { role: 'minimize' },
             { role: 'zoom' },
-            { type: 'separator' },
-            {
-                label: 'Home',
-                accelerator: "CmdOrCtrl+0",
-                click() {
-                    safelyGoTo("hyperspace://hyperspace/app/#/home")
-                }
-            },
-            {
-                label: 'Local',
-                accelerator: "CmdOrCtrl+1",
-                click() {
-                    safelyGoTo("hyperspace://hyperspace/app/#/local")
-                }
-            },
-            {
-                label: 'Public',
-                accelerator: "CmdOrCtrl+2",
-                click() {
-                    safelyGoTo("hyperspace://hyperspace/app/#/public")
-                }
-            },
-            {
-                label: 'Recommended',
-                accelerator: "CmdOrCtrl+3",
-                click() {
-                    safelyGoTo("hyperspace://hyperspace/app/#/recommended")
-                }
-            },
-            { type: 'separator' },
-            {
-                label: 'Notifications',
-                accelerator: "CmdOrCtrl+4",
-                click() {
-                    safelyGoTo("hyperspace://hyperspace/app/#/notifications")
-                }
-            },
-            {
-                label: 'Messages',
-                accelerator: "CmdOrCtrl+5",
-                click() {
-                    safelyGoTo("hyperspace://hyperspace/app/#/messages")
-                }
-            },
             { type: 'separator' },
             { role: 'front' }
         ]
