@@ -177,6 +177,19 @@ function createWindow() {
 }
 
 /**
+ * Go to a URL in the main window. If it doesn't exist,
+ * create the window and then navigate to it.
+ * @param url The URL to visit in the main window
+ */
+function safelyGoTo(url) {
+    if (mainWindow == null) {
+        registerProtocol();
+        createWindow();
+    }
+    mainWindow.loadURL(url);
+}
+
+/**
  * Create the menu bar and attach it to a window
  */
 function createMenubar() {
@@ -198,7 +211,22 @@ function createMenubar() {
                             createWindow();
                         }
                     }
-                }
+                },
+                {
+                    label: 'New Post',
+                    accelerator: 'Shift+CmdOrCtrl+N',
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#compose")
+                    }
+                },
+                { type: 'separator' },
+                {
+                    label: 'Edit Profile',
+                    accelerator: "Shift+CmdOrCtrl+P",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/you")
+                    }
+                },
             ]
         },
         {
@@ -218,8 +246,27 @@ function createMenubar() {
         {
             label: 'View',
             submenu: [
+                {
+                    label: 'Back',
+                    accelerator: 'CmdOrCtrl+[',
+                    click() {
+                        if (mainWindow != null && mainWindow.webContents.canGoBack()) {
+                            mainWindow.webContents.goBack()
+                        }
+                    }
+                },
+                {
+                    label: 'Forward',
+                    accelerator: 'CmdOrCtrl+]',
+                    click() {
+                        if (mainWindow != null && mainWindow.webContents.canGoForward()) {
+                            mainWindow.webContents.goForward()
+                        }
+                    }
+                },
                 { role: 'reload' },
                 { role: 'forcereload' },
+                { type: 'separator' },
                 {
                     label: 'Open Dev Tools',
                     click () {
@@ -240,7 +287,51 @@ function createMenubar() {
             role: 'window',
             submenu: [
                 { role: 'minimize' },
-                { role: 'close' }
+                { role: 'close' },
+                { type: 'separator' },
+                {
+                    label: 'Home',
+                    accelerator: "CmdOrCtrl+0",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/home")
+                    }
+                },
+                {
+                    label: 'Local',
+                    accelerator: "CmdOrCtrl+1",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/local")
+                    }
+                },
+                {
+                    label: 'Public',
+                    accelerator: "CmdOrCtrl+2",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/public")
+                    }
+                },
+                {
+                    label: 'Recommendations',
+                    accelerator: "CmdOrCtrl+3",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/recommended")
+                    }
+                },
+                { type: 'separator' },
+                {
+                    label: 'Notifications',
+                    accelerator: "CmdOrCtrl+4",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/notifications")
+                    }
+                },
+                {
+                    label: 'Messages',
+                    accelerator: "CmdOrCtrl+5",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/messages")
+                    }
+                },
             ]
         },
         {
@@ -258,7 +349,20 @@ function createMenubar() {
         menuBar.unshift({
             label: app.getName(),
             submenu: [
-                { role: 'about' },
+                {
+                    label: 'About Hyperspace',
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/about")
+                    }
+                },
+                { type: 'separator' },
+                {
+                    label: "Preferences...",
+                    accelerator: 'Cmd+,',
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/settings");
+                    }
+                },
                 { type: 'separator' },
                 { role: 'services' },
                 { type: 'separator' },
@@ -287,6 +391,50 @@ function createMenubar() {
             { role: 'close' },
             { role: 'minimize' },
             { role: 'zoom' },
+            { type: 'separator' },
+            {
+                label: 'Home',
+                accelerator: "CmdOrCtrl+0",
+                click() {
+                    safelyGoTo("hyperspace://hyperspace/app/#/home")
+                }
+            },
+            {
+                label: 'Local',
+                accelerator: "CmdOrCtrl+1",
+                click() {
+                    safelyGoTo("hyperspace://hyperspace/app/#/local")
+                }
+            },
+            {
+                label: 'Public',
+                accelerator: "CmdOrCtrl+2",
+                click() {
+                    safelyGoTo("hyperspace://hyperspace/app/#/public")
+                }
+            },
+            {
+                label: 'Recommended',
+                accelerator: "CmdOrCtrl+3",
+                click() {
+                    safelyGoTo("hyperspace://hyperspace/app/#/recommended")
+                }
+            },
+            { type: 'separator' },
+            {
+                label: 'Notifications',
+                accelerator: "CmdOrCtrl+4",
+                click() {
+                    safelyGoTo("hyperspace://hyperspace/app/#/notifications")
+                }
+            },
+            {
+                label: 'Messages',
+                accelerator: "CmdOrCtrl+5",
+                click() {
+                    safelyGoTo("hyperspace://hyperspace/app/#/messages")
+                }
+            },
             { type: 'separator' },
             { role: 'front' }
         ]
