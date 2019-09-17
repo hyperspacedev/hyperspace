@@ -338,8 +338,17 @@ function createMenubar() {
             role: 'help',
             submenu: [
                 {
+                    label: 'Hyperspace Docs',
+                    click () { require('electron').shell.openExternal('https://hyperspace.marquiskurt.net/docs/') }
+                },
+                {
                     label: 'Report a Bug',
                     click () { require('electron').shell.openExternal('https://github.com/hyperspacedev/hyperspace/issues') }
+                },
+                { type: 'separator' },
+                {
+                    label: 'Acknowledgements',
+                    click () { require('electron').shell.openExternal('https://github.com/hyperspacedev/hyperspace/blob/master/patreon.md') }
                 }
             ]
         }
