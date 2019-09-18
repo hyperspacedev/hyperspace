@@ -10,4 +10,4 @@ export type Attachment = {
     text_url: string | null;
     meta: any | null;
     description: string | null;
-}
+};

@@ -1,8 +1,13 @@
-import React, { Component } from 'react';
-import {withStyles, Typography, MobileStepper, Button} from '@material-ui/core';
-import { styles } from './Attachment.styles';
-import { Attachment } from '../../types/Attachment';
-import SwipeableViews from 'react-swipeable-views';
+import React, { Component } from "react";
+import {
+    withStyles,
+    Typography,
+    MobileStepper,
+    Button
+} from "@material-ui/core";
+import { styles } from "./Attachment.styles";
+import { Attachment } from "../../types/Attachment";
+import SwipeableViews from "react-swipeable-views";
 
 interface IAttachmentProps {
     media: [Attachment];
@@ -15,7 +20,10 @@ interface IAttachmentState {
     attachments: [Attachment];
 }
 
-class AttachmentComponent extends Component<IAttachmentProps, IAttachmentState> {
+class AttachmentComponent extends Component<
+    IAttachmentProps,
+    IAttachmentState
+> {
     constructor(props: IAttachmentProps) {
         super(props);
 
@@ -23,7 +31,7 @@ class AttachmentComponent extends Component<IAttachmentProps, IAttachmentState> 
             attachments: this.props.media,
             totalSteps: this.props.media.length,
             currentStep: 0
-        }
+        };
     }
 
     moveBack() {
@@ -40,45 +48,63 @@ class AttachmentComponent extends Component<IAttachmentProps, IAttachmentState> 
             nextStep = this.state.totalSteps;
         }
         this.setState({ currentStep: nextStep });
-
     }
 
-    handleStepChange(currentStep: number) { 
-        this.setState({ 
-            currentStep 
-        })
+    handleStepChange(currentStep: number) {
+        this.setState({
+            currentStep
+        });
     }
 
     getSlide(slide: Attachment) {
-        const {classes} = this.props;
+        const { classes } = this.props;
         switch (slide.type) {
-            case 'image':
-                return <img src={slide.url} alt={slide.description? slide.description: ''} className={classes.mediaObject}/>
-            case 'video':
-                return <video controls autoPlay={false} src={slide.url} className={classes.mediaObject}/>
-            case 'gifv':
-                return <img src={slide.url} alt={slide.description? slide.description: ''} className={classes.mediaObject}/>
-            case 'unknown':
-                return <object data={slide.url} className={classes.mediaObject}/>
+            case "image":
+                return (
+                    <img
+                        src={slide.url}
+                        alt={slide.description ? slide.description : ""}
+                        className={classes.mediaObject}
+                    />
+                );
+            case "video":
+                return (
+                    <video
+                        controls
+                        autoPlay={false}
+                        src={slide.url}
+                        className={classes.mediaObject}
+                    />
+                );
+            case "gifv":
+                return (
+                    <img
+                        src={slide.url}
+                        alt={slide.description ? slide.description : ""}
+                        className={classes.mediaObject}
+                    />
+                );
+            case "unknown":
+                return (
+                    <object data={slide.url} className={classes.mediaObject} />
+                );
         }
     }
 
     render() {
-        const {classes} = this.props;
+        const { classes } = this.props;
         const step = this.state.currentStep;
         const mediaItem = this.state.attachments[step];
         return (
             <div className={classes.mediaContainer}>
-                <SwipeableViews
-                    index={this.state.currentStep}
-                >
-                    {
-                        this.state.attachments.map((slide: Attachment) => {
-                            return (<div key={slide.id} className={classes.mediaSlide}>
+                <SwipeableViews index={this.state.currentStep}>
+                    {this.state.attachments.map((slide: Attachment) => {
+                        return (
+                            <div key={slide.id} className={classes.mediaSlide}>
                                 {this.getSlide(slide)}
-                            </div>);
-                        })
-                    }
+                            </div>
+                        );
+                    })}
                 </SwipeableViews>
                 <MobileStepper
                     steps={this.state.totalSteps}
@@ -86,19 +112,34 @@ class AttachmentComponent extends Component<IAttachmentProps, IAttachmentState> 
                     activeStep={this.state.currentStep}
                     className={classes.mobileStepper}
                     nextButton={
-                        <Button size="small" onClick={() => this.moveForward()} disabled={this.state.currentStep === this.state.totalSteps - 1}>
+                        <Button
+                            size="small"
+                            onClick={() => this.moveForward()}
+                            disabled={
+                                this.state.currentStep ===
+                                this.state.totalSteps - 1
+                            }
+                        >
                             Next
                         </Button>
                     }
                     backButton={
-                        <Button size="small" onClick={() => this.moveBack()} disabled={this.state.currentStep === 0}>
+                        <Button
+                            size="small"
+                            onClick={() => this.moveBack()}
+                            disabled={this.state.currentStep === 0}
+                        >
                             Back
                         </Button>
                     }
-                    />
-                    <Typography variant="caption">{mediaItem.description? mediaItem.description: "No description provided."}</Typography>
+                />
+                <Typography variant="caption">
+                    {mediaItem.description
+                        ? mediaItem.description
+                        : "No description provided."}
+                </Typography>
             </div>
-        )
+        );
     }
 }
 

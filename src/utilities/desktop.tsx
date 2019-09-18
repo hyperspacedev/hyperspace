@@ -17,7 +17,7 @@ export function isDesktopApp(): boolean {
  * Determines whether the app is the macOS application
  */
 export function isDarwinApp(): boolean {
-    return isDesktopApp() && navigator.userAgent.includes("Macintosh")
+    return isDesktopApp() && navigator.userAgent.includes("Macintosh");
 }
 
 /**
@@ -26,6 +26,6 @@ export function isDarwinApp(): boolean {
 export function isDarkMode() {
     // Lift window to an ElectronWindow and add use require()
     const eWin = window as ElectronWindow;
-    const {remote} = eWin.require('electron');
-    return remote.systemPreferences.isDarkMode()
+    const { remote } = eWin.require("electron");
+    return remote.systemPreferences.isDarkMode();
 }

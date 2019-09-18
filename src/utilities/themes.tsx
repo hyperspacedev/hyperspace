@@ -1,7 +1,11 @@
-import { createMuiTheme, Theme } from '@material-ui/core';
-import { HyperspaceTheme, themes, defaultTheme } from '../types/HyperspaceTheme';
-import { getUserDefaultBool } from './settings';
-import { isDarwinApp, isDarkMode } from './desktop';
+import { createMuiTheme, Theme } from "@material-ui/core";
+import {
+    HyperspaceTheme,
+    themes,
+    defaultTheme
+} from "../types/HyperspaceTheme";
+import { getUserDefaultBool } from "./settings";
+import { isDarwinApp, isDarkMode } from "./desktop";
 
 /**
  * Locates a Hyperspace theme from the themes catalog
@@ -27,35 +31,38 @@ export function setHyperspaceTheme(theme: HyperspaceTheme): Theme {
     return createMuiTheme({
         typography: {
             fontFamily: [
-              '-apple-system',
-              'BlinkMacSystemFont',
-              '"Segoe UI"',
-              'Roboto',
-              '"Helvetica Neue"',
-              'Arial',
-              'sans-serif',
-              '"Apple Color Emoji"',
-              '"Segoe UI Emoji"',
-              '"Segoe UI Symbol"',
-            ].join(','),
-            useNextVariants: true,
-          },
+                "-apple-system",
+                "BlinkMacSystemFont",
+                '"Segoe UI"',
+                "Roboto",
+                '"Helvetica Neue"',
+                "Arial",
+                "sans-serif",
+                '"Apple Color Emoji"',
+                '"Segoe UI Emoji"',
+                '"Segoe UI Symbol"'
+            ].join(","),
+            useNextVariants: true
+        },
         palette: {
             primary: theme.palette.primary,
             secondary: theme.palette.secondary,
-            type: getUserDefaultBool('darkModeEnabled')? "dark": 
-                    getDarkModeFromSystem() === "dark"? "dark": "light"
+            type: getUserDefaultBool("darkModeEnabled")
+                ? "dark"
+                : getDarkModeFromSystem() === "dark"
+                ? "dark"
+                : "light"
         }
-    })
+    });
 }
 
 export function getDarkModeFromSystem(): string {
-    if (getUserDefaultBool('systemDecidesDarkMode')) {
+    if (getUserDefaultBool("systemDecidesDarkMode")) {
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
             return "dark";
         } else {
             if (isDarwinApp()) {
-                return isDarkMode()? "dark": "light";
+                return isDarkMode() ? "dark" : "light";
             } else {
                 return "light";
             }
@@ -72,9 +79,9 @@ export function getDarkModeFromSystem(): string {
  */
 export function darkMode(theme: Theme, setting: boolean): Theme {
     if (setting) {
-        theme.palette.type = 'dark';
+        theme.palette.type = "dark";
     } else {
-        theme.palette.type = 'light';
+        theme.palette.type = "light";
     }
     return theme;
 }

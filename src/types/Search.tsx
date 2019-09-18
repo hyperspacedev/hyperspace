@@ -6,4 +6,4 @@ export type Results = {
     accounts: [Account];
     statuses: [Status];
     hashtags: [Tag];
-}
+};

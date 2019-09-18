@@ -14,4 +14,4 @@ export type Card = {
     html: string | null;
     width: number | null;
     height: number | null;
-}
+};
