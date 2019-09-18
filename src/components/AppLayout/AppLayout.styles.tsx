@@ -46,7 +46,7 @@ export const styles = (theme: Theme) =>
             borderBottomColor: darken(theme.palette.primary.dark, 0.2),
             borderBottomWidth: 1,
             borderBottomStyle: isDarwinApp() ? "solid" : "none",
-            boxShadow: isDarwinApp() ? "none" : "inherit"
+            boxShadow: isDarwinApp() ? "none" : theme.shadows["4"]
         },
         appBarMenuButton: {
             marginLeft: -12,
