@@ -249,14 +249,11 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                         {this.state.brandName
                             ? this.state.brandName
                             : "Hyperspace"}{" "}
-                        {this.state.developerMode ? "(beta)" : null}
+                        {this.state.developerMode ? "(Beta)" : null}
                     </Typography>
                 </div>
             );
-        } else if (
-            this.state.developerMode ||
-            process.env.NODE_ENV === "development"
-        ) {
+        } else if (process.env.NODE_ENV === "development") {
             return (
                 <div className={classes.titleBarRoot}>
                     <Typography className={classes.titleBarText}>
