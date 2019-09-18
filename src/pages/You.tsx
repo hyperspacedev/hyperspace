@@ -171,7 +171,7 @@ class You extends Component<IYouProps, IYouState> {
             });
     }
 
-    updateDisplayname(name: string) {
+    updateDisplayName(name: string) {
         this.setState({ newDisplayName: name });
     }
     changeBio() {
@@ -212,32 +212,44 @@ class You extends Component<IYouProps, IYouState> {
                             backgroundImage: `url("${this.state.currentAccount.header_static}")`
                         }}
                     />
-                    <div className={classes.pageP}>
+                    <div className={classes.profileContent}>
+                        <br />
                         <Avatar
-                            className={classes.pageProfileAvatar}
+                            className={classes.profileAvatar}
                             src={this.state.currentAccount.avatar_static}
                         />
-                        <Typography variant="h4" color="inherit" component="h1">
-                            Edit your profile
-                        </Typography>
-                        <br />
-                        <div>
-                            <Button
-                                className={classes.pageProfileFollowButton}
-                                variant="contained"
-                                onClick={() => this.updateAvatar()}
+                        <div
+                            className={classes.profileUserBox}
+                            style={{ paddingTop: 8, paddingBottom: 8 }}
+                        >
+                            <Typography
+                                variant="h4"
+                                color="inherit"
+                                component="h1"
                             >
-                                Change Avatar
-                            </Button>
-                            <Button
-                                className={classes.pageProfileFollowButton}
-                                variant="contained"
-                                onClick={() => this.updateHeader()}
-                            >
-                                Change Header
-                            </Button>
+                                Edit your profile
+                            </Typography>
+                            <Typography color="inherit">
+                                Change information such as your display name,
+                                bio, and images used here.
+                            </Typography>
+                            <div>
+                                <Button
+                                    className={classes.pageProfileFollowButton}
+                                    variant="contained"
+                                    onClick={() => this.updateAvatar()}
+                                >
+                                    Change Avatar
+                                </Button>
+                                <Button
+                                    className={classes.pageProfileFollowButton}
+                                    variant="contained"
+                                    onClick={() => this.updateHeader()}
+                                >
+                                    Change Header
+                                </Button>
+                            </div>
                         </div>
-                        <br />
                     </div>
                 </div>
                 <div className={classes.pageContentLayoutConstraints}>
@@ -255,9 +267,9 @@ class You extends Component<IYouProps, IYouState> {
                             variant="outlined"
                             fullWidth
                             onChange={(event: any) =>
-                                this.updateDisplayname(event.target.value)
+                                this.updateDisplayName(event.target.value)
                             }
-                        ></TextField>
+                        />
                         <div style={{ textAlign: "right" }}>
                             <Button
                                 className={classes.pageProfileFollowButton}
@@ -291,7 +303,7 @@ class You extends Component<IYouProps, IYouState> {
                             onChange={(event: any) =>
                                 this.updateBio(event.target.value)
                             }
-                        ></TextField>
+                        />
                         <div style={{ textAlign: "right" }}>
                             <Button
                                 className={classes.pageProfileFollowButton}

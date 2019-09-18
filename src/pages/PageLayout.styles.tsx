@@ -90,7 +90,6 @@ export const styles = (theme: Theme) =>
         pageHeroContent: {
             padding: 16,
             paddingTop: 8,
-            textAlign: "center",
             width: "100%",
             height: "100%",
             [theme.breakpoints.up("md")]: {
