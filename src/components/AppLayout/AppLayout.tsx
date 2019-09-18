@@ -344,6 +344,9 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                               />
                         </LinkableListItem>
                         <Divider/>
+                        <LinkableListItem to={"/you"}>
+                          <ListItemText>Edit profile</ListItemText>
+                        </LinkableListItem>
                         {/* <MenuItem>Switch account</MenuItem> */}
                         <MenuItem onClick={() => this.toggleLogOutDialog()}>Log out</MenuItem>                      
                       </div>
