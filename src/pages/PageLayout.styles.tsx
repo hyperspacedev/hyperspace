@@ -253,7 +253,7 @@ export const styles = (theme: Theme) => createStyles({
       height: 128
     },
     instanceHeaderPaper: {
-      height: 200,
+      height: 150,
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
@@ -266,9 +266,11 @@ export const styles = (theme: Theme) => createStyles({
       position: "absolute",
       bottom: theme.spacing.unit,
       left: theme.spacing.unit * 2,
-      color: theme.palette.common.white,
-      textShadow: `0 0 4px ${theme.palette.grey[700]}`,
-      fontWeight: 600
+        '& *': {
+            color: theme.palette.common.white,
+            textShadow: `0 0 4px ${theme.palette.grey[700]}`,
+            fontWeight: 600,
+        },
     },
     instanceToolbar: {
       position: "absolute",

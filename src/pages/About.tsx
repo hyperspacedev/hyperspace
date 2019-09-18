@@ -106,7 +106,87 @@ class AboutPage extends Component<any, IAboutPageState> {
         return (
             <div className={classes.pageLayoutConstraints}>
                 <Paper>
-                    <div 
+                    <div
+                        className={classes.instanceHeaderPaper}
+                        style={{
+                            backgroundImage: `url("${this.state.brandBg? this.state.brandBg: ""}")`
+                        }}
+                    >
+                        <div className={classes.instanceToolbar}>
+                            {
+                                this.state.repository?
+                                    <Tooltip title="View source code">
+                                        <IconButton href={this.state.repository} target="_blank" rel="noreferrer" color="inherit">
+                                            <CodeIcon/>
+                                        </IconButton>
+                                    </Tooltip>: null
+                            }
+                        </div>
+                        <div className={classes.instanceHeaderText}>
+                            <Typography  variant="h4" component="p">
+                                {this.state.brandName? this.state.brandName: "Hyperspace"}
+                            </Typography>
+                            <Typography>Version {`${this.state? this.state.versionNumber: "1.0.x"} ${this.state && this.state.brandName !== "Hyperspace"? "(Hyperspace-like)": ""}`}</Typography>
+                        </div>
+
+                    </div>
+                    <List className={classes.pageListConstraints}>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <LinkableAvatar to={`/profile/${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.id: 0}`} src={this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.avatar_static: ""}>
+                                    <PersonIcon/>
+                                </LinkableAvatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="App provider" secondary={this.state.hyperspaceAdmin && this.state.hyperspaceAdminName? (this.state.hyperspaceAdminName || this.state.hyperspaceAdmin.display_name || "@" + this.state.hyperspaceAdmin.acct): "No provider set in config"}/>
+                            <ListItemSecondaryAction>
+                                <Tooltip title="Send a post or message">
+                                    <LinkableIconButton to={`/compose?visibility=${this.state.federated? "public": "private"}&acct=${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.acct: ""}`}>
+                                        <ChatIcon/>
+                                    </LinkableIconButton>
+                                </Tooltip>
+                                <Tooltip title="View profile">
+                                    <LinkableIconButton to={`/profile/${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.id: 0}`}>
+                                        <AssignmentIndIcon/>
+                                    </LinkableIconButton>
+                                </Tooltip>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <NotesIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="License" secondary={this.state.license.name}/>
+                            <ListItemSecondaryAction>
+                                <Tooltip title = "View license">
+                                    <IconButton href={this.state.license.url} target="_blank" rel="noreferrer">
+                                        <OpenInNewIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <UpdateIcon/>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Release channel" secondary={
+                                this.state?
+                                    this.state.developer?
+                                        "Developer":
+                                        "Release":
+                                    "Loading..."
+                            }/>
+                        </ListItem>
+                    </List>
+                </Paper>
+                
+                <br/>
+
+                <Paper>
+                    <div
                         className={classes.instanceHeaderPaper}
                         style={{
                             backgroundImage: `url("${this.state.instance && this.state.instance.thumbnail? this.state.instance.thumbnail: ""}")`
@@ -115,7 +195,10 @@ class AboutPage extends Component<any, IAboutPageState> {
                         <IconButton className={classes.instanceToolbar} href={localStorage.getItem("baseurl") as string} target="_blank" rel="noreferrer" color="inherit">
                             <OpenInNewIcon/>
                         </IconButton>
-                        <Typography className={classes.instanceHeaderText} variant="h4" component="p">{this.state.instance ? this.state.instance.uri: "Loading..."}</Typography>
+                        <div className={classes.instanceHeaderText}>
+                            <Typography variant="h4" component="p">{this.state.instance ? this.state.instance.uri: "Loading..."}</Typography>
+                            <Typography>Server version {this.state.instance? this.state.instance.version: "x.x.x"}</Typography>
+                        </div>
                     </div>
                     <List className={classes.pageListConstraints}>
                         {(localStorage['isPleroma'] == "false") && <ListItem>
@@ -124,7 +207,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                             </ListItemAvatar>
                             <ListItemText primary="Instance admin" secondary={
                                 this.state.instance ? `${this.state.instance.contact_account.display_name} (@${this.state.instance.contact_account.acct})`:
-                                "Loading..."
+                                    "Loading..."
                             }/>
                             <ListItemSecondaryAction>
                                 <Tooltip title="Send a post or message">
@@ -174,101 +257,6 @@ class AboutPage extends Component<any, IAboutPageState> {
                                     </Button>
                                 </Tooltip>
                             </ListItemSecondaryAction>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar>
-                                    <MastodonIcon/>
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary="Mastodon version"
-                                secondary={this.state.instance? this.state.instance.version: "x.x.x"}
-                            />
-                        </ListItem>
-                    </List>
-                </Paper>
-                
-                <br/>
-
-                <Paper>
-                    <div 
-                        className={classes.instanceHeaderPaper}
-                        style={{
-                            backgroundImage: `url("${this.state.brandBg? this.state.brandBg: ""}")`
-                        }}
-                    >
-                        <div className={classes.instanceToolbar}>
-                            {
-                                this.state.repository?
-                                <Tooltip title="View source code">
-                                    <IconButton href={this.state.repository} target="_blank" rel="noreferrer" color="inherit">
-                                        <CodeIcon/>
-                                    </IconButton>
-                                </Tooltip>: null
-                            }
-                        </div>
-                        <Typography className={classes.instanceHeaderText} variant="h4" component="p">
-                            {this.state.brandName? this.state.brandName: "Hyperspace"}
-                        </Typography>
-                    </div>
-                    <List className={classes.pageListConstraints}>
-                        <ListItem>
-                            <ListItemAvatar>
-                                <LinkableAvatar to={`/profile/${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.id: 0}`} src={this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.avatar_static: ""}>
-                                    <PersonIcon/>
-                                </LinkableAvatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="App provider" secondary={this.state.hyperspaceAdmin && this.state.hyperspaceAdminName? (this.state.hyperspaceAdminName || this.state.hyperspaceAdmin.display_name || "@" + this.state.hyperspaceAdmin.acct): "No provider set in config"}/>
-                            <ListItemSecondaryAction>
-                                <Tooltip title="Send a post or message">
-                                    <LinkableIconButton to={`/compose?visibility=${this.state.federated? "public": "private"}&acct=${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.acct: ""}`}>
-                                        <ChatIcon/>
-                                    </LinkableIconButton>
-                                </Tooltip>
-                                <Tooltip title="View profile">
-                                    <LinkableIconButton to={`/profile/${this.state.hyperspaceAdmin? this.state.hyperspaceAdmin.id: 0}`}>
-                                        <AssignmentIndIcon/>
-                                    </LinkableIconButton>
-                                </Tooltip>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar>
-                                    <NotesIcon/>
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="License" secondary={this.state.license.name}/>
-                            <ListItemSecondaryAction>
-                                <Tooltip title = "View license">
-                                    <IconButton href={this.state.license.url} target="_blank" rel="noreferrer">
-                                        <OpenInNewIcon/>
-                                    </IconButton>
-                                </Tooltip>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar>
-                                    <UpdateIcon/>
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Release channel" secondary={
-                                this.state?
-                                    this.state.developer?
-                                        "Developer":
-                                        "Release":
-                                "Loading..."
-                            }/>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar>
-                                    <InfoIcon/>
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="App version" secondary={`${this.state? this.state.brandName: "Hyperspace"} v${this.state? this.state.versionNumber: "1.0.x"} ${this.state && this.state.brandName !== "Hyperspace"? "(Hyperspace-like)": ""}`}/>
                         </ListItem>
                     </List>
                 </Paper>
