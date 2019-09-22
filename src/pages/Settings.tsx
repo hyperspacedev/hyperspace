@@ -59,7 +59,7 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import BellAlertIcon from "mdi-material-ui/BellAlert";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import UndoIcon from "@material-ui/icons/Undo";
-import CancelIcon from "@material-ui/icons/Cancel";
+import DomainDisablbedIcon from "@material-ui/icons/DomainDisabled";
 
 interface ISettingsState {
     darkModeEnabled: boolean;
@@ -502,7 +502,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                         </ListItem>
                         <ListItem>
                             <ListItemAvatar>
-                                <CancelIcon color="action" />
+                                <DomainDisablbedIcon color="action" />
                             </ListItemAvatar>
                             <ListItemText
                                 primary="Manage blocked servers"
