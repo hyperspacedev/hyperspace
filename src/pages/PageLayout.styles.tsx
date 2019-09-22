@@ -2,11 +2,12 @@ import { Theme, createStyles } from "@material-ui/core";
 import { isDarwinApp } from "../utilities/desktop";
 import { isAppbarExpanded } from "../utilities/appbar";
 
-export const styles = (theme: Theme) => createStyles({
+export const styles = (theme: Theme) =>
+  createStyles({
     root: {
-      width: '100%',
-      display: 'flex',
-      height: '100%'
+      width: "100%",
+      display: "flex",
+      height: "100%"
     },
     pageLayoutConstraints: {
       marginTop: 72,
@@ -14,87 +15,87 @@ export const styles = (theme: Theme) => createStyles({
       padding: theme.spacing.unit * 3,
       paddingLeft: theme.spacing.unit,
       paddingRight: theme.spacing.unit,
-      [theme.breakpoints.up('md')]: {
+      [theme.breakpoints.up("md")]: {
         marginLeft: 250,
         marginTop: 88,
         paddingLeft: theme.spacing.unit * 24,
         paddingRight: theme.spacing.unit * 24
       },
       backgroundColor: theme.palette.background.default,
-      minHeight: isDarwinApp()? "100vh": 'auto',
+      minHeight: isDarwinApp() ? "100vh" : "auto"
     },
     pageLayoutMaxConstraints: {
       marginTop: 72,
       flexGrow: 1,
       paddingTop: theme.spacing.unit * 2,
       padding: theme.spacing.unit,
-      [theme.breakpoints.up('md')]: {
+      [theme.breakpoints.up("md")]: {
         marginLeft: 250,
         marginTop: 88,
         padding: theme.spacing.unit * 3,
         paddingLeft: theme.spacing.unit * 16,
-        paddingRight: theme.spacing.unit * 16,
+        paddingRight: theme.spacing.unit * 16
       },
-      [theme.breakpoints.up('lg')]: {
+      [theme.breakpoints.up("lg")]: {
         marginLeft: 250,
         marginTop: 88,
         padding: theme.spacing.unit * 3,
         paddingLeft: theme.spacing.unit * 32,
-        paddingRight: theme.spacing.unit * 32,
+        paddingRight: theme.spacing.unit * 32
       },
-      [theme.breakpoints.up('xl')]: {
+      [theme.breakpoints.up("xl")]: {
         marginLeft: 250,
         marginTop: 88,
         padding: theme.spacing.unit * 3,
         paddingLeft: theme.spacing.unit * 40,
-        paddingRight: theme.spacing.unit * 40,
+        paddingRight: theme.spacing.unit * 40
       },
       backgroundColor: theme.palette.background.default,
-      minHeight: isDarwinApp()? "100vh": 'auto',
+      minHeight: isDarwinApp() ? "100vh" : "auto"
     },
     pageLayoutMinimalConstraints: {
       flexGrow: 1,
-      [theme.breakpoints.up('md')]: {
-        marginLeft: 250,
+      [theme.breakpoints.up("md")]: {
+        marginLeft: 250
       },
       backgroundColor: theme.palette.background.default,
-      minHeight: isDarwinApp()? "100vh": 'auto',
+      minHeight: isDarwinApp() ? "100vh" : "auto"
     },
     pageLayoutEmptyTextConstraints: {
       paddingLeft: theme.spacing.unit * 2,
       paddingRight: theme.spacing.unit * 2
     },
     pageHeroBackground: {
-      position: 'relative',
-      height: 'intrinsic',
+      position: "relative",
+      height: "intrinsic",
       backgroundColor: theme.palette.primary.dark,
-      width: '100%',
+      width: "100%",
       color: theme.palette.common.white,
       zIndex: 1,
-      top: isAppbarExpanded()? 80: 64,
+      top: isAppbarExpanded() ? 80 : 64
     },
     pageHeroBackgroundImage: {
-      position: 'absolute',
+      position: "absolute",
       bottom: 0,
       left: 0,
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover',
-      height: '100%',
-      width: '100%',
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover",
+      height: "100%",
+      width: "100%",
       opacity: 0.35,
       zIndex: -1,
-      filter: 'blur(2px)'
+      filter: "blur(2px)"
     },
     pageHeroContent: {
       padding: 16,
       paddingTop: 8,
-      textAlign: 'center',
-      width: '100%',
-      height: '100%',
-      [theme.breakpoints.up('md')]: {
-        paddingLeft: '5%',
-        paddingRight: '5%',
+      textAlign: "center",
+      width: "100%",
+      height: "100%",
+      [theme.breakpoints.up("md")]: {
+        paddingLeft: "5%",
+        paddingRight: "5%"
       },
       position: "relative",
       zIndex: 1
@@ -102,65 +103,65 @@ export const styles = (theme: Theme) => createStyles({
     pageHeroToolbar: {
       position: "absolute",
       right: theme.spacing.unit * 2,
-      marginTop: -16,
+      marginTop: -16
     },
     pageListConstraints: {
-        paddingLeft: theme.spacing.unit,
-        paddingRight: theme.spacing.unit,
-        [theme.breakpoints.up('sm')]: {
-            paddingLeft: theme.spacing.unit * 2,
-            paddingRight: theme.spacing.unit * 2
-        },
-        //backgroundColor: theme.palette.background.default
+      paddingLeft: theme.spacing.unit,
+      paddingRight: theme.spacing.unit,
+      [theme.breakpoints.up("sm")]: {
+        paddingLeft: theme.spacing.unit * 2,
+        paddingRight: theme.spacing.unit * 2
+      }
+      //backgroundColor: theme.palette.background.default
     },
     profileToolbar: {
-        zIndex: 2,
-        paddingTop: 8,
+      zIndex: 2,
+      paddingTop: 8
     },
     profileContent: {
-        padding: 16,
-        [theme.breakpoints.up('md')]: {
-            paddingLeft: '5%',
-            paddingRight: '5%',
-            paddingBottom: 48,
-            paddingTop: 24,
-        },
-        width: '100%',
-        height: '100%',
-        position: 'relative',
-        zIndex: 1,
-        display: 'flex',
-        paddingBottom: 24,
-        paddingTop: 24,
+      padding: 16,
+      [theme.breakpoints.up("md")]: {
+        paddingLeft: "5%",
+        paddingRight: "5%",
+        paddingBottom: 48,
+        paddingTop: 24
+      },
+      width: "100%",
+      height: "100%",
+      position: "relative",
+      zIndex: 1,
+      display: "flex",
+      paddingBottom: 24,
+      paddingTop: 24
     },
     profileAvatar: {
-        width: 64,
-        height: 64,
-        [theme.breakpoints.up('md')]: {
-            width: 128,
-            height: 128,
-        },
-        backgroundColor: theme.palette.primary.main
+      width: 64,
+      height: 64,
+      [theme.breakpoints.up("md")]: {
+        width: 128,
+        height: 128
+      },
+      backgroundColor: theme.palette.primary.main
     },
     profileUserBox: {
-        paddingLeft: theme.spacing.unit * 2
+      paddingLeft: theme.spacing.unit * 2
     },
     pageProfileAvatar: {
       width: 128,
       height: 128,
-      marginLeft: 'auto',
-      marginRight: 'auto',
+      marginLeft: "auto",
+      marginRight: "auto",
       marginBottom: theme.spacing.unit,
       backgroundColor: theme.palette.primary.main
     },
     pageProfileNameEmoji: {
       height: theme.typography.h4.fontSize,
-      fontWeight: theme.typography.fontWeightMedium,
+      fontWeight: theme.typography.fontWeightMedium
     },
     pageProfileStatsDiv: {
-      display: 'inline-flex',
+      display: "inline-flex",
       marginTop: theme.spacing.unit * 2,
-      marginBottom: theme.spacing.unit * 2,
+      marginBottom: theme.spacing.unit * 2
     },
     pageProfileStat: {
       marginLeft: theme.spacing.unit,
@@ -177,28 +178,28 @@ export const styles = (theme: Theme) => createStyles({
       paddingRight: theme.spacing.unit,
       paddingTop: theme.spacing.unit * 12,
       paddingBottom: theme.spacing.unit * 2,
-      [theme.breakpoints.up('lg')]: {
+      [theme.breakpoints.up("lg")]: {
         paddingLeft: theme.spacing.unit * 32,
         paddingRight: theme.spacing.unit * 32
-      },
+      }
       //backgroundColor: theme.palette.background.default,
     },
     errorCard: {
       padding: theme.spacing.unit * 4,
-      backgroundColor: theme.palette.error.main,
+      backgroundColor: theme.palette.error.main
     },
     pageTopChipContainer: {
       zIndex: 24,
       position: "fixed",
-      width: '100%'
+      width: "100%"
     },
     pageTopChips: {
-      textAlign: 'center',
-      [theme.breakpoints.up('md')]: {
-        marginRight: '55%'
+      textAlign: "center",
+      [theme.breakpoints.up("md")]: {
+        marginRight: "55%"
       },
-      [theme.breakpoints.up('xl')]: {
-        marginRight: '50%'
+      [theme.breakpoints.up("xl")]: {
+        marginRight: "50%"
       }
     },
     pageTopChip: {
@@ -206,27 +207,27 @@ export const styles = (theme: Theme) => createStyles({
     },
     clearAllButton: {
       zIndex: 3,
-      position: 'absolute',
+      position: "absolute",
       right: 24,
       top: 100,
-      [theme.breakpoints.up('md')]: {
+      [theme.breakpoints.up("md")]: {
         top: 116,
-        right: theme.spacing.unit * 24,
+        right: theme.spacing.unit * 24
       }
     },
     mobileOnly: {
-      [theme.breakpoints.up('sm')]: {
-        display: 'none'
+      [theme.breakpoints.up("sm")]: {
+        display: "none"
       }
     },
     desktopOnly: {
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        display: 'block'
+      display: "none",
+      [theme.breakpoints.up("sm")]: {
+        display: "block"
       }
     },
     pageLayoutFooter: {
-      '& a': {
+      "& a": {
         color: theme.palette.primary.light
       }
     },
@@ -235,13 +236,13 @@ export const styles = (theme: Theme) => createStyles({
       width: 88
     },
     youPaper: {
-      padding: theme.spacing.unit * 2,
+      padding: theme.spacing.unit * 2
     },
     youGrid: {
       textAlign: "center",
-      '& *': {
+      "& *": {
         marginLeft: "auto",
-        marginRight: "auto",
+        marginRight: "auto"
       }
     },
     youGridAvatar: {
@@ -249,7 +250,7 @@ export const styles = (theme: Theme) => createStyles({
       width: 128
     },
     youGridImage: {
-      width: 'auto',
+      width: "auto",
       height: 128
     },
     instanceHeaderPaper: {
@@ -277,6 +278,6 @@ export const styles = (theme: Theme) => createStyles({
       color: theme.palette.common.white
     },
     pageGrow: {
-        flexGrow: 1
+      flexGrow: 1
     }
   });
