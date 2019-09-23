@@ -19,6 +19,7 @@ import WelcomePage from "./pages/Welcome";
 import MessagesPage from "./pages/Messages";
 import RecommendationsPage from "./pages/Recommendations";
 import Missingno from "./pages/Missingno";
+import Blocked from "./pages/Blocked";
 import You from "./pages/You";
 import { withSnackbar } from "notistack";
 import { PrivateRoute } from "./interfaces/overrides";
@@ -90,6 +91,7 @@ class App extends Component<any, any> {
                     />
                     <PrivateRoute path="/search" component={SearchPage} />
                     <PrivateRoute path="/settings" component={Settings} />
+                    <PrivateRoute path="/blocked" component={Blocked}/>
                     <PrivateRoute path="/you" component={You} />
                     <PrivateRoute path="/about" component={AboutPage} />
                     <PrivateRoute path="/compose" component={Composer} />

@@ -58,6 +58,7 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import BellAlertIcon from "mdi-material-ui/BellAlert";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import UndoIcon from "@material-ui/icons/Undo";
+import DomainDisabledIcon from "@material-ui/icons/DomainDisabled";
 import { Config } from "../types/Config";
 
 interface ISettingsState {
@@ -497,6 +498,20 @@ class SettingsPage extends Component<any, ISettingsState> {
                             />
                             <ListItemSecondaryAction>
                                 <LinkableButton to="/you">Edit</LinkableButton>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <DomainDisabledIcon color="action" />
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Manage blocked servers"
+                                secondary="View and manage servers that you've blocked"
+                            />
+                            <ListItemSecondaryAction>
+                                <LinkableButton to="/blocked">
+                                    Manage
+                                </LinkableButton>
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
