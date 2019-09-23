@@ -55,3 +55,13 @@ export function getRedirectAddress(
             return type;
     }
 }
+
+/**
+ * Determine whether a base URL is in the 'disallowed' domains section.
+ * @param domain The URL to test
+ * @returns Boolean dictating the URL's presence in disallowed domains
+ */
+export function inDisallowedDomains(domain: string): boolean {
+    let disallowed = ["gab.com"];
+    return disallowed.includes(domain);
+}
