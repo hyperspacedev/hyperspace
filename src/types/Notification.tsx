@@ -7,4 +7,4 @@ export type Notification = {
     created_at: string;
     account: Account;
     status: Status | null;
-}
+};

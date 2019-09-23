@@ -6,4 +6,4 @@ export type Mention = {
     username: string;
     acct: string;
     id: string;
-}
+};

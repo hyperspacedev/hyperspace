@@ -1,11 +1,11 @@
-import { MastodonEmoji } from './Emojis';
-import { Visibility } from './Visibility';
-import { Account } from './Account';
-import { Attachment } from './Attachment';
-import { Mention } from './Mention';
-import { Poll } from './Poll';
-import { Card } from './Card';
-import { Tag } from './Tag';
+import { MastodonEmoji } from "./Emojis";
+import { Visibility } from "./Visibility";
+import { Account } from "./Account";
+import { Attachment } from "./Attachment";
+import { Mention } from "./Mention";
+import { Poll } from "./Poll";
+import { Card } from "./Card";
+import { Tag } from "./Tag";
 
 /**
  * Basic type for a status on Mastodon
@@ -37,4 +37,4 @@ export type Status = {
     poll: Poll | null;
     application: any;
     pinned: boolean | null;
-}
+};

@@ -17,15 +17,15 @@ export type Config = {
     };
     license: License;
     repository?: string;
-}
+};
 
 export type License = {
     name: string;
     url: string;
-}
+};
 
 export type Federation = {
     universalLogin: boolean;
     allowPublicPosts: boolean;
     enablePublicTimeline: boolean;
-}
+};

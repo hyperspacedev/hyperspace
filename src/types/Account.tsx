@@ -1,5 +1,5 @@
-import { MastodonEmoji } from './Emojis';
-import { Field } from './Field';
+import { MastodonEmoji } from "./Emojis";
+import { Field } from "./Field";
 
 /**
  * Basic type for an account on Mastodon
@@ -24,11 +24,11 @@ export type Account = {
     moved: Account | null;
     fields: [Field];
     bot: boolean | null;
-}
+};
 
 export type UAccount = {
     id: string;
     acct: string;
     display_name: string;
     avatar_static: string;
-}
+};

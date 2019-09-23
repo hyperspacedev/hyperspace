@@ -1,3 +1,3 @@
-import ThemePreview from './ThemePreview';
+import ThemePreview from "./ThemePreview";
 
 export default ThemePreview;
