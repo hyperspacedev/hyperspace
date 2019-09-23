@@ -17,7 +17,11 @@ import {
 import { styles } from "./WelcomePage.styles";
 import Mastodon from "megalodon";
 import { SaveClientSession } from "../types/SessionData";
-import { createHyperspaceApp, getRedirectAddress } from "../utilities/login";
+import {
+    createHyperspaceApp,
+    getRedirectAddress,
+    inDisallowedDomains
+} from "../utilities/login";
 import { parseUrl } from "query-string";
 import { getConfig } from "../utilities/settings";
 import { isDarwinApp } from "../utilities/desktop";
@@ -79,8 +83,16 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     let config: Config = result;
                     if (result.location === "dynamic") {
                         console.warn(
-                            "Recirect URI is set to dynamic, which may affect how sign-in works for some users. Careful!"
+                            "Redirect URI is set to dynamic, which may affect how sign-in works for some users. Careful!"
                         );
+                    }
+                    if (
+                        inDisallowedDomains(result.registration.defaultInstance)
+                    ) {
+                        console.warn(
+                            `The default instance field in config.json contains an unsupported domain (${result.registration.defaultInstance}), so it's been reset to mastodon.social.`
+                        );
+                        result.registration.defaultInstance = "mastodon.social";
                     }
                     this.setState({
                         logoUrl: config.branding
@@ -310,18 +322,30 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             if (this.state.user.includes("@")) {
                 if (this.state.federates && this.state.federates === true) {
                     let baseUrl = this.state.user.split("@")[1];
-                    axios
-                        .get("https://" + baseUrl + "/api/v1/timelines/public")
-                        .catch((err: Error) => {
-                            let userInputError = true;
-                            let userInputErrorMessage =
-                                "Instance name is invalid.";
-                            this.setState({
-                                userInputError,
-                                userInputErrorMessage
-                            });
-                            return true;
+                    if (inDisallowedDomains(baseUrl)) {
+                        this.setState({
+                            userInputError: true,
+                            userInputErrorMessage: `Signing in with an account from ${baseUrl} isn't supported.`
                         });
+                        return true;
+                    } else {
+                        axios
+                            .get(
+                                "https://" +
+                                baseUrl +
+                                "/api/v1/timelines/public"
+                            )
+                            .catch((err: Error) => {
+                                let userInputError = true;
+                                let userInputErrorMessage =
+                                    "Instance name is invalid.";
+                                this.setState({
+                                    userInputError,
+                                    userInputErrorMessage
+                                });
+                                return true;
+                            });
+                    }
                 } else if (
                     this.state.user.includes(
                         this.state.registerBase
@@ -365,12 +389,12 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     this.state.emergencyMode
                         ? undefined
                         : clientLoginSession.authUrl.includes(
-                              "urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
-                          )
+                        "urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
+                        )
                         ? undefined
                         : window.location.protocol === "hyperspace:"
-                        ? "hyperspace://hyperspace/app/"
-                        : `https://${window.location.host}`
+                            ? "hyperspace://hyperspace/app/"
+                            : `https://${window.location.host}`
                 )
                     .then((tokenData: any) => {
                         localStorage.setItem(
@@ -638,8 +662,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             {this.state.authority
                                 ? this.showAuthority()
                                 : this.state.wantsToLogin
-                                ? this.showLoginAuth()
-                                : this.showLanding()}
+                                    ? this.showLoginAuth()
+                                    : this.showLanding()}
                         </Fade>
                         <br />
                         <Typography variant="caption">
@@ -702,7 +726,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             {this.state.brandName
                                 ? this.state.brandName
                                 : "Hypersapce"}{" "}
-                            v.{this.state.version}{" "}
+                            v.
+                            {this.state.version}{" "}
                             {this.state.brandName &&
                             this.state.brandName !== "Hyperspace"
                                 ? "(Hyperspace-like)"
