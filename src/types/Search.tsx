@@ -3,7 +3,7 @@ import { Status } from "./Status";
 import { Tag } from "./Tag";
 
 export type Results = {
-    accounts: [Account];
-    statuses: [Status];
-    hashtags: [Tag];
-}
+  accounts: [Account];
+  statuses: [Status];
+  hashtags: [Tag];
+};

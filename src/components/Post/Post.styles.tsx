@@ -1,13 +1,14 @@
 import { Theme, createStyles } from "@material-ui/core";
 
-export const styles = (theme: Theme) => createStyles({
+export const styles = (theme: Theme) =>
+  createStyles({
     post: {
       marginTop: theme.spacing.unit,
       marginBottom: theme.spacing.unit
     },
     postReblogChip: {
       color: theme.palette.common.white,
-      '&:hover': {
+      "&:hover": {
         backgroundColor: theme.palette.secondary.light
       },
       backgroundColor: theme.palette.secondary.main,
@@ -16,27 +17,27 @@ export const styles = (theme: Theme) => createStyles({
     postContent: {
       paddingTop: 0,
       paddingBottom: 0,
-      '& a': {
-        textDecoration: 'none',
+      "& a": {
+        textDecoration: "none",
         color: theme.palette.secondary.light,
-        '&:hover': {
-          textDecoration: 'underline'
+        "&:hover": {
+          textDecoration: "underline"
         },
-        '&.u-url.mention': {
-          textDecoration: 'none',
-          color: 'inherit',
-          fontWeight: 'bold'
+        "&.u-url.mention": {
+          textDecoration: "none",
+          color: "inherit",
+          fontWeight: "bold"
         },
-        '&.mention.hashtag': {
-          textDecoration: 'none',
-          color: 'inherit',
-          fontWeight: 'bold'
+        "&.mention.hashtag": {
+          textDecoration: "none",
+          color: "inherit",
+          fontWeight: "bold"
         }
       }
     },
     postCard: {
-      '& a:hover': {
-        textDecoration: 'none'
+      "& a:hover": {
+        textDecoration: "none"
       }
     },
     postEmoji: {
@@ -44,7 +45,7 @@ export const styles = (theme: Theme) => createStyles({
     },
     postMedia: {
       height: 0,
-      paddingTop: '56.25%', // 16:9
+      paddingTop: "56.25%" // 16:9
     },
     postActionsReply: {
       marginLeft: theme.spacing.unit,
@@ -85,14 +86,14 @@ export const styles = (theme: Theme) => createStyles({
       color: "inherit"
     },
     mobileOnly: {
-      [theme.breakpoints.up('sm')]: {
-        display: 'none'
+      [theme.breakpoints.up("sm")]: {
+        display: "none"
       }
     },
     desktopOnly: {
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        display: 'block'
+      display: "none",
+      [theme.breakpoints.up("sm")]: {
+        display: "block"
       }
     }
-});
+  });
