@@ -3,18 +3,18 @@ import webShare, { WebShareInterface } from "react-web-share-api";
 import { MenuItem } from "@material-ui/core";
 
 export interface OwnProps {
-  style: object;
+    style: object;
 }
 
 const ShareMenu: React.FunctionComponent<WebShareInterface & OwnProps> = ({
-  share,
-  isSupported,
-  style
+    share,
+    isSupported,
+    style
 }) =>
-  isSupported ? (
-    <MenuItem onClick={share} style={style}>
-      Share
-    </MenuItem>
-  ) : null;
+    isSupported ? (
+        <MenuItem onClick={share} style={style}>
+            Share
+        </MenuItem>
+    ) : null;
 
 export default webShare<OwnProps>()(ShareMenu);

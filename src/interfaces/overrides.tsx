@@ -11,87 +11,87 @@ import Avatar, { AvatarProps } from "@material-ui/core/Avatar";
 import { userLoggedIn } from "../utilities/accounts";
 
 export interface ILinkableListItemProps extends ListItemProps {
-  to: string;
-  replace?: boolean;
+    to: string;
+    replace?: boolean;
 }
 
 export interface ILinkableIconButtonProps extends IconButtonProps {
-  to: string;
-  replace?: boolean;
+    to: string;
+    replace?: boolean;
 }
 
 export interface ILinkableChipProps extends ChipProps {
-  to: string;
-  replace?: boolean;
+    to: string;
+    replace?: boolean;
 }
 
 export interface ILinkableMenuItemProps extends MenuItemProps {
-  to: string;
-  replace?: boolean;
+    to: string;
+    replace?: boolean;
 }
 
 export interface ILinkableButtonProps extends ButtonProps {
-  to: string;
-  replace?: boolean;
+    to: string;
+    replace?: boolean;
 }
 
 export interface ILinkableFabProps extends FabProps {
-  to: string;
-  replace?: boolean;
+    to: string;
+    replace?: boolean;
 }
 
 export interface ILinkableAvatarProps extends AvatarProps {
-  to: string;
-  replace?: boolean;
+    to: string;
+    replace?: boolean;
 }
 
 export const LinkableListItem = (props: ILinkableListItemProps) => (
-  <ListItem {...props} component={Link as any} />
+    <ListItem {...props} component={Link as any} />
 );
 
 export const LinkableIconButton = (props: ILinkableIconButtonProps) => (
-  <IconButton {...props} component={Link as any} />
+    <IconButton {...props} component={Link as any} />
 );
 
 export const LinkableChip = (props: ILinkableChipProps) => (
-  <Chip {...props} component={Link as any} />
+    <Chip {...props} component={Link as any} />
 );
 
 export const LinkableMenuItem = (props: ILinkableMenuItemProps) => (
-  <MenuItem {...props} component={Link as any} />
+    <MenuItem {...props} component={Link as any} />
 );
 
 export const LinkableButton = (props: ILinkableButtonProps) => (
-  <Button {...props} component={Link as any} />
+    <Button {...props} component={Link as any} />
 );
 
 export const LinkableFab = (props: ILinkableFabProps) => (
-  <Fab {...props} component={Link as any} />
+    <Fab {...props} component={Link as any} />
 );
 export const LinkableAvatar = (props: ILinkableAvatarProps) => (
-  <Avatar {...props} component={Link as any} />
+    <Avatar {...props} component={Link as any} />
 );
 
 export const ProfileRoute = (rest: any, component: Component) => (
-  <Route {...rest} render={props => <Component {...props} />} />
+    <Route {...rest} render={props => <Component {...props} />} />
 );
 
 export const PrivateRoute = (props: IPrivateRouteProps) => {
-  const { component, render, ...rest } = props;
-  return (
-    <Route
-      {...rest}
-      render={(compProps: any) =>
-        userLoggedIn() ? (
-          React.createElement(component, compProps)
-        ) : (
-          <Redirect to="/welcome" />
-        )
-      }
-    />
-  );
+    const { component, render, ...rest } = props;
+    return (
+        <Route
+            {...rest}
+            render={(compProps: any) =>
+                userLoggedIn() ? (
+                    React.createElement(component, compProps)
+                ) : (
+                    <Redirect to="/welcome" />
+                )
+            }
+        />
+    );
 };
 
 interface IPrivateRouteProps extends RouteProps {
-  component: any;
+    component: any;
 }

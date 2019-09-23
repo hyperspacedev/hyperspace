@@ -9,31 +9,31 @@ import { SnackbarProvider } from "notistack";
 import { userLoggedIn, refreshUserAccountData } from "./utilities/accounts";
 
 getConfig()
-  .then((config: any) => {
-    document.title = config.branding.name || "Hyperspace";
-  })
-  .catch((err: Error) => {
-    console.error(err);
-  });
+    .then((config: any) => {
+        document.title = config.branding.name || "Hyperspace";
+    })
+    .catch((err: Error) => {
+        console.error(err);
+    });
 
 createUserDefaults();
 if (userLoggedIn()) {
-  collectEmojisFromServer();
-  refreshUserAccountData();
+    collectEmojisFromServer();
+    refreshUserAccountData();
 }
 
 ReactDOM.render(
-  <HashRouter>
-    <SnackbarProvider
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "left"
-      }}
-    >
-      <App />
-    </SnackbarProvider>
-  </HashRouter>,
-  document.getElementById("root")
+    <HashRouter>
+        <SnackbarProvider
+            anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left"
+            }}
+        >
+            <App />
+        </SnackbarProvider>
+    </HashRouter>,
+    document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change

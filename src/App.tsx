@@ -20,7 +20,6 @@ import MessagesPage from "./pages/Messages";
 import RecommendationsPage from "./pages/Recommendations";
 import Missingno from "./pages/Missingno";
 import You from "./pages/You";
-import Blocked from "./pages/Blocked";
 import { withSnackbar } from "notistack";
 import { PrivateRoute } from "./interfaces/overrides";
 import { userLoggedIn } from "./utilities/accounts";
@@ -57,8 +56,6 @@ class App extends Component<any, any> {
     removeBodyBackground() {
         if (isDarwinApp()) {
             document.body.style.backgroundColor = "transparent";
-            console.log("Changed!");
-            console.log(`New color: ${document.body.style.backgroundColor}`);
         }
     }
 
@@ -91,9 +88,7 @@ class App extends Component<any, any> {
                         component={Conversation}
                     />
                     <PrivateRoute path="/search" component={SearchPage} />
-                    <PrivateRoute path="/blocked" component={Blocked} />
                     <PrivateRoute path="/settings" component={Settings} />
-
                     <PrivateRoute path="/you" component={You} />
                     <PrivateRoute path="/about" component={AboutPage} />
                     <PrivateRoute path="/compose" component={Composer} />
