@@ -66,8 +66,8 @@ class AboutPage extends Component<any, IAboutPageState> {
 
     this.state = {
       license: {
-        name: "Apache 2.0 License (inherited)",
-        url: "https://www.apache.org/licenses/LICENSE-2.0"
+        name: "Non-violent Public License (inherited)",
+        url: "https://thufie.lain.haus/NPL.html"
       }
     };
   }
