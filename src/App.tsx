@@ -53,6 +53,7 @@ class App extends Component<any, any> {
         this.removeBodyBackground();
     }
 
+
     removeBodyBackground() {
         if (isDarwinApp()) {
             document.body.style.backgroundColor = "transparent";
