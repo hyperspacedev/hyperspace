@@ -20,8 +20,8 @@
         "account": "774314"
     },
     "license": {
-        "name": "Apache 2.0 License",
-        "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        "name": "Non-violent Public License",
+        "url": "https://thufie.lain.haus/NPL.html"
     },
     "repository": "https://github.com/hyperspacedev/hyperspace"
 }
