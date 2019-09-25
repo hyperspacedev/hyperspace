@@ -16,10 +16,10 @@ jobs:
           node-version: 10.x
       - name: Run pre-build setup
         run: |
-          echo "$(ascCertificates)" > certs.b64
+          echo "$ascCertificates" > certs.b64
           base64 --decode certs.b64 > Certificates.p12
-          security add-generic-password -a "appleseed@marquiskurt.net" -w "$(ascPassword)" -s "AC_PASSWORD"
-          security import Certificates.p12 -P "$(ascCertsPassword)" -k /Library/Keychains/System.keychain
+          security add-generic-password -a "appleseed@marquiskurt.net" -w "$ascPassword" -s "AC_PASSWORD"
+          security import Certificates.p12 -P "$ascCertsPassword" -k /Library/Keychains/System.keychain
         env:
           ascPassword: ${{ secrets.ASC_PASSWORD }}
           ascCertificates: ${{ secrets.ASC_CERTS }}
