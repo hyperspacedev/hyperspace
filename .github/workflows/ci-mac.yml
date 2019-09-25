@@ -14,6 +14,15 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
+      - name: Run pre-build setup
+        run: |
+          base64 --decode "$(ascCertificates)" > Certificates.p12
+          security add-generic-password -a "appleseed@marquiskurt.net" -w "$(ascPassword)" -s "AC_PASSWORD"
+          security import Certificates.p12 -P "$(ascCertsPassword)" -k /Library/Keychains/System.keychain
+        with:
+          ascPassword: ${{ secrets.ASC_PASSWORD }}
+          ascCertificates: ${{ secrets.ASC_CERTS }}
+          ascCertsPassword: ${{ secrets.ASC_CERTS_PASSWORD }}
       - name: Install dependencies and build
         run: |
           npm install
