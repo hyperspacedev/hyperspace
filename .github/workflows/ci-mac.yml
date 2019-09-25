@@ -19,7 +19,7 @@ jobs:
           base64 --decode "$(ascCertificates)" > Certificates.p12
           security add-generic-password -a "appleseed@marquiskurt.net" -w "$(ascPassword)" -s "AC_PASSWORD"
           security import Certificates.p12 -P "$(ascCertsPassword)" -k /Library/Keychains/System.keychain
-        with:
+        env:
           ascPassword: ${{ secrets.ASC_PASSWORD }}
           ascCertificates: ${{ secrets.ASC_CERTS }}
           ascCertsPassword: ${{ secrets.ASC_CERTS_PASSWORD }}
