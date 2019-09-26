@@ -26,7 +26,7 @@ jobs:
 
           echo "Installing certificates and profiles..."
           base64 --decode certs.b64 > Certificates.p12
-          base64 --decode mas.64 > desktop/embedded.provisionprofile
+          base64 --decode mas.b64 > desktop/embedded.provisionprofile
           base64 --decode mac.b64 > desktop/nonmas.provisionprofile
           base64 --decode entmas.b64 > desktop/entitlements.mas.plist
           base64 --decode entmac.b64 > desktop/entitlements.mac.plist
