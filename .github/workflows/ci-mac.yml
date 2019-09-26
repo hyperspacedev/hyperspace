@@ -46,4 +46,4 @@ jobs:
         run: |
           npm install
           npm run build --if-present
-          npm run build-desktop-darwin
+          npm run build-desktop-darwin-nosign
