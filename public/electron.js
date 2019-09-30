@@ -30,10 +30,6 @@ function darwin() {
     return process.platform === "darwin";
 }
 
-function catalina() {
-    return os.release() >= "19.0.0";
-}
-
 /**
  * Register the protocol for Hyperspace
  */
@@ -155,9 +151,6 @@ function createWindow() {
     if (darwin()) {
         systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
             if (mainWindow != null) {
-                if (!catalina()) {
-                    mainWindow.setVibrancy(systemPreferences.isDarkMode() ? "ultra-dark" : "light");
-                }
                 mainWindow.webContents.reload();
             }
         });
