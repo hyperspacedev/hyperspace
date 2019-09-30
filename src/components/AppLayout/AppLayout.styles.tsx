@@ -29,10 +29,10 @@ export const styles = (theme: Theme) =>
             zIndex: 1000,
             verticalAlign: "middle",
             WebkitUserSelect: "none",
-            WebkitAppRegion: "drag"
+            WebkitAppRegion: "drag",
+            color: theme.palette.getContrastText(theme.palette.primary.main)
         },
         titleBarText: {
-            color: theme.palette.common.white,
             fontSize: 12,
             paddingTop: 2,
             paddingBottom: 1
@@ -46,7 +46,9 @@ export const styles = (theme: Theme) =>
             borderBottomColor: darken(theme.palette.primary.dark, 0.2),
             borderBottomWidth: 1,
             borderBottomStyle: isDarwinApp() ? "solid" : "none",
-            boxShadow: isDarwinApp() ? "none" : theme.shadows["4"]
+            boxShadow: isDarwinApp() ? "none" : theme.shadows["4"],
+            WebkitUserSelect: isDarwinApp() ? "none" : "inherit",
+            WebkitAppRegion: isDarwinApp() ? "drag" : "inherit"
         },
         appBarMenuButton: {
             marginLeft: -12,

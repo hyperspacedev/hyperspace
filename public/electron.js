@@ -138,10 +138,10 @@ function createWindow() {
             webPreferences: {nodeIntegration: true},
 
             // Set some preferences that are specific to macOS.
-            titleBarStyle: 'hidden',
-            vibrancy: catalina()? "sidebar": systemPreferences.isDarkMode()? "ultra-dark": "light",
+            titleBarStyle: 'hiddenInset',
+            vibrancy: "sidebar",
             transparent: darwin(),
-            backgroundColor: darwin()? "#80FFFFFF": "#FFF"
+            backgroundColor: darwin()? "#80000000": "#FFF"
         }
     );
 
@@ -151,16 +151,22 @@ function createWindow() {
     // Load the main app and open the index page.
     mainWindow.loadURL("hyperspace://hyperspace/app/");
     
-    // Watch for a change in macOS's dark mode and reload the window to apply changes
+    // Watch for a change in macOS's dark mode and reload the window to apply changes, as well as accent color
     if (darwin()) {
         systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
-        if (mainWindow != null) {
-            if (!catalina()) {
-                mainWindow.setVibrancy(systemPreferences.isDarkMode()? "ultra-dark": "light");
+            if (mainWindow != null) {
+                if (!catalina()) {
+                    mainWindow.setVibrancy(systemPreferences.isDarkMode() ? "ultra-dark" : "light");
+                }
+                mainWindow.webContents.reload();
             }
-            mainWindow.webContents.reload();
-        }
-    })
+        });
+
+        systemPreferences.subscribeNotification('AppleColorPreferencesChangedNotification', () => {
+            if (mainWindow != null) {
+                mainWindow.webContents.reload();
+            }
+        });
     }
 
     // Delete the window when closed

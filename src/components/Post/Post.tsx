@@ -65,6 +65,7 @@ interface IPostProps {
     post: Status;
     classes: any;
     client: Mastodon;
+    threadHeader: boolean;
 }
 
 interface IPostState {
@@ -621,7 +622,11 @@ export class Post extends React.Component<any, IPostState> {
         const post = this.state.post;
         return (
             <Zoom in={true}>
-                <Card className={classes.post} id={`post_${post.id}`}>
+                <Card
+                    className={classes.post}
+                    id={`post_${post.id}`}
+                    elevation={this.props.threadHeader ? 0 : 1}
+                >
                     <CardHeader
                         avatar={
                             <LinkableAvatar
@@ -653,7 +658,7 @@ export class Post extends React.Component<any, IPostState> {
                                 dangerouslySetInnerHTML={{
                                     __html: this.getReblogAuthors(post)
                                 }}
-                            ></Typography>
+                            />
                         }
                         subheader={moment(post.created_at).format(
                             "MMMM Do YYYY [at] h:mm A"
