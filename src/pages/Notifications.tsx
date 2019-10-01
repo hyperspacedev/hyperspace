@@ -110,7 +110,7 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
 
     removeNotification(id: string) {
         this.client
-            .post("/notifications/dismiss", { id: id })
+            .post(`/notifications/${id}/dismiss`)
             .then((resp: any) => {
                 let notifications = this.state.notifications;
                 if (notifications !== undefined && notifications.length > 0) {

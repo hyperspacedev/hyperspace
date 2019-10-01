@@ -156,16 +156,16 @@ export const styles = (theme: Theme) =>
         pageProfileNameEmoji: {
             minHeight: theme.typography.h4.fontSize,
             fontWeight: theme.typography.fontWeightMedium,
-            '& img': {
-                height: theme.typography.h4.fontSize,
+            "& img": {
+                height: theme.typography.h4.fontSize
             }
         },
         pageProfileBioEmoji: {
-            height: '0.875rem',
-            '& img': {
-                height: '0.875rem',
+            height: "0.875rem",
+            "& img": {
+                height: "0.875rem",
                 paddingLeft: 4,
-                paddingRight: 4,
+                paddingRight: 4
             }
         },
         pageProfileStatsDiv: {

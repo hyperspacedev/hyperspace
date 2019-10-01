@@ -53,7 +53,11 @@ import { Notification } from "../../types/Notification";
 import { sendNotificationRequest } from "../../utilities/notifications";
 import { withSnackbar } from "notistack";
 import { getConfig, getUserDefaultBool } from "../../utilities/settings";
-import { isDesktopApp, isDarwinApp } from "../../utilities/desktop";
+import {
+    isDesktopApp,
+    isDarwinApp,
+    getElectronApp
+} from "../../utilities/desktop";
 import { Config } from "../../types/Config";
 
 interface IAppLayoutState {
@@ -139,6 +143,11 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         this.streamListener.on("notification", (notif: Notification) => {
             const notificationCount = this.state.notificationCount + 1;
             this.setState({ notificationCount });
+
+            if (isDesktopApp()) {
+                getElectronApp().setBadgeCount(notificationCount);
+            }
+
             if (!document.hasFocus()) {
                 let primaryMessage = "";
                 let secondaryMessage = "";
@@ -237,6 +246,10 @@ export class AppLayout extends Component<any, IAppLayoutState> {
     clearBadge() {
         if (!getUserDefaultBool("displayAllOnNotificationBadge")) {
             this.setState({ notificationCount: 0 });
+        }
+
+        if (isDesktopApp() && getElectronApp().getBadgeCount() > 0) {
+            getElectronApp().setBadgeCount(0);
         }
     }
 
