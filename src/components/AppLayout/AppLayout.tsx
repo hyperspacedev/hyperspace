@@ -206,14 +206,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                         break;
                 }
 
-                sendNotificationRequest(
-                    primaryMessage,
-                    secondaryMessage,
-                    notif.type == "mention",
-                    (response: string) => {
-                        console.log(response);
-                    }
-                );
+                sendNotificationRequest(primaryMessage, secondaryMessage);
             }
         });
     }
