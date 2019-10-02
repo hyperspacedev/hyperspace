@@ -5,14 +5,14 @@ The new beautiful, fluffy client for the fediverse written in TypeScript and Rea
 ![Screenshot](screenshot.png)
 
 [![Matrix room](https://img.shields.io/matrix/hypermasto:matrix.org.svg)](https://matrix.to/#/#hypermasto:matrix.org)
-[![Discord server](https://img.shields.io/discord/554108687434907660.svg?color=blueviolet&label=discord)](https://discord.gg/c69AXwk)
-[![Build Status](https://dev.azure.com/hyperspacedev/Hyperspace/_apis/build/status/CI%20Tests?branchName=master)](https://dev.azure.com/hyperspacedev/Hyperspace/_build/latest?definitionId=1&branchName=master)
+[![Discord server](https://img.shields.io/discord/554108687434907660.svg?color=blueviolet&label=discord)](https://discord.gg/c69AXwk) 
+![Build Status](https://github.com/hyperspacedev/hyperspace/workflows/Node%20CI/badge.svg)
 
 Hyperspace is the fluffiest client for Mastodon and other fediverse networks written in TypeScript and React. Hyperspace offers a fun, clean, fast, and responsive design that scales beautifully across devices and enhances the fediverse experience.
 
 > Note: For more information on how Hyperspace 1.0 is different from the *Hyperspace Classic (0.x)* series, please see [MIGRATING.md](MIGRATING.md).
 
-## Build instrictions
+## Build instructions
 
 ### Prerequisites
 
