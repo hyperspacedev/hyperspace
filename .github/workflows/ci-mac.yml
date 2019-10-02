@@ -1,0 +1,49 @@
+name: Build macOS Client
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+      - name: Clone source code
+        uses: actions/checkout@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: Run pre-build setup
+        run: |
+          echo "Downloading certificates and profiles..."
+          echo "$ascCertificates" > certs.b64
+          echo "$ascMasProfile" > mas.b64
+          echo "$ascMacProfile" > mac.b64
+          echo "$ascEntitlementsMas" > entmas.b64
+          echo "$ascEntitlementsMac" > entmac.b64
+          echo "$ascInfoPlist" > info.b64
+
+          echo "Installing certificates and profiles..."
+          base64 --decode certs.b64 > Certificates.p12
+          base64 --decode mas.b64 > desktop/embedded.provisionprofile
+          base64 --decode mac.b64 > desktop/nonmas.provisionprofile
+          base64 --decode entmas.b64 > desktop/entitlements.mas.plist
+          base64 --decode entmac.b64 > desktop/entitlements.mac.plist
+          base64 --decode info.b64 > desktop/info.plist
+          security add-generic-password -a "appleseed@marquiskurt.net" -w "$ascPassword" -s "AC_PASSWORD"
+          sudo security import Certificates.p12 -P "$ascCertsPassword" -k /Library/Keychains/System.keychain
+        env:
+          ascPassword: ${{ secrets.ASC_PASSWORD }}
+          ascCertificates: ${{ secrets.ASC_CERTS }}
+          ascCertsPassword: ${{ secrets.ASC_CERTS_PASSWORD }}
+          ascMacProfile: ${{ secrets.ASC_NONMAS_PROFILE }}
+          ascMasProfile: ${{ secrets.ASC_EMBEDDED_PROFILE }}
+          ascEntitlementsMas: ${{ secrets.ASC_MAS_ENTITLEMENTS }}
+          ascEntitlementsMac: ${{ secrets.ASC_MAC_ENTITLEMENTS }}
+          ascInfoPlist: ${{ secrets.ASC_INFO_PLIST }}
+      - name: Install dependencies and build
+        run: |
+          npm install
+          npm run build --if-present
+          npm run build-desktop-darwin-nosign
