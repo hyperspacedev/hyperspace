@@ -1,5 +1,5 @@
 import Mastodon from "megalodon";
-import { MultiAccount } from "../types/Account";
+import { MultiAccount, Account } from "../types/Account";
 
 export function userLoggedIn(): boolean {
     return !!(
@@ -8,14 +8,17 @@ export function userLoggedIn(): boolean {
 }
 
 export function refreshUserAccountData() {
-    let client = new Mastodon(
-        localStorage.getItem("access_token") as string,
-        (localStorage.getItem("baseurl") as string) + "/api/v1"
-    );
+    let host = localStorage.getItem("baseurl") as string;
+    let token = localStorage.getItem("access_token") as string;
+
+    let client = new Mastodon(token, host + "/api/v1");
+
     client
         .get("/accounts/verify_credentials")
         .then((resp: any) => {
-            localStorage.setItem("account", JSON.stringify(resp.data));
+            let account: Account = resp.data;
+            localStorage.setItem("account", JSON.stringify(account));
+            addAccountToRegistry(host, token, account.acct);
         })
         .catch((err: Error) => {
             console.error(err.message);
@@ -46,10 +49,10 @@ export function loginWithAccount(account: MultiAccount) {
  * Gets the account registry.
  * @returns A list of accounts
  */
-function getAccountRegistry(): MultiAccount[] {
+export function getAccountRegistry(): MultiAccount[] {
     let accountRegistry: MultiAccount[] = [];
 
-    let accountRegistryString = localStorage.getItem("registry");
+    let accountRegistryString = localStorage.getItem("accountRegistry");
     if (accountRegistryString !== null) {
         accountRegistry = JSON.parse(accountRegistryString);
     }
@@ -74,12 +77,15 @@ export function addAccountToRegistry(
     };
 
     let accountRegistry = getAccountRegistry();
+    const stringifiedRegistry = accountRegistry.map(account =>
+        account.toString()
+    );
 
-    if (!accountRegistry.includes(newAccount)) {
+    if (stringifiedRegistry.indexOf(newAccount.toString()) === -1) {
         accountRegistry.push(newAccount);
     }
 
-    localStorage.setItem("registry", JSON.stringify(accountRegistry));
+    localStorage.setItem("accountRegistry", JSON.stringify(accountRegistry));
 }
 
 /**
