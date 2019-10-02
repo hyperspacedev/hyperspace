@@ -229,7 +229,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         window.location.href = isDesktopApp()
             ? "hyperspace://hyperspace/app/index.html#/search?query=" + what
             : "/#/search?query=" + what;
-        window.location.reload;
+        window.location.reload();
     }
 
     logOutAndRestart() {
