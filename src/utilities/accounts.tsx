@@ -82,12 +82,24 @@ export function addAccountToRegistry(
     localStorage.setItem("registry", JSON.stringify(accountRegistry));
 }
 
-export function removeAccountFromRegistry(index: number) {
+/**
+ * Remove an account from the multi-account registry, if possible
+ * @param accountIdentifier The index of the account from the registry or the MultiAccount object itself
+ */
+export function removeAccountFromRegistry(
+    accountIdentifier: number | MultiAccount
+) {
     let accountRegistry = getAccountRegistry();
-    if (accountRegistry.length > index) {
-        accountRegistry.splice(index);
+
+    if (typeof accountIdentifier === "number") {
+        if (accountRegistry.length > accountIdentifier) {
+            accountRegistry.splice(accountIdentifier);
+        } else {
+            console.log("Multi account index may be out of range");
+        }
     } else {
-        console.warn("Index of multi-account registry may be out of range.");
+        if (accountRegistry.includes(accountIdentifier)) {
+            accountRegistry.splice(accountRegistry.indexOf(accountIdentifier));
+        }
     }
-    localStorage.setItem("registry", JSON.stringify(accountRegistry));
 }
