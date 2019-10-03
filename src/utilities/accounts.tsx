@@ -18,6 +18,7 @@ export function refreshUserAccountData() {
         .then((resp: any) => {
             let account: Account = resp.data;
             localStorage.setItem("account", JSON.stringify(account));
+            sessionStorage.setItem("id", account.id);
 
             addAccountToRegistry(host, token, account.acct);
         })

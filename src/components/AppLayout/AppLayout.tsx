@@ -120,6 +120,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
             .then((resp: any) => {
                 let data: UAccount = resp.data;
                 this.setState({ currentUser: data });
+                sessionStorage.setItem("id", data.id);
             })
             .catch((err: Error) => {
                 this.props.enqueueSnackbar(

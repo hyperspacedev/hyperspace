@@ -72,7 +72,7 @@ interface IPostState {
     menuIsOpen: boolean;
     myVote?: [number];
     deletePostDialog: boolean;
-    myAccount?: Account;
+    myAccount?: string;
 }
 
 export class Post extends React.Component<any, IPostState> {
@@ -96,7 +96,7 @@ export class Post extends React.Component<any, IPostState> {
 
     componentWillMount() {
         this.setState({
-            myAccount: JSON.parse(localStorage.getItem("account") as string)
+            myAccount: sessionStorage.getItem("id") as string
         });
     }
 
@@ -831,7 +831,7 @@ export class Post extends React.Component<any, IPostState> {
                             </MenuItem>
                         </div>
                         {this.state.myAccount &&
-                        post.account.id == this.state.myAccount.id ? (
+                        post.account.id === this.state.myAccount ? (
                             <div>
                                 <Divider />
                                 <MenuItem
