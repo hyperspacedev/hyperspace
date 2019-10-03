@@ -1,6 +1,6 @@
 {
     "version": "1.0.0beta7",
-    "location": "desktop",
+    "location": "https://localhost:3000",
     "branding": {
         "name": "Hyperspace",
         "logo": "logo.svg",

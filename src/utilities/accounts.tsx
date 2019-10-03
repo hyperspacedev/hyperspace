@@ -71,7 +71,6 @@ export function addAccountToRegistry(
     access_token: string,
     username: string
 ) {
-    console.log("Firing!");
     const newAccount: MultiAccount = {
         host: base_url,
         username,

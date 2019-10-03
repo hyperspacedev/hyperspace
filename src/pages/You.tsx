@@ -1,16 +1,12 @@
 import React, { Component } from "react";
 import {
-    withStyles,
-    Typography,
-    Paper,
     Avatar,
     Button,
+    CircularProgress,
+    Paper,
     TextField,
-    ListItem,
-    ListItemText,
-    ListItemAvatar,
-    List,
-    Grid
+    Typography,
+    withStyles
 } from "@material-ui/core";
 import { withSnackbar, withSnackbarProps } from "notistack";
 import { styles } from "./PageLayout.styles";
@@ -18,16 +14,17 @@ import { Account } from "../types/Account";
 import Mastodon from "megalodon";
 import filedialog from "file-dialog";
 
-import PersonIcon from "@material-ui/icons/Person";
-
 interface IYouProps extends withSnackbarProps {
     classes: any;
 }
 
 interface IYouState {
-    currentAccount: Account;
+    currentAccount?: Account;
     newDisplayName?: string;
     newBio?: string;
+    viewIsLoading: boolean;
+    viewLoaded: boolean;
+    viewErrored: boolean;
 }
 
 class You extends Component<IYouProps, IYouState> {
@@ -42,12 +39,42 @@ class You extends Component<IYouProps, IYouState> {
         );
 
         this.state = {
-            currentAccount: this.getAccount()
+            viewIsLoading: true,
+            viewLoaded: false,
+            viewErrored: false
         };
+    }
+
+    componentWillMount() {
+        this.client
+            .get("/accounts/verify_credentials")
+            .then((resp: any) => {
+                let currentAccount: Account = resp.data;
+                this.setState({
+                    currentAccount,
+                    viewIsLoading: false,
+                    viewLoaded: true
+                });
+            })
+            .catch(() => {
+                if (this.getAccount()) {
+                    this.setState({
+                        currentAccount: this.getAccount(),
+                        viewIsLoading: false,
+                        viewLoaded: true
+                    });
+                } else {
+                    this.setState({
+                        viewIsLoading: false,
+                        viewErrored: true
+                    });
+                }
+            });
     }
 
     getAccount() {
         let acct = localStorage.getItem("account");
+        console.log(acct);
         if (acct) {
             return JSON.parse(acct);
         }
@@ -142,15 +169,16 @@ class You extends Component<IYouProps, IYouState> {
     removeHTMLContent(text: string) {
         const div = document.createElement("div");
         div.innerHTML = text;
-        let innerContent = div.textContent || div.innerText || "";
-        return innerContent;
+        return div.textContent || div.innerText || "";
     }
     changeDisplayName() {
         this.client
             .patch("/accounts/update_credentials", {
                 display_name: this.state.newDisplayName
                     ? this.state.newDisplayName
-                    : this.state.currentAccount.display_name
+                    : this.state.currentAccount
+                    ? this.state.currentAccount.display_name
+                    : ""
             })
             .then((acct: any) => {
                 let currentAccount: Account = acct.data;
@@ -179,7 +207,9 @@ class You extends Component<IYouProps, IYouState> {
             .patch("/accounts/update_credentials", {
                 note: this.state.newBio
                     ? this.state.newBio
-                    : this.state.currentAccount.note
+                    : this.state.currentAccount
+                    ? this.state.currentAccount.note
+                    : ""
             })
             .then((acct: any) => {
                 let currentAccount: Account = acct.data;
@@ -205,116 +235,155 @@ class You extends Component<IYouProps, IYouState> {
         const { classes } = this.props;
         return (
             <div className={classes.pageLayoutMinimalConstraints}>
-                <div className={classes.pageHeroBackground}>
-                    <div
-                        className={classes.pageHeroBackgroundImage}
-                        style={{
-                            backgroundImage: `url("${this.state.currentAccount.header_static}")`
-                        }}
-                    />
-                    <div className={classes.profileContent}>
-                        <br />
-                        <Avatar
-                            className={classes.profileAvatar}
-                            src={this.state.currentAccount.avatar_static}
-                        />
-                        <div
-                            className={classes.profileUserBox}
-                            style={{ paddingTop: 8, paddingBottom: 8 }}
-                        >
-                            <Typography
-                                variant="h4"
-                                color="inherit"
-                                component="h1"
-                            >
-                                Edit your profile
-                            </Typography>
-                            <Typography color="inherit">
-                                Change information such as your display name,
-                                bio, and images used here.
-                            </Typography>
-                            <div>
-                                <Button
-                                    className={classes.pageProfileFollowButton}
-                                    variant="contained"
-                                    onClick={() => this.updateAvatar()}
+                {this.state.viewErrored ? (
+                    <Paper className={classes.errorCard}>
+                        <Typography variant="h4">Bummer.</Typography>
+                        <Typography variant="h6">
+                            Something went wrong when trying to get your account
+                            information.
+                        </Typography>
+                    </Paper>
+                ) : (
+                    <span />
+                )}
+                {this.state.currentAccount ? (
+                    <div>
+                        <div className={classes.pageHeroBackground}>
+                            <div
+                                className={classes.pageHeroBackgroundImage}
+                                style={{
+                                    backgroundImage: `url("${this.state.currentAccount.header_static}")`
+                                }}
+                            />
+                            <div className={classes.profileContent}>
+                                <br />
+                                <Avatar
+                                    className={classes.profileAvatar}
+                                    src={
+                                        this.state.currentAccount.avatar_static
+                                    }
+                                />
+                                <div
+                                    className={classes.profileUserBox}
+                                    style={{ paddingTop: 8, paddingBottom: 8 }}
                                 >
-                                    Change Avatar
-                                </Button>
-                                <Button
-                                    className={classes.pageProfileFollowButton}
-                                    variant="contained"
-                                    onClick={() => this.updateHeader()}
-                                >
-                                    Change Header
-                                </Button>
+                                    <Typography
+                                        variant="h4"
+                                        color="inherit"
+                                        component="h1"
+                                    >
+                                        Edit your profile
+                                    </Typography>
+                                    <Typography color="inherit">
+                                        Change information such as your display
+                                        name, bio, and images used here.
+                                    </Typography>
+                                    <div>
+                                        <Button
+                                            className={
+                                                classes.pageProfileFollowButton
+                                            }
+                                            variant="contained"
+                                            onClick={() => this.updateAvatar()}
+                                        >
+                                            Change Avatar
+                                        </Button>
+                                        <Button
+                                            className={
+                                                classes.pageProfileFollowButton
+                                            }
+                                            variant="contained"
+                                            onClick={() => this.updateHeader()}
+                                        >
+                                            Change Header
+                                        </Button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <div className={classes.pageContentLayoutConstraints}>
+                            <Paper className={classes.youPaper}>
+                                <Typography variant="h5" component="h2">
+                                    Display Name
+                                </Typography>
+                                <br />
+                                <TextField
+                                    className={classes.TextField}
+                                    defaultValue={
+                                        this.state.currentAccount.display_name
+                                    }
+                                    rowsMax="1"
+                                    variant="outlined"
+                                    fullWidth
+                                    onChange={(event: any) =>
+                                        this.updateDisplayName(
+                                            event.target.value
+                                        )
+                                    }
+                                />
+                                <div style={{ textAlign: "right" }}>
+                                    <Button
+                                        className={
+                                            classes.pageProfileFollowButton
+                                        }
+                                        color="primary"
+                                        onClick={() => this.changeDisplayName()}
+                                    >
+                                        Update display Name
+                                    </Button>
+                                </div>
+                            </Paper>
+                            <br />
+                            <Paper className={classes.youPaper}>
+                                <Typography variant="h5" component="h2">
+                                    About you
+                                </Typography>
+                                <br />
+                                <TextField
+                                    className={classes.TextField}
+                                    defaultValue={
+                                        this.state.currentAccount.note
+                                            ? this.removeHTMLContent(
+                                                  this.state.currentAccount.note
+                                              )
+                                            : "Tell a little bit about yourself"
+                                    }
+                                    multiline
+                                    variant="outlined"
+                                    rows="2"
+                                    rowsMax="5"
+                                    fullWidth
+                                    onChange={(event: any) =>
+                                        this.updateBio(event.target.value)
+                                    }
+                                />
+                                <div style={{ textAlign: "right" }}>
+                                    <Button
+                                        className={
+                                            classes.pageProfileFollowButton
+                                        }
+                                        color="primary"
+                                        onClick={() => this.changeBio()}
+                                    >
+                                        Update biography
+                                    </Button>
+                                </div>
+                            </Paper>
+                        </div>
                     </div>
-                </div>
-                <div className={classes.pageContentLayoutConstraints}>
-                    <Paper className={classes.youPaper}>
-                        <Typography variant="h5" component="h2">
-                            Display Name
-                        </Typography>
-                        <br />
-                        <TextField
-                            className={classes.TextField}
-                            defaultValue={
-                                this.state.currentAccount.display_name
-                            }
-                            rowsMax="1"
-                            variant="outlined"
-                            fullWidth
-                            onChange={(event: any) =>
-                                this.updateDisplayName(event.target.value)
-                            }
+                ) : (
+                    "AAA"
+                )}
+                {this.state.viewIsLoading ? (
+                    <div style={{ textAlign: "center" }}>
+                        <CircularProgress
+                            className={classes.progress}
+                            color="primary"
                         />
-                        <div style={{ textAlign: "right" }}>
-                            <Button
-                                className={classes.pageProfileFollowButton}
-                                color="primary"
-                                onClick={() => this.changeDisplayName()}
-                            >
-                                Update display Name
-                            </Button>
-                        </div>
-                    </Paper>
-                    <br />
-                    <Paper className={classes.youPaper}>
-                        <Typography variant="h5" component="h2">
-                            About you
-                        </Typography>
-                        <br />
-                        <TextField
-                            className={classes.TextField}
-                            defaultValue={
-                                this.state.currentAccount.note
-                                    ? this.removeHTMLContent(
-                                          this.state.currentAccount.note
-                                      )
-                                    : "Tell a little bit about yourself"
-                            }
-                            multiline
-                            variant="outlined"
-                            rows="2"
-                            rowsMax="5"
-                            fullWidth
-                            onChange={(event: any) =>
-                                this.updateBio(event.target.value)
-                            }
-                        />
-                        <div style={{ textAlign: "right" }}>
-                            <Button
-                                className={classes.pageProfileFollowButton}
-                                color="primary"
-                                onClick={() => this.changeBio()}
-                            >
-                                Update biography
-                            </Button>
-                        </div>
-                    </Paper>
-                </div>
+                    </div>
+                ) : (
+                    <span />
+                )}
             </div>
         );
     }
