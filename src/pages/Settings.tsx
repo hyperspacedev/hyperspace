@@ -138,23 +138,23 @@ class SettingsPage extends Component<any, ISettingsState> {
             });
         this.getFederatedStatus();
 
-        let acct = localStorage.getItem("account");
-        if (acct) {
-            this.setState({ currentUser: JSON.parse(acct) });
-        } else {
-            this.client
-                .get("/accounts/verify_credentials")
-                .then((resp: any) => {
-                    let data: Account = resp.data;
-                    this.setState({ currentUser: data });
-                })
-                .catch((err: Error) => {
-                    this.props.enqueueSnackbar(
-                        "Couldn't find profile info: " + err.name
-                    );
-                    console.error(err.message);
-                });
-        }
+        this.client
+            .get("/accounts/verify_credentials")
+            .then((resp: any) => {
+                let data: Account = resp.data;
+                this.setState({ currentUser: data });
+            })
+            .catch((err: Error) => {
+            let acct = localStorage.getItem("account");
+            if (acct) {
+                this.setState({ currentUser: JSON.parse(acct) });
+            } else {
+                this.props.enqueueSnackbar(
+                    "Couldn't find profile info: " + err.name
+                );
+                console.error(err.message);
+            }
+            });
     }
 
     getFederatedStatus() {
