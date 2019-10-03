@@ -39,7 +39,7 @@ import GroupIcon from "@material-ui/icons/Group";
 import SettingsIcon from "@material-ui/icons/Settings";
 import InfoIcon from "@material-ui/icons/Info";
 import CreateIcon from "@material-ui/icons/Create";
-//import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
+import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { styles } from "./AppLayout.styles";
 import { UAccount } from "../../types/Account";
@@ -55,6 +55,7 @@ import { withSnackbar } from "notistack";
 import { getConfig, getUserDefaultBool } from "../../utilities/settings";
 import { isDesktopApp, isDarwinApp } from "../../utilities/desktop";
 import { Config } from "../../types/Config";
+import { getAccountRegistry } from "../../utilities/accounts";
 
 interface IAppLayoutState {
     acctMenuOpen: boolean;
@@ -92,23 +93,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
     }
 
     componentDidMount() {
-        let acct = localStorage.getItem("account");
-        if (acct) {
-            this.setState({ currentUser: JSON.parse(acct) });
-        } else {
-            this.client
-                .get("/accounts/verify_credentials")
-                .then((resp: any) => {
-                    let data: UAccount = resp.data;
-                    this.setState({ currentUser: data });
-                })
-                .catch((err: Error) => {
-                    this.props.enqueueSnackbar(
-                        "Couldn't find profile info: " + err.name
-                    );
-                    console.error(err.message);
-                });
-        }
+        this.getAccountData();
 
         getConfig().then((result: any) => {
             if (result !== undefined) {
@@ -124,6 +109,23 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         });
 
         this.streamNotifications();
+    }
+
+    private getAccountData() {
+        this.client
+            .get("/accounts/verify_credentials")
+            .then((resp: any) => {
+                let data: UAccount = resp.data;
+                this.setState({ currentUser: data });
+            })
+            .catch((err: Error) => {
+                this.props.enqueueSnackbar(
+                    "Couldn't find profile info: " + err.name
+                );
+                console.error(err.message);
+                let acct = localStorage.getItem("account") as string;
+                this.setState({ currentUser: JSON.parse(acct) });
+            });
     }
 
     streamNotifications() {
@@ -304,10 +306,22 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                 }
                             />
                         </LinkableListItem>
-                        {/* <LinkableListItem button key="acctSwitch-module" to="/switchacct">
-                    <ListItemIcon><SupervisedUserCircleIcon/></ListItemIcon>
-                    <ListItemText primary="Switch account"/>
-                  </LinkableListItem> */}
+                        <LinkableListItem
+                            button
+                            key="acctSwitch-module"
+                            to="/welcome"
+                        >
+                            <ListItemIcon>
+                                <SupervisedUserCircleIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={
+                                    getAccountRegistry().length > 1
+                                        ? "Switch account"
+                                        : "Add account"
+                                }
+                            />
+                        </LinkableListItem>
                         <ListItem
                             button
                             key="acctLogout-mobile"
@@ -568,7 +582,14 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                                     Edit profile
                                                 </ListItemText>
                                             </LinkableListItem>
-                                            {/* <MenuItem>Switch account</MenuItem> */}
+                                            <LinkableListItem to={"/welcome"}>
+                                                <ListItemText>
+                                                    {getAccountRegistry()
+                                                        .length > 1
+                                                        ? "Switch account"
+                                                        : "Add account"}
+                                                </ListItemText>
+                                            </LinkableListItem>
                                             <MenuItem
                                                 onClick={() =>
                                                     this.toggleLogOutDialog()

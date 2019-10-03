@@ -3,7 +3,7 @@ import { MuiThemeProvider, CssBaseline, withStyles } from "@material-ui/core";
 import { setHyperspaceTheme, darkMode } from "./utilities/themes";
 import AppLayout from "./components/AppLayout";
 import { styles } from "./App.styles";
-import { Route } from "react-router-dom";
+import { Route, withRouter } from "react-router-dom";
 import AboutPage from "./pages/About";
 import Settings from "./pages/Settings";
 import { getUserDefaultBool, getUserDefaultTheme } from "./utilities/settings";
@@ -27,14 +27,22 @@ import { userLoggedIn } from "./utilities/accounts";
 import { isDarwinApp } from "./utilities/desktop";
 let theme = setHyperspaceTheme(getUserDefaultTheme());
 
-class App extends Component<any, any> {
+interface IAppState {
+    theme: any;
+    showLayout: boolean;
+}
+
+class App extends Component<any, IAppState> {
     offline: any;
+    unlisten: any;
 
     constructor(props: any) {
         super(props);
 
         this.state = {
-            theme: theme
+            theme: theme,
+            showLayout:
+                userLoggedIn() && !window.location.hash.includes("#/welcome")
         };
     }
 
@@ -43,17 +51,34 @@ class App extends Component<any, any> {
             this.state.theme,
             getUserDefaultBool("darkModeEnabled")
         );
-        this.setState({ theme: newTheme });
+        this.setState({
+            theme: newTheme,
+            showLayout:
+                userLoggedIn() && !window.location.hash.includes("#/welcome")
+        });
     }
 
     componentDidMount() {
         this.removeBodyBackground();
+        this.unlisten = this.props.history.listen(
+            (location: Location, action: any) => {
+                console.log(location.pathname);
+                this.setState({
+                    showLayout:
+                        userLoggedIn() &&
+                        !location.pathname.includes("/welcome")
+                });
+            }
+        );
     }
 
     componentDidUpdate() {
         this.removeBodyBackground();
     }
 
+    componentWillUnmount() {
+        this.unlisten();
+    }
 
     removeBodyBackground() {
         if (isDarwinApp()) {
@@ -71,7 +96,7 @@ class App extends Component<any, any> {
                 <CssBaseline />
                 <Route path="/welcome" component={WelcomePage} />
                 <div>
-                    {userLoggedIn() ? <AppLayout /> : null}
+                    {this.state.showLayout ? <AppLayout /> : null}
                     <PrivateRoute exact path="/" component={HomePage} />
                     <PrivateRoute path="/home" component={HomePage} />
                     <PrivateRoute path="/local" component={LocalPage} />
@@ -91,7 +116,7 @@ class App extends Component<any, any> {
                     />
                     <PrivateRoute path="/search" component={SearchPage} />
                     <PrivateRoute path="/settings" component={Settings} />
-                    <PrivateRoute path="/blocked" component={Blocked}/>
+                    <PrivateRoute path="/blocked" component={Blocked} />
                     <PrivateRoute path="/you" component={You} />
                     <PrivateRoute path="/about" component={AboutPage} />
                     <PrivateRoute path="/compose" component={Composer} />
@@ -105,4 +130,5 @@ class App extends Component<any, any> {
     }
 }
 
-export default withStyles(styles)(withSnackbar(App));
+// @ts-ignore
+export default withStyles(styles)(withSnackbar(withRouter(App)));

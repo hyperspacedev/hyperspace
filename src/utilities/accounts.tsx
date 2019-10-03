@@ -18,6 +18,7 @@ export function refreshUserAccountData() {
         .then((resp: any) => {
             let account: Account = resp.data;
             localStorage.setItem("account", JSON.stringify(account));
+
             addAccountToRegistry(host, token, account.acct);
         })
         .catch((err: Error) => {
@@ -70,6 +71,7 @@ export function addAccountToRegistry(
     access_token: string,
     username: string
 ) {
+    console.log("Firing!");
     const newAccount: MultiAccount = {
         host: base_url,
         username,
@@ -78,10 +80,10 @@ export function addAccountToRegistry(
 
     let accountRegistry = getAccountRegistry();
     const stringifiedRegistry = accountRegistry.map(account =>
-        account.toString()
+        JSON.stringify(account)
     );
 
-    if (stringifiedRegistry.indexOf(newAccount.toString()) === -1) {
+    if (stringifiedRegistry.indexOf(JSON.stringify(newAccount)) === -1) {
         accountRegistry.push(newAccount);
     }
 
@@ -99,13 +101,42 @@ export function removeAccountFromRegistry(
 
     if (typeof accountIdentifier === "number") {
         if (accountRegistry.length > accountIdentifier) {
+            if (
+                localStorage.getItem("access_token") ===
+                accountRegistry[accountIdentifier].access_token
+            ) {
+                localStorage.removeItem("baseurl");
+                localStorage.removeItem("access_token");
+            }
             accountRegistry.splice(accountIdentifier);
         } else {
             console.log("Multi account index may be out of range");
         }
     } else {
-        if (accountRegistry.includes(accountIdentifier)) {
-            accountRegistry.splice(accountRegistry.indexOf(accountIdentifier));
+        const stringifiedRegistry = accountRegistry.map(account =>
+            JSON.stringify(account)
+        );
+
+        const stringifiedAccountId = JSON.stringify(accountIdentifier);
+
+        if (
+            stringifiedRegistry.indexOf(
+                JSON.stringify(stringifiedAccountId)
+            ) !== -1
+        ) {
+            if (
+                localStorage.getItem("access_token") ===
+                accountIdentifier.access_token
+            ) {
+                localStorage.removeItem("baseurl");
+                localStorage.removeItem("access_token");
+            }
+
+            accountRegistry.splice(
+                stringifiedRegistry.indexOf(stringifiedAccountId)
+            );
         }
     }
+
+    localStorage.setItem("accountRegistry", JSON.stringify(accountRegistry));
 }
