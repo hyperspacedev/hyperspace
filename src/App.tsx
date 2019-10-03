@@ -62,7 +62,6 @@ class App extends Component<any, IAppState> {
         this.removeBodyBackground();
         this.unlisten = this.props.history.listen(
             (location: Location, action: any) => {
-                console.log(location.pathname);
                 this.setState({
                     showLayout:
                         userLoggedIn() &&

@@ -114,7 +114,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         this.streamNotifications();
     }
 
-    private getAccountData() {
+    getAccountData() {
         this.client
             .get("/accounts/verify_credentials")
             .then((resp: any) => {

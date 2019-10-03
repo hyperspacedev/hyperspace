@@ -95,22 +95,9 @@ export class Post extends React.Component<any, IPostState> {
     }
 
     componentWillMount() {
-        this.client
-            .get("/accounts/verify_credentials")
-            .then((resp: any) => {
-                let account: Account = resp.data;
-                this.setState({
-                    myAccount: account
-                });
-            })
-            .catch((err: Error) => {
-                console.error(err);
-                this.setState({
-                    myAccount: JSON.parse(localStorage.getItem(
-                        "account"
-                    ) as string)
-                });
-            });
+        this.setState({
+            myAccount: JSON.parse(localStorage.getItem("account") as string)
+        });
     }
 
     togglePostMenu() {
