@@ -22,6 +22,12 @@ if (userLoggedIn()) {
     refreshUserAccountData();
 }
 
+window.onstorage = (event: any) => {
+    if (event.key == "account") {
+        window.location.reload();
+    }
+};
+
 ReactDOM.render(
     <HashRouter>
         <SnackbarProvider

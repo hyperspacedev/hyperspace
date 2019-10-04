@@ -47,3 +47,12 @@ export function getDarwinAccentColor(): number {
     );
     return themeInteger === "" ? -2 : parseInt(themeInteger);
 }
+  
+/**
+ * Get the app component from the desktop app
+ */
+export function getElectronApp() {
+    const eWin = window as ElectronWindow;
+    const { remote } = eWin.require("electron");
+    return remote.app;
+}

@@ -45,9 +45,7 @@ export function canSendNotifications() {
  */
 export function sendNotificationRequest(title: string, body: string) {
     if (canSendNotifications()) {
-        let notif = new Notification(title, {
-            body: body
-        });
+        let notif = new Notification(title, { body });
 
         notif.onclick = () => {
             window.focus();

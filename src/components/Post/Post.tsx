@@ -1,33 +1,32 @@
 import React from "react";
 import {
-    Typography,
-    IconButton,
-    Card,
-    CardHeader,
     Avatar,
-    CardContent,
-    CardActions,
-    withStyles,
-    Menu,
-    MenuItem,
-    Chip,
-    Divider,
-    CardMedia,
-    CardActionArea,
-    ExpansionPanel,
-    ExpansionPanelSummary,
-    ExpansionPanelDetails,
-    Zoom,
-    Tooltip,
-    RadioGroup,
-    Radio,
-    FormControlLabel,
     Button,
+    Card,
+    CardActionArea,
+    CardActions,
+    CardContent,
+    CardHeader,
+    CardMedia,
     Dialog,
-    DialogTitle,
+    DialogActions,
     DialogContent,
     DialogContentText,
-    DialogActions
+    DialogTitle,
+    Divider,
+    ExpansionPanel,
+    ExpansionPanelDetails,
+    ExpansionPanelSummary,
+    FormControlLabel,
+    IconButton,
+    Menu,
+    MenuItem,
+    Radio,
+    RadioGroup,
+    Tooltip,
+    Typography,
+    withStyles,
+    Zoom
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ReplyIcon from "@material-ui/icons/Reply";
@@ -51,10 +50,10 @@ import moment from "moment";
 import AttachmentComponent from "../Attachment";
 import Mastodon from "megalodon";
 import {
+    LinkableAvatar,
     LinkableChip,
-    LinkableMenuItem,
     LinkableIconButton,
-    LinkableAvatar
+    LinkableMenuItem
 } from "../../interfaces/overrides";
 import { withSnackbar } from "notistack";
 import ShareMenu from "./PostShareMenu";
@@ -74,6 +73,7 @@ interface IPostState {
     menuIsOpen: boolean;
     myVote?: [number];
     deletePostDialog: boolean;
+    myAccount?: string;
 }
 
 export class Post extends React.Component<any, IPostState> {
@@ -95,6 +95,12 @@ export class Post extends React.Component<any, IPostState> {
         this.client = this.props.client;
     }
 
+    componentWillMount() {
+        this.setState({
+            myAccount: sessionStorage.getItem("id") as string
+        });
+    }
+
     togglePostMenu() {
         this.setState({ menuIsOpen: !this.state.menuIsOpen });
     }
@@ -106,7 +112,7 @@ export class Post extends React.Component<any, IPostState> {
     deletePost() {
         this.client
             .del("/statuses/" + this.state.post.id)
-            .then((resp: any) => {
+            .then(() => {
                 this.props.enqueueSnackbar(
                     "Post deleted. Refresh to see changes."
                 );
@@ -262,7 +268,7 @@ export class Post extends React.Component<any, IPostState> {
                                 <RadioGroup value={this.findBiggestVote()}>
                                     {status.poll.options.map(
                                         (pollOption: PollOption) => {
-                                            let x = (
+                                            return (
                                                 <FormControlLabel
                                                     disabled
                                                     value={pollOption.title}
@@ -274,7 +280,6 @@ export class Post extends React.Component<any, IPostState> {
                                                     }
                                                 />
                                             );
-                                            return x;
                                         }
                                     )}
                                 </RadioGroup>
@@ -303,7 +308,7 @@ export class Post extends React.Component<any, IPostState> {
                                 >
                                     {status.poll.options.map(
                                         (pollOption: PollOption) => {
-                                            let x = (
+                                            return (
                                                 <FormControlLabel
                                                     value={pollOption.title}
                                                     control={<Radio />}
@@ -314,13 +319,12 @@ export class Post extends React.Component<any, IPostState> {
                                                     }
                                                 />
                                             );
-                                            return x;
                                         }
                                     )}
                                 </RadioGroup>
                                 <Button
                                     color="primary"
-                                    onClick={(event: any) => this.submitVote()}
+                                    onClick={() => this.submitVote()}
                                 >
                                     Vote
                                 </Button>
@@ -381,7 +385,6 @@ export class Post extends React.Component<any, IPostState> {
     }
 
     getReblogOfPost(of: Status | null) {
-        const { classes } = this.props;
         if (of !== null) {
             return of.sensitive
                 ? this.getSensitiveContent(of.spoiler_text, of)
@@ -832,9 +835,8 @@ export class Post extends React.Component<any, IPostState> {
                                 Open in Web
                             </MenuItem>
                         </div>
-                        {post.account.id ==
-                        JSON.parse(localStorage.getItem("account") as string)
-                            .id ? (
+                        {this.state.myAccount &&
+                        post.account.id === this.state.myAccount ? (
                             <div>
                                 <Divider />
                                 <MenuItem
