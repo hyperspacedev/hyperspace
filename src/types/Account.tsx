@@ -26,9 +26,32 @@ export type Account = {
     bot: boolean | null;
 };
 
+/**
+ * Watered-down type for Mastodon accounts
+ */
 export type UAccount = {
     id: string;
     acct: string;
     display_name: string;
     avatar_static: string;
+};
+
+/**
+ * Account type for use with multi-account support
+ */
+export type MultiAccount = {
+    /**
+     * The host name of the account (ex.: mastodon.social)
+     */
+    host: string;
+
+    /**
+     * The username of the account (@test)
+     */
+    username: string;
+
+    /**
+     * The access token generated from the login
+     */
+    access_token: string;
 };

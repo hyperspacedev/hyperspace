@@ -20,7 +20,7 @@ let mainWindow;
 // to when authorizing Hyperspace.
 protocol.registerSchemesAsPrivileged([
     { scheme: 'hyperspace', privileges: { standard: true, secure: true } }
-])
+]);
 
 /**
  * Determine whether the desktop app is on macOS
@@ -218,15 +218,8 @@ function createMenubar() {
                     click() {
                         safelyGoTo("hyperspace://hyperspace/app/#compose")
                     }
-                },
-                { type: 'separator' },
-                {
-                    label: 'Edit Profile',
-                    accelerator: "Shift+CmdOrCtrl+P",
-                    click() {
-                        safelyGoTo("hyperspace://hyperspace/app/#/you")
-                    }
-                },
+                }
+
             ]
         },
         {
@@ -284,7 +277,7 @@ function createMenubar() {
             ]
         },
         {
-            label: "Places",
+            label: "Timelines",
             submenu: [
                 {
                     label: 'Home',
@@ -308,27 +301,53 @@ function createMenubar() {
                     }
                 },
                 {
-                    label: 'Recommendations',
+                    label: 'Messages',
                     accelerator: "CmdOrCtrl+3",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/messages")
+                    }
+                }
+            ]
+        },
+        {
+            label: "Account",
+            submenu: [
+                {
+                    label: 'Notifications',
+                    accelerator: "Alt+CmdOrCtrl+N",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/notifications")
+                    }
+                },
+                {
+                    label: 'Recommendations...',
+                    accelerator: "Alt+CmdOrCtrl+R",
                     click() {
                         safelyGoTo("hyperspace://hyperspace/app/#/recommended")
                     }
                 },
                 { type: 'separator' },
                 {
-                    label: 'Notifications',
-                    accelerator: "CmdOrCtrl+4",
+                    label: 'Edit Profile',
+                    accelerator: "Shift+CmdOrCtrl+P",
                     click() {
-                        safelyGoTo("hyperspace://hyperspace/app/#/notifications")
+                        safelyGoTo("hyperspace://hyperspace/app/#/you")
                     }
                 },
                 {
-                    label: 'Messages',
-                    accelerator: "CmdOrCtrl+5",
+                    label: 'Blocked Servers',
+                    accelerator: "Shift+CmdOrCtrl+B",
                     click() {
-                        safelyGoTo("hyperspace://hyperspace/app/#/messages")
+                        safelyGoTo("hyperspace://hyperspace/app/#/blocked")
                     }
                 },
+                { type: 'separator'},
+                {
+                    label: 'Switch Accounts...',
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/welcome")
+                    }
+                }
             ]
         },
         {
@@ -357,7 +376,7 @@ function createMenubar() {
                 }
             ]
         }
-    ]
+    ];
 
     if (process.platform === 'darwin') {
         menuBar.unshift({
@@ -386,7 +405,7 @@ function createMenubar() {
                 { type: 'separator' },
                 { role: 'quit' }
             ]
-        })
+        });
 
         // Edit menu
         menuBar[2].submenu.push(
@@ -398,10 +417,10 @@ function createMenubar() {
                     { role: 'stopspeaking' }
                 ]
             }
-        )
+        );
 
         // Window menu
-        menuBar[5].submenu = [
+        menuBar[6].submenu = [
             { role: 'close' },
             { role: 'minimize' },
             { role: 'zoom' },
