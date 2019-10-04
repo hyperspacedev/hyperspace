@@ -145,15 +145,15 @@ class SettingsPage extends Component<any, ISettingsState> {
                 this.setState({ currentUser: data });
             })
             .catch((err: Error) => {
-            let acct = localStorage.getItem("account");
-            if (acct) {
-                this.setState({ currentUser: JSON.parse(acct) });
-            } else {
-                this.props.enqueueSnackbar(
-                    "Couldn't find profile info: " + err.name
-                );
-                console.error(err.message);
-            }
+                let acct = localStorage.getItem("account");
+                if (acct) {
+                    this.setState({ currentUser: JSON.parse(acct) });
+                } else {
+                    this.props.enqueueSnackbar(
+                        "Couldn't find profile info: " + err.name
+                    );
+                    console.error(err.message);
+                }
             });
     }
 

@@ -47,7 +47,7 @@ export function getDarwinAccentColor(): number {
     );
     return themeInteger === "" ? -2 : parseInt(themeInteger);
 }
-  
+
 /**
  * Get the app component from the desktop app
  */

@@ -25,7 +25,7 @@ export const styles = (theme: Theme) =>
         titleBarRoot: {
             top: 0,
             left: 0,
-            height: 24,
+            height: 40,
             width: "100%",
             backgroundColor: "rgba(0, 0, 0, 0.2)",
             textAlign: "center",
@@ -38,7 +38,7 @@ export const styles = (theme: Theme) =>
         titleBarText: {
             color: theme.palette.common.white,
             fontSize: 12,
-            paddingTop: 2,
+            paddingTop: 10,
             paddingBottom: 1
         },
         paper: {

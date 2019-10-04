@@ -193,7 +193,7 @@ if (isDarwinApp()) {
         name: "Aqua (Dynamic)",
         palette: {
             primary: {
-                main: isDarkMode() ? "#353538" : "#EEEEEE"
+                main: isDarkMode() ? "#353538" : "#D6D6D6"
             },
             secondary: {
                 main: getAquaAccentColor()
