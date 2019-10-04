@@ -84,6 +84,10 @@ class Composer extends Component<any, IComposerState> {
     componentDidMount() {
         let state = this.getComposerParams(this.props);
         let text = state.acct ? `@${state.acct}: ` : "";
+        this.client.get("/accounts/verify_credentials").then((resp: any) => {
+            let account: UAccount = resp.data;
+            this.setState({ account });
+        });
         getConfig().then((config: any) => {
             this.setState({
                 federated: config.federation.allowPublicPosts,
@@ -439,7 +443,7 @@ class Composer extends Component<any, IComposerState> {
                                         event.target.value
                                     )
                                 }
-                            ></TextField>
+                            />
                         </Fade>
                     ) : null}
                     {this.state.visibility === "direct" ? (

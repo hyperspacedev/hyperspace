@@ -39,10 +39,10 @@ import GroupIcon from "@material-ui/icons/Group";
 import SettingsIcon from "@material-ui/icons/Settings";
 import InfoIcon from "@material-ui/icons/Info";
 import CreateIcon from "@material-ui/icons/Create";
-//import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
+import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { styles } from "./AppLayout.styles";
-import { UAccount } from "../../types/Account";
+import { MultiAccount, UAccount } from "../../types/Account";
 import {
     LinkableListItem,
     LinkableIconButton,
@@ -55,6 +55,10 @@ import { withSnackbar } from "notistack";
 import { getConfig, getUserDefaultBool } from "../../utilities/settings";
 import { isDesktopApp, isDarwinApp } from "../../utilities/desktop";
 import { Config } from "../../types/Config";
+import {
+    getAccountRegistry,
+    removeAccountFromRegistry
+} from "../../utilities/accounts";
 
 interface IAppLayoutState {
     acctMenuOpen: boolean;
@@ -92,23 +96,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
     }
 
     componentDidMount() {
-        let acct = localStorage.getItem("account");
-        if (acct) {
-            this.setState({ currentUser: JSON.parse(acct) });
-        } else {
-            this.client
-                .get("/accounts/verify_credentials")
-                .then((resp: any) => {
-                    let data: UAccount = resp.data;
-                    this.setState({ currentUser: data });
-                })
-                .catch((err: Error) => {
-                    this.props.enqueueSnackbar(
-                        "Couldn't find profile info: " + err.name
-                    );
-                    console.error(err.message);
-                });
-        }
+        this.getAccountData();
 
         getConfig().then((result: any) => {
             if (result !== undefined) {
@@ -124,6 +112,24 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         });
 
         this.streamNotifications();
+    }
+
+    getAccountData() {
+        this.client
+            .get("/accounts/verify_credentials")
+            .then((resp: any) => {
+                let data: UAccount = resp.data;
+                this.setState({ currentUser: data });
+                sessionStorage.setItem("id", data.id);
+            })
+            .catch((err: Error) => {
+                this.props.enqueueSnackbar(
+                    "Couldn't find profile info: " + err.name
+                );
+                console.error(err.message);
+                let acct = localStorage.getItem("account") as string;
+                this.setState({ currentUser: JSON.parse(acct) });
+            });
     }
 
     streamNotifications() {
@@ -226,10 +232,22 @@ export class AppLayout extends Component<any, IAppLayoutState> {
     logOutAndRestart() {
         let loginData = localStorage.getItem("login");
         if (loginData) {
+            let registry = getAccountRegistry();
+
+            registry.forEach((registryItem: MultiAccount, index: number) => {
+                if (
+                    registryItem.access_token ===
+                    localStorage.getItem("access_token")
+                ) {
+                    removeAccountFromRegistry(index);
+                }
+            });
+
             let items = ["login", "account", "baseurl", "access_token"];
             items.forEach(entry => {
                 localStorage.removeItem(entry);
             });
+
             window.location.reload();
         }
     }
@@ -304,10 +322,22 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                 }
                             />
                         </LinkableListItem>
-                        {/* <LinkableListItem button key="acctSwitch-module" to="/switchacct">
-                    <ListItemIcon><SupervisedUserCircleIcon/></ListItemIcon>
-                    <ListItemText primary="Switch account"/>
-                  </LinkableListItem> */}
+                        <LinkableListItem
+                            button
+                            key="acctSwitch-module"
+                            to="/welcome"
+                        >
+                            <ListItemIcon>
+                                <SupervisedUserCircleIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={
+                                    getAccountRegistry().length > 1
+                                        ? "Switch account"
+                                        : "Add account"
+                                }
+                            />
+                        </LinkableListItem>
                         <ListItem
                             button
                             key="acctLogout-mobile"
@@ -568,7 +598,14 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                                     Edit profile
                                                 </ListItemText>
                                             </LinkableListItem>
-                                            {/* <MenuItem>Switch account</MenuItem> */}
+                                            <LinkableListItem to={"/welcome"}>
+                                                <ListItemText>
+                                                    {getAccountRegistry()
+                                                        .length > 1
+                                                        ? "Switch account"
+                                                        : "Add account"}
+                                                </ListItemText>
+                                            </LinkableListItem>
                                             <MenuItem
                                                 onClick={() =>
                                                     this.toggleLogOutDialog()
@@ -610,48 +647,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                         </Hidden>
                     </nav>
                 </div>
-                <Dialog
-                    open={this.state.logOutOpen}
-                    onClose={() => this.toggleLogOutDialog()}
-                >
-                    <DialogTitle id="alert-dialog-title">
-                        Log out of{" "}
-                        {this.state.brandName
-                            ? this.state.brandName
-                            : "Hyperspace"}
-                    </DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            You'll need to remove{" "}
-                            {this.state.brandName
-                                ? this.state.brandName
-                                : "Hyperspace"}{" "}
-                            from your list of authorized apps and log in again
-                            if you want to use{" "}
-                            {this.state.brandName
-                                ? this.state.brandName
-                                : "Hyperspace"}
-                            .
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button
-                            onClick={() => this.toggleLogOutDialog()}
-                            color="primary"
-                            autoFocus
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                this.logOutAndRestart();
-                            }}
-                            color="primary"
-                        >
-                            Log out
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                {this.logoutDialog()}
                 <Tooltip title="Create a new post">
                     <LinkableFab
                         to="/compose"
@@ -663,6 +659,57 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                     </LinkableFab>
                 </Tooltip>
             </div>
+        );
+    }
+
+    logoutDialog() {
+        return (
+            <Dialog
+                open={this.state.logOutOpen}
+                onClose={() => this.toggleLogOutDialog()}
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Log out of{" "}
+                    {this.state.brandName ? this.state.brandName : "Hyperspace"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        <Typography paragraph>
+                            You'll need to remove{" "}
+                            {this.state.brandName
+                                ? this.state.brandName
+                                : "Hyperspace"}{" "}
+                            from your list of authorized apps and log in again
+                            if you want to use{" "}
+                            {this.state.brandName
+                                ? this.state.brandName
+                                : "Hyperspace"}
+                            .
+                        </Typography>
+                        <Typography paragraph>
+                            Logging out will also remove this account from the
+                            account list.
+                        </Typography>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => this.toggleLogOutDialog()}
+                        color="primary"
+                        autoFocus
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            this.logOutAndRestart();
+                        }}
+                        color="primary"
+                    >
+                        Log out
+                    </Button>
+                </DialogActions>
+            </Dialog>
         );
     }
 }

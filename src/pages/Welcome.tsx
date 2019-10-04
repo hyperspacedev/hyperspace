@@ -12,7 +12,13 @@ import {
     Dialog,
     DialogTitle,
     DialogActions,
-    DialogContent
+    DialogContent,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemAvatar,
+    ListItemSecondaryAction,
+    IconButton
 } from "@material-ui/core";
 import { styles } from "./WelcomePage.styles";
 import Mastodon from "megalodon";
@@ -28,6 +34,16 @@ import { isDarwinApp } from "../utilities/desktop";
 import axios from "axios";
 import { withSnackbar, withSnackbarProps } from "notistack";
 import { Config } from "../types/Config";
+import {
+    addAccountToRegistry,
+    getAccountRegistry,
+    loginWithAccount,
+    removeAccountFromRegistry
+} from "../utilities/accounts";
+import { Account, MultiAccount } from "../types/Account";
+
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import CloseIcon from "@material-ui/icons/Close";
 
 interface IWelcomeProps extends withSnackbarProps {
     classes: any;
@@ -39,7 +55,7 @@ interface IWelcomeState {
     brandName?: string;
     registerBase?: string;
     federates?: boolean;
-    wantsToLogin: boolean;
+    proceedToGetCode: boolean;
     user: string;
     userInputError: boolean;
     userInputErrorMessage: string;
@@ -47,7 +63,7 @@ interface IWelcomeState {
     clientSecret?: string;
     authUrl?: string;
     foundSavedLogin: boolean;
-    authority: boolean;
+    authorizing: boolean;
     license?: string;
     repo?: string;
     defaultRedirectAddress: string;
@@ -55,6 +71,7 @@ interface IWelcomeState {
     authCode: string;
     emergencyMode: boolean;
     version: string;
+    willAddAccount: boolean;
 }
 
 class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
@@ -64,17 +81,18 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         super(props);
 
         this.state = {
-            wantsToLogin: false,
+            proceedToGetCode: false,
             user: "",
             userInputError: false,
             foundSavedLogin: false,
-            authority: false,
+            authorizing: false,
             userInputErrorMessage: "",
             defaultRedirectAddress: "",
             openAuthDialog: false,
             authCode: "",
             emergencyMode: false,
-            version: ""
+            version: "",
+            willAddAccount: false
         };
 
         getConfig()
@@ -153,6 +171,11 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         } else {
             return false;
         }
+    }
+
+    clear() {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("baseurl");
     }
 
     getSavedSession() {
@@ -253,7 +276,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     clientId: resp.clientId,
                     clientSecret: resp.clientSecret,
                     authUrl: resp.url,
-                    wantsToLogin: true
+                    proceedToGetCode: true
                 });
             });
         } else {
@@ -304,7 +327,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 clientSecret: session.clientSecret,
                 authUrl: session.authUrl,
                 emergencyMode: session.emergency,
-                wantsToLogin: true
+                proceedToGetCode: true
             });
         }
     }
@@ -332,8 +355,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         axios
                             .get(
                                 "https://" +
-                                baseUrl +
-                                "/api/v1/timelines/public"
+                                    baseUrl +
+                                    "/api/v1/timelines/public"
                             )
                             .catch((err: Error) => {
                                 let userInputError = true;
@@ -375,7 +398,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         let location = window.location.href;
         if (location.includes("?code=")) {
             let code = parseUrl(location).query.code as string;
-            this.setState({ authority: true });
+            this.setState({ authorizing: true });
             let loginData = localStorage.getItem("login");
             if (loginData) {
                 let clientLoginSession: SaveClientSession = JSON.parse(
@@ -389,12 +412,12 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     this.state.emergencyMode
                         ? undefined
                         : clientLoginSession.authUrl.includes(
-                        "urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
-                        )
+                              "urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
+                          )
                         ? undefined
                         : window.location.protocol === "hyperspace:"
-                            ? "hyperspace://hyperspace/app/"
-                            : `https://${window.location.host}`
+                        ? "hyperspace://hyperspace/app/"
+                        : `https://${window.location.host}`
                 )
                     .then((tokenData: any) => {
                         localStorage.setItem(
@@ -436,6 +459,65 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         }
     }
 
+    showMultiAccount() {
+        const { classes } = this.props;
+        return (
+            <div>
+                <Typography variant="h5">Select an account</Typography>
+                <Typography>from the list below or add a new one</Typography>
+
+                <List>
+                    {getAccountRegistry().map(
+                        (account: MultiAccount, index: number) => (
+                            <ListItem
+                                onClick={() => {
+                                    loginWithAccount(account);
+                                    window.location.href =
+                                        window.location.protocol ===
+                                        "hyperspace:"
+                                            ? "hyperspace://hyperspace/app/"
+                                            : `https://${window.location.host}/#/`;
+                                }}
+                                button={true}
+                            >
+                                <ListItemAvatar>
+                                    <AccountCircleIcon color="action" />
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary={`@${account.username}`}
+                                    secondary={account.host}
+                                />
+                                <ListItemSecondaryAction>
+                                    <IconButton
+                                        onClick={(e: any) => {
+                                            e.preventDefault();
+                                            removeAccountFromRegistry(index);
+                                            window.location.reload();
+                                        }}
+                                    >
+                                        <CloseIcon />
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        )
+                    )}
+                </List>
+                <div className={classes.middlePadding} />
+
+                <Button
+                    onClick={() => {
+                        this.setState({ willAddAccount: true });
+                        this.clear();
+                    }}
+                    color={"primary"}
+                    variant={"contained"}
+                >
+                    Add Account
+                </Button>
+            </div>
+        );
+    }
+
     showLanding() {
         const { classes } = this.props;
         return (
@@ -452,7 +534,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     onKeyDown={event => this.watchUsernameField(event)}
                     error={this.state.userInputError}
                     onBlur={() => this.checkForErrors()}
-                ></TextField>
+                />
                 {this.state.userInputError ? (
                     <Typography color="error">
                         {this.state.userInputErrorMessage}
@@ -597,7 +679,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             this.updateAuthCode(event.target.value)
                         }
                         onKeyDown={event => this.watchAuthField(event)}
-                    ></TextField>
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => this.toggleAuthDialog()}>
@@ -614,7 +696,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         );
     }
 
-    showAuthority() {
+    showAuthorizationLoader() {
         const { classes } = this.props;
         return (
             <div>
@@ -659,11 +741,14 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         />
                         <br />
                         <Fade in={true}>
-                            {this.state.authority
-                                ? this.showAuthority()
-                                : this.state.wantsToLogin
-                                    ? this.showLoginAuth()
-                                    : this.showLanding()}
+                            {this.state.authorizing
+                                ? this.showAuthorizationLoader()
+                                : this.state.proceedToGetCode
+                                ? this.showLoginAuth()
+                                : getAccountRegistry().length > 0 &&
+                                  !this.state.willAddAccount
+                                ? this.showMultiAccount()
+                                : this.showLanding()}
                         </Fade>
                         <br />
                         <Typography variant="caption">
