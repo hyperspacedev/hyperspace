@@ -29,3 +29,12 @@ export function isDarkMode() {
     const { remote } = eWin.require("electron");
     return remote.systemPreferences.isDarkMode();
 }
+
+/**
+ * Get the app component from the desktop app
+ */
+export function getElectronApp() {
+    const eWin = window as ElectronWindow;
+    const { remote } = eWin.require("electron");
+    return remote.app;
+}
