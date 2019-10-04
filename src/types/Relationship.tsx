@@ -9,4 +9,4 @@ export type Relationship = {
     domain_blocking: boolean;
     showing_reblogs: boolean;
     endorsed: boolean;
-}
+};

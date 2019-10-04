@@ -20,7 +20,7 @@ let mainWindow;
 // to when authorizing Hyperspace.
 protocol.registerSchemesAsPrivileged([
     { scheme: 'hyperspace', privileges: { standard: true, secure: true } }
-])
+]);
 
 /**
  * Determine whether the desktop app is on macOS
@@ -28,10 +28,6 @@ protocol.registerSchemesAsPrivileged([
  */
 function darwin() {
     return process.platform === "darwin";
-}
-
-function catalina() {
-    return os.release() >= "19.0.0";
 }
 
 /**
@@ -138,10 +134,10 @@ function createWindow() {
             webPreferences: {nodeIntegration: true},
 
             // Set some preferences that are specific to macOS.
-            titleBarStyle: 'hidden',
-            vibrancy: catalina()? "sidebar": systemPreferences.isDarkMode()? "ultra-dark": "light",
+            titleBarStyle: 'hiddenInset',
+            vibrancy: "sidebar",
             transparent: darwin(),
-            backgroundColor: darwin()? "#80FFFFFF": "#FFF"
+            backgroundColor: darwin()? "#80000000": "#FFF"
         }
     );
 
@@ -151,16 +147,19 @@ function createWindow() {
     // Load the main app and open the index page.
     mainWindow.loadURL("hyperspace://hyperspace/app/");
     
-    // Watch for a change in macOS's dark mode and reload the window to apply changes
+    // Watch for a change in macOS's dark mode and reload the window to apply changes, as well as accent color
     if (darwin()) {
         systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
-        if (mainWindow != null) {
-            if (!catalina()) {
-                mainWindow.setVibrancy(systemPreferences.isDarkMode()? "ultra-dark": "light");
+            if (mainWindow != null) {
+                mainWindow.webContents.reload();
             }
-            mainWindow.webContents.reload();
-        }
-    })
+        });
+
+        systemPreferences.subscribeNotification('AppleColorPreferencesChangedNotification', () => {
+            if (mainWindow != null) {
+                mainWindow.webContents.reload();
+            }
+        });
     }
 
     // Delete the window when closed
@@ -174,6 +173,19 @@ function createWindow() {
         event.preventDefault();
         shell.openExternal(url);
     });
+}
+
+/**
+ * Go to a URL in the main window. If it doesn't exist,
+ * create the window and then navigate to it.
+ * @param url The URL to visit in the main window
+ */
+function safelyGoTo(url) {
+    if (mainWindow == null) {
+        registerProtocol();
+        createWindow();
+    }
+    mainWindow.loadURL(url);
 }
 
 /**
@@ -198,7 +210,15 @@ function createMenubar() {
                             createWindow();
                         }
                     }
+                },
+                {
+                    label: 'New Post',
+                    accelerator: 'Shift+CmdOrCtrl+N',
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#compose")
+                    }
                 }
+
             ]
         },
         {
@@ -218,8 +238,27 @@ function createMenubar() {
         {
             label: 'View',
             submenu: [
+                {
+                    label: 'Back',
+                    accelerator: 'CmdOrCtrl+[',
+                    click() {
+                        if (mainWindow != null && mainWindow.webContents.canGoBack()) {
+                            mainWindow.webContents.goBack()
+                        }
+                    }
+                },
+                {
+                    label: 'Forward',
+                    accelerator: 'CmdOrCtrl+]',
+                    click() {
+                        if (mainWindow != null && mainWindow.webContents.canGoForward()) {
+                            mainWindow.webContents.goForward()
+                        }
+                    }
+                },
                 { role: 'reload' },
                 { role: 'forcereload' },
+                { type: 'separator' },
                 {
                     label: 'Open Dev Tools',
                     click () {
@@ -237,28 +276,125 @@ function createMenubar() {
             ]
         },
         {
+            label: "Timelines",
+            submenu: [
+                {
+                    label: 'Home',
+                    accelerator: "CmdOrCtrl+0",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/home")
+                    }
+                },
+                {
+                    label: 'Local',
+                    accelerator: "CmdOrCtrl+1",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/local")
+                    }
+                },
+                {
+                    label: 'Public',
+                    accelerator: "CmdOrCtrl+2",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/public")
+                    }
+                },
+                {
+                    label: 'Messages',
+                    accelerator: "CmdOrCtrl+3",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/messages")
+                    }
+                }
+            ]
+        },
+        {
+            label: "Account",
+            submenu: [
+                {
+                    label: 'Notifications',
+                    accelerator: "Alt+CmdOrCtrl+N",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/notifications")
+                    }
+                },
+                {
+                    label: 'Recommendations...',
+                    accelerator: "Alt+CmdOrCtrl+R",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/recommended")
+                    }
+                },
+                { type: 'separator' },
+                {
+                    label: 'Edit Profile',
+                    accelerator: "Shift+CmdOrCtrl+P",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/you")
+                    }
+                },
+                {
+                    label: 'Blocked Servers',
+                    accelerator: "Shift+CmdOrCtrl+B",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/blocked")
+                    }
+                },
+                { type: 'separator'},
+                {
+                    label: 'Switch Accounts...',
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/welcome")
+                    }
+                }
+            ]
+        },
+        {
             role: 'window',
             submenu: [
                 { role: 'minimize' },
-                { role: 'close' }
+                { role: 'close' },
+                { type: 'separator' },
             ]
         },
         {
             role: 'help',
             submenu: [
                 {
+                    label: 'Hyperspace Docs',
+                    click () { require('electron').shell.openExternal('https://hyperspace.marquiskurt.net/docs/') }
+                },
+                {
                     label: 'Report a Bug',
                     click () { require('electron').shell.openExternal('https://github.com/hyperspacedev/hyperspace/issues') }
+                },
+                { type: 'separator' },
+                {
+                    label: 'Acknowledgements',
+                    click () { require('electron').shell.openExternal('https://github.com/hyperspacedev/hyperspace/blob/master/patreon.md') }
                 }
             ]
         }
-    ]
+    ];
 
     if (process.platform === 'darwin') {
         menuBar.unshift({
             label: app.getName(),
             submenu: [
-                { role: 'about' },
+                {
+                    label: 'About Hyperspace',
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/about")
+                    }
+                },
+                { type: 'separator' },
+                {
+                    label: "Preferences...",
+                    accelerator: 'Cmd+,',
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/settings");
+                    }
+                },
                 { type: 'separator' },
                 { role: 'services' },
                 { type: 'separator' },
@@ -268,7 +404,7 @@ function createMenubar() {
                 { type: 'separator' },
                 { role: 'quit' }
             ]
-        })
+        });
 
         // Edit menu
         menuBar[2].submenu.push(
@@ -280,10 +416,10 @@ function createMenubar() {
                     { role: 'stopspeaking' }
                 ]
             }
-        )
+        );
 
         // Window menu
-        menuBar[4].submenu = [
+        menuBar[6].submenu = [
             { role: 'close' },
             { role: 'minimize' },
             { role: 'zoom' },

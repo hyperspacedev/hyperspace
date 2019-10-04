@@ -3,4 +3,4 @@ export type SaveClientSession = {
     clientSecret: string;
     authUrl: string;
     emergency: boolean;
-}
+};

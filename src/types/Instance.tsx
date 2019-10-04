@@ -12,4 +12,4 @@ export type Instance = {
     stats: Field;
     languages: [string];
     contact_account: Account;
-}
+};

@@ -1,6 +1,21 @@
-import {Color} from '@material-ui/core';
-import { deepPurple, red, lightGreen, yellow, purple, deepOrange, indigo, lightBlue, orange, blue, amber, pink, brown, blueGrey } from '@material-ui/core/colors';
-import { isDarwinApp } from '../utilities/desktop';
+import { Color } from "@material-ui/core";
+import {
+    deepPurple,
+    red,
+    lightGreen,
+    yellow,
+    purple,
+    deepOrange,
+    indigo,
+    lightBlue,
+    blue,
+    pink
+} from "@material-ui/core/colors";
+import {
+    isDarkMode,
+    isDarwinApp,
+    getDarwinAccentColor
+} from "../utilities/desktop";
 
 /**
  * Basic theme colors for Hyperspace.
@@ -9,14 +24,18 @@ export type HyperspaceTheme = {
     key: string;
     name: string;
     palette: {
-        primary: {
-            main: string;
-        } | Color;
-        secondary: {
-            main: string;
-        } | Color;
-    }
-}
+        primary:
+            | {
+                  main: string;
+              }
+            | Color;
+        secondary:
+            | {
+                  main: string;
+              }
+            | Color;
+    };
+};
 
 export const defaultTheme: HyperspaceTheme = {
     key: "defaultTheme",
@@ -25,7 +44,7 @@ export const defaultTheme: HyperspaceTheme = {
         primary: deepPurple,
         secondary: red
     }
-}
+};
 
 export const gardenerTheme: HyperspaceTheme = {
     key: "gardnerTheme",
@@ -34,7 +53,7 @@ export const gardenerTheme: HyperspaceTheme = {
         primary: lightGreen,
         secondary: yellow
     }
-}
+};
 
 export const teacherTheme: HyperspaceTheme = {
     key: "teacherTheme",
@@ -43,7 +62,7 @@ export const teacherTheme: HyperspaceTheme = {
         primary: purple,
         secondary: deepOrange
     }
-}
+};
 
 export const jokerTheme: HyperspaceTheme = {
     key: "jokerTheme",
@@ -52,7 +71,7 @@ export const jokerTheme: HyperspaceTheme = {
         primary: indigo,
         secondary: lightBlue
     }
-}
+};
 
 export const guardTheme: HyperspaceTheme = {
     key: "guardTheme",
@@ -61,7 +80,7 @@ export const guardTheme: HyperspaceTheme = {
         primary: blue,
         secondary: deepOrange
     }
-}
+};
 
 export const entertainerTheme: HyperspaceTheme = {
     key: "entertainerTheme",
@@ -70,7 +89,7 @@ export const entertainerTheme: HyperspaceTheme = {
         primary: pink,
         secondary: purple
     }
-}
+};
 
 export const classicTheme: HyperspaceTheme = {
     key: "classicTheme",
@@ -83,7 +102,7 @@ export const classicTheme: HyperspaceTheme = {
             main: "#5c2d91"
         }
     }
-}
+};
 
 export const dragonTheme: HyperspaceTheme = {
     key: "dragonTheme",
@@ -92,7 +111,7 @@ export const dragonTheme: HyperspaceTheme = {
         primary: purple,
         secondary: purple
     }
-}
+};
 
 export const memoriumTheme: HyperspaceTheme = {
     key: "memoriumTheme",
@@ -101,7 +120,7 @@ export const memoriumTheme: HyperspaceTheme = {
         primary: red,
         secondary: red
     }
-}
+};
 
 export const blissTheme: HyperspaceTheme = {
     key: "blissTheme",
@@ -112,19 +131,75 @@ export const blissTheme: HyperspaceTheme = {
         },
         secondary: lightBlue
     }
-}
+};
 
 export const attractTheme: HyperspaceTheme = {
     key: "attractTheme",
     name: "Attract",
     palette: {
         primary: {
-            main: '#E57373',
+            main: "#E57373"
         },
         secondary: {
-            main: "#78909C",
+            main: "#78909C"
         }
+    }
+};
+
+export const themes = [
+    defaultTheme,
+    gardenerTheme,
+    teacherTheme,
+    jokerTheme,
+    guardTheme,
+    entertainerTheme,
+    classicTheme,
+    dragonTheme,
+    memoriumTheme,
+    blissTheme,
+    attractTheme
+];
+
+/**
+ * Get the accent color from System Preferences.
+ */
+function getAquaAccentColor() {
+    switch (getDarwinAccentColor()) {
+        case 0:
+            return isDarkMode() ? "#ff453a" : "#FF3B30";
+        case 1:
+            return isDarkMode() ? "#ff9f0a" : "#ff9500";
+        case 2:
+            return isDarkMode() ? "#ffd60a" : "#ffcc00";
+        case 3:
+            return isDarkMode() ? "#32d74b" : "#28cd41";
+        case 5:
+            return isDarkMode() ? "#bf5af2" : "#af52de";
+        case 6:
+            return isDarkMode() ? "#ff375f" : "#ff2d55";
+        case -1:
+            return isDarkMode() ? "#98989d" : "#8e8e93";
+        default:
+            return isDarkMode() ? "#0A84FF" : "#007AFF";
     }
 }
 
-export const themes = [defaultTheme, gardenerTheme, teacherTheme, jokerTheme, guardTheme, entertainerTheme, classicTheme, dragonTheme, memoriumTheme, blissTheme, attractTheme]
+/**
+ * Inject macOS themes and watch for changes.
+ */
+if (isDarwinApp()) {
+    const aquaTheme: HyperspaceTheme = {
+        key: "aquaTheme",
+        name: "Aqua (Dynamic)",
+        palette: {
+            primary: {
+                main: isDarkMode() ? "#353538" : "#D6D6D6"
+            },
+            secondary: {
+                main: getAquaAccentColor()
+            }
+        }
+    };
+
+    themes.unshift(aquaTheme);
+}

@@ -70,3 +70,6 @@ dist/
 # Electron app files
 desktop/*.plist
 desktop/*.provisionprofile
+
+# JetBrains IDEA directory
+.idea/

@@ -7,5 +7,5 @@ import { isDarwinApp } from "./desktop";
  * @returns Boolean dictating if the title bar is visible
  */
 export function isAppbarExpanded(): boolean {
-    return isDarwinApp() ||  process.env.NODE_ENV === "development";
+    return isDarwinApp() || process.env.NODE_ENV === "development";
 }

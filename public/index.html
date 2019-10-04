@@ -28,10 +28,11 @@
     <link href="%PUBLIC_URL%/splashes/apple_splash_640.png" sizes="640x1136" rel="apple-touch-startup-image" />
     <style>
       body::-webkit-scrollbar {
-          display: none;
+          width: 0 !important;
         }
       body {
-        scrollbar-width: none;
+        overflow: -moz-scrollbars-none;
+        -ms-overflow-style: none;
       }
     </style>
     <title>Hyperspace</title>

@@ -1,22 +1,24 @@
-import {getUserDefaultBool, setUserDefaultBool} from './settings';
+import { getUserDefaultBool, setUserDefaultBool } from "./settings";
 
 /**
  * Get the person's permission to send notification requests.
  */
 export function getNotificationRequestPermission() {
-    if ('Notification' in window) {
+    if ("Notification" in window) {
         Notification.requestPermission();
         let request = Notification.permission;
         if (request === "granted") {
-            setUserDefaultBool('enablePushNotifications', true);
-            setUserDefaultBool('userDeniedNotification', false);
+            setUserDefaultBool("enablePushNotifications", true);
+            setUserDefaultBool("userDeniedNotification", false);
         } else {
-            setUserDefaultBool('enablePushNotifications', false);
-            setUserDefaultBool('userDeniedNotification', true);
+            setUserDefaultBool("enablePushNotifications", false);
+            setUserDefaultBool("userDeniedNotification", true);
         }
     } else {
-        console.warn("Notifications aren't supported in this browser. The setting will be disabled.");
-        setUserDefaultBool('enablePushNotifications', false);
+        console.warn(
+            "Notifications aren't supported in this browser. The setting will be disabled."
+        );
+        setUserDefaultBool("enablePushNotifications", false);
     }
 }
 
@@ -25,7 +27,7 @@ export function getNotificationRequestPermission() {
  * @returns Boolean value that determines whether the browser supports the Notification API
  */
 export function browserSupportsNotificationRequests(): boolean {
-    return ('Notification' in window);
+    return "Notification" in window;
 }
 
 /**
@@ -33,7 +35,7 @@ export function browserSupportsNotificationRequests(): boolean {
  * @returns Boolean value of `enablePushNotifications`
  */
 export function canSendNotifications() {
-    return getUserDefaultBool('enablePushNotifications');
+    return getUserDefaultBool("enablePushNotifications");
 }
 
 /**
@@ -43,14 +45,12 @@ export function canSendNotifications() {
  */
 export function sendNotificationRequest(title: string, body: string) {
     if (canSendNotifications()) {
-        let notif = new Notification(title, {
-            body: body
-        });
+        let notif = new Notification(title, { body });
 
         notif.onclick = () => {
             window.focus();
         };
     } else {
-        console.warn('The person has opted to not receive push notifications.');
+        console.warn("The person has opted to not receive push notifications.");
     }
 }
