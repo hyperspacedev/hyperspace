@@ -31,6 +31,24 @@ export function isDarkMode() {
 }
 
 /**
+ * Get the accent color from macOS.
+ *
+ * Note that the colors will go from left to right, starting from zero (eg.: -1 = Graphite, 0 = Red, 1 = Orange, etc.).
+ * Since AppleAccentColor might return an empty string for the blue color, -2 is used instead.
+ *
+ * @returns The corresponding integer for the accent color
+ */
+export function getDarwinAccentColor(): number {
+    const eWin = window as ElectronWindow;
+    const { remote } = eWin.require("electron");
+    const themeInteger = remote.systemPreferences.getUserDefault(
+        "AppleAccentColor",
+        "string"
+    );
+    return themeInteger === "" ? -2 : parseInt(themeInteger);
+}
+  
+/**
  * Get the app component from the desktop app
  */
 export function getElectronApp() {

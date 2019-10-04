@@ -276,7 +276,10 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         if (isDarwinApp()) {
             return (
                 <div className={classes.titleBarRoot}>
-                    <Typography className={classes.titleBarText}>
+                    <Typography
+                        className={classes.titleBarText}
+                        color="inherit"
+                    >
                         {this.state.brandName
                             ? this.state.brandName
                             : "Hyperspace"}{" "}

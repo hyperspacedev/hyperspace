@@ -65,6 +65,12 @@ export const styles = (theme: Theme) =>
             paddingLeft: theme.spacing.unit * 2,
             paddingRight: theme.spacing.unit * 2
         },
+        pageMinimalBreak: {
+            height: isAppbarExpanded() ? 80 : 64,
+            [theme.breakpoints.up("md")]: {
+                height: isAppbarExpanded() ? 88 : 64
+            }
+        },
         pageHeroBackground: {
             position: "relative",
             height: "intrinsic",
@@ -72,7 +78,10 @@ export const styles = (theme: Theme) =>
             width: "100%",
             color: theme.palette.common.white,
             zIndex: 1,
-            top: isAppbarExpanded() ? 80 : 64
+            top: isAppbarExpanded() ? 80 : 64,
+            [theme.breakpoints.up("md")]: {
+                top: isAppbarExpanded() ? 88 : 64
+            }
         },
         pageHeroBackgroundImage: {
             position: "absolute",

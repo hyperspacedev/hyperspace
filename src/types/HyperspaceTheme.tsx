@@ -8,14 +8,14 @@ import {
     deepOrange,
     indigo,
     lightBlue,
-    orange,
     blue,
-    amber,
-    pink,
-    brown,
-    blueGrey
+    pink
 } from "@material-ui/core/colors";
-import { isDarwinApp } from "../utilities/desktop";
+import {
+    isDarkMode,
+    isDarwinApp,
+    getDarwinAccentColor
+} from "../utilities/desktop";
 
 /**
  * Basic theme colors for Hyperspace.
@@ -159,3 +159,47 @@ export const themes = [
     blissTheme,
     attractTheme
 ];
+
+/**
+ * Get the accent color from System Preferences.
+ */
+function getAquaAccentColor() {
+    switch (getDarwinAccentColor()) {
+        case 0:
+            return isDarkMode() ? "#ff453a" : "#FF3B30";
+        case 1:
+            return isDarkMode() ? "#ff9f0a" : "#ff9500";
+        case 2:
+            return isDarkMode() ? "#ffd60a" : "#ffcc00";
+        case 3:
+            return isDarkMode() ? "#32d74b" : "#28cd41";
+        case 5:
+            return isDarkMode() ? "#bf5af2" : "#af52de";
+        case 6:
+            return isDarkMode() ? "#ff375f" : "#ff2d55";
+        case -1:
+            return isDarkMode() ? "#98989d" : "#8e8e93";
+        default:
+            return isDarkMode() ? "#0A84FF" : "#007AFF";
+    }
+}
+
+/**
+ * Inject macOS themes and watch for changes.
+ */
+if (isDarwinApp()) {
+    const aquaTheme: HyperspaceTheme = {
+        key: "aquaTheme",
+        name: "Aqua (Dynamic)",
+        palette: {
+            primary: {
+                main: isDarkMode() ? "#353538" : "#EEEEEE"
+            },
+            secondary: {
+                main: getAquaAccentColor()
+            }
+        }
+    };
+
+    themes.unshift(aquaTheme);
+}

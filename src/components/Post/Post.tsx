@@ -64,6 +64,7 @@ interface IPostProps {
     post: Status;
     classes: any;
     client: Mastodon;
+    threadHeader: boolean;
 }
 
 interface IPostState {
@@ -624,7 +625,11 @@ export class Post extends React.Component<any, IPostState> {
         const post = this.state.post;
         return (
             <Zoom in={true}>
-                <Card className={classes.post} id={`post_${post.id}`}>
+                <Card
+                    className={classes.post}
+                    id={`post_${post.id}`}
+                    elevation={this.props.threadHeader ? 0 : 1}
+                >
                     <CardHeader
                         avatar={
                             <LinkableAvatar
