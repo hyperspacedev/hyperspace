@@ -56,6 +56,7 @@
     "build-desktop-darwin-nosign": "npm run create-mac-icon; electron-builder -p 'never' -m dmg -c.mac.identity=null -c.afterSign=\"desktop/donothing.js\"",
     "build-desktop-linux": "electron-builder -p 'never' -l deb AppImage snap",
     "build-desktop-linux-select": "electron-builder -p 'never' -l ",
+    "check-prettier": "prettier --check src/**/**.tsx",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
