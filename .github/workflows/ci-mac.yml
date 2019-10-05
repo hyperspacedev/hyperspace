@@ -3,10 +3,8 @@ name: Build macOS Client
 on: [push, pull_request]
 
 jobs:
-  build:
-
+  build_darwin:
     runs-on: macos-latest
-
     steps:
       - name: Clone source code
         uses: actions/checkout@v1

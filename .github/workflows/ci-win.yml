@@ -3,10 +3,8 @@ name: Build Windows Client
 on: [push, pull_request]
 
 jobs:
-  build:
-
+  build_win:
     runs-on: windows-latest
-
     steps:
       - name: Clone source code
         uses: actions/checkout@v1
