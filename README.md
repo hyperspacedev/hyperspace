@@ -1,3 +1,5 @@
+<img src="./desktop/app.iconset/icon_32@2x.png" align="center"/>
+
 <h1 align="center">Hyperspace</h1>
 
 <p align="center">The new beautiful, fluffy client for the fediverse written in TypeScript and React</p>
