@@ -547,7 +547,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary="Match system appearance"
-                                        secondary="Obey light/dark theme from your system"
+                                        secondary="Follows your device's preferences to toggle dark mode"
                                     />
                                     <ListItemSecondaryAction>
                                         <Switch
@@ -558,9 +558,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                         />
                                     </ListItemSecondaryAction>
                                 </ListItem>
-                                {!isDarwinApp() ||
-                                (isDarwinApp() &&
-                                    !this.state.systemDecidesDarkMode) ? (
+                                {!this.state.systemDecidesDarkMode ? (
                                     <ListItem>
                                         <ListItemAvatar>
                                             <Brightness3Icon color="action" />
@@ -590,7 +588,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary="Interface theme"
-                                        secondary="The color palette used for the interface"
+                                        secondary="Defines the color palette used for the interface"
                                     />
                                     <ListItemSecondaryAction>
                                         <Button
@@ -611,8 +609,8 @@ class SettingsPage extends Component<any, ISettingsState> {
                                         <VisibilityIcon color="action" />
                                     </ListItemAvatar>
                                     <ListItemText
-                                        primary="Default visibility"
-                                        secondary="New posts in composer will use this visiblity"
+                                        primary="Default post visibility"
+                                        secondary="Creating posts in the composer will use this visiblity"
                                     />
                                     <ListItemSecondaryAction>
                                         <Button
@@ -642,7 +640,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                             )
                                                 ? "Check your browser's notification permissions."
                                                 : browserSupportsNotificationRequests()
-                                                ? "Send a push notification when not focused."
+                                                ? "Sends a push notification when not focused."
                                                 : "Notifications aren't supported."
                                         }
                                     />
@@ -696,7 +694,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary="Refresh settings"
-                                        secondary="Reset the settings to defaults."
+                                        secondary="Resets the settings to defaults."
                                     />
                                     <ListItemSecondaryAction>
                                         <Button
