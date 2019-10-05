@@ -1,6 +1,6 @@
 // desktop.js
 // Electron script to run Hyperspace as an app
-// © 2018 Hyperspace developers. Licensed under Apache 2.0.
+// © 2018 Hyperspace developers. Licensed under NPL v1.
 
 const { app, Menu, protocol, BrowserWindow, shell, systemPreferences } = require('electron');
 const windowStateKeeper = require('electron-window-state');
@@ -137,7 +137,10 @@ function createWindow() {
             titleBarStyle: 'hiddenInset',
             vibrancy: "sidebar",
             transparent: darwin(),
-            backgroundColor: darwin()? "#80000000": "#FFF"
+            backgroundColor: darwin()? "#80000000": "#FFF",
+
+            // Hide the window until the contents load
+            show: false
         }
     );
 
@@ -161,6 +164,11 @@ function createWindow() {
             }
         });
     }
+
+    // Only show the window when ready
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show();
+    });
 
     // Delete the window when closed
     mainWindow.on('closed', () => {
