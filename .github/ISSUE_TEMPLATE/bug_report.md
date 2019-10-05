@@ -25,7 +25,7 @@ If applicable, add screenshots to help explain your problem.
 
 **App Information (please complete the following information):**
  - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
+ - Browser [e.g. chrome, safari] (if applicable)
  - Version [e.g. 22]
 
 **Additional context**
