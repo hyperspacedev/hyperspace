@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="desktop/app.iconset/icon_512@2x.png" width="300" max-width="50%" alt=“Hyperspace” />
+    <img src="desktop/app.iconset/icon_512@2x.png" width="1024" max-width="25%" alt=“Hyperspace” />
 </p>
 <h1 align="center">Hyperspace</h1>
 
