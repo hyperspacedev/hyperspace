@@ -6,7 +6,6 @@ const { app, Menu, protocol, BrowserWindow, shell, systemPreferences } = require
 const windowStateKeeper = require('electron-window-state');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
-const os = require('os');
 
 // Check for any updates to the app
 autoUpdater.checkForUpdatesAndNotify();
@@ -26,7 +25,7 @@ protocol.registerSchemesAsPrivileged([
  * Determine whether the desktop app is on macOS
  * - Returns: Boolean of whether platform is Darwin
  */
-function darwin() {
+function isDarwin() {
     return process.platform === "darwin";
 }
 
@@ -82,7 +81,7 @@ function registerProtocol() {
             callback({error: -6});
         }
 
-        // Create a normalized version of the strring.
+        // Create a normalized version of the string.
         baseDirectory = path.normalize(baseDirectory);
 
         // Check to make sure the target isn't trying to go out of bounds.
@@ -136,8 +135,8 @@ function createWindow() {
             // Set some preferences that are specific to macOS.
             titleBarStyle: 'hiddenInset',
             vibrancy: "sidebar",
-            transparent: darwin(),
-            backgroundColor: darwin()? "#80000000": "#FFF",
+            transparent: isDarwin(),
+            backgroundColor: isDarwin()? "#80000000": "#FFF",
 
             // Hide the window until the contents load
             show: false
@@ -151,7 +150,7 @@ function createWindow() {
     mainWindow.loadURL("hyperspace://hyperspace/app/");
     
     // Watch for a change in macOS's dark mode and reload the window to apply changes, as well as accent color
-    if (darwin()) {
+    if (isDarwin()) {
         systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => {
             if (mainWindow != null) {
                 mainWindow.webContents.reload();
@@ -271,7 +270,7 @@ function createMenubar() {
                     label: 'Open Dev Tools',
                     click () {
                         try {
-                            mainWindow.webContents.openDevTools({mode: 'undocked'});
+                            mainWindow.webContents.openDevTools();
                         } catch (err) {
                             console.error("Couldn't open dev tools: " + err);
                         }
@@ -450,7 +449,7 @@ app.on('ready', () => {
 
 // Standard quit behavior changes for macOS
 app.on('window-all-closed', () => {
-    if (!darwin()) {
+    if (!isDarwin()) {
         app.quit()
     }
 });
