@@ -111,7 +111,7 @@ You'll also want to modify the `notarize.js` file to change the details from the
 
 Hyperspace is licensed under the [Non-violent Public License](LICENSE), a permissive license under the conditions that you do not use this for any unethical purposes and to file patent claims. Please read what your rights are as a Hyperspace user/developer in the license for more information.
 
-Hyperspace has been made possible by the React, TypeScript, Megalodon, and Material-UI projects as well our [Patrons](PATREON.md) and our contributors on GitHub.
+Hyperspace has been made possible by the React, TypeScript, Megalodon, and Material-UI projects as well our [Patrons](patreon.md) and our contributors on GitHub.
 
 ## Contribute
 
