@@ -1,8 +1,8 @@
-# Hyperspace
+<h1 align="center">Hyperspace</h1>
 
-The new beautiful, fluffy client for the fediverse written in TypeScript and React
+<p align="center">The new beautiful, fluffy client for the fediverse written in TypeScript and React</p>
 
-![Screenshot](screenshot.png)
+![Hyperspace 1.0 on a MacBook Pro](screenshot.png)
 
 [![Matrix room](https://img.shields.io/matrix/hypermasto:matrix.org.svg)](https://matrix.to/#/#hypermasto:matrix.org)
 [![Discord server](https://img.shields.io/discord/554108687434907660.svg?color=blueviolet&label=discord)](https://discord.gg/c69AXwk) 
