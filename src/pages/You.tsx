@@ -303,8 +303,19 @@ class You extends Component<IYouProps, IYouState> {
                         </div>
                         <div className={classes.pageContentLayoutConstraints}>
                             <Paper className={classes.youPaper}>
-                                <Typography variant="h5" component="h2">
-                                    Display Name
+                                <Typography variant="h6" component="h2">
+                                    Display name
+                                </Typography>
+                                <Typography>
+                                    Your display name is your nickname on the
+                                    fediverse; it differs from the username or
+                                    account name. You may include emoji
+                                    shortcodes in your display name.
+                                </Typography>
+                                <br />
+                                <Typography>
+                                    Some servers may require you to create your
+                                    display name under certain rules.
                                 </Typography>
                                 <br />
                                 <TextField
@@ -335,8 +346,14 @@ class You extends Component<IYouProps, IYouState> {
                             </Paper>
                             <br />
                             <Paper className={classes.youPaper}>
-                                <Typography variant="h5" component="h2">
+                                <Typography variant="h6" component="h2">
                                     About you
+                                </Typography>
+                                <Typography>
+                                    Your biography lets you tell the fediverse
+                                    who you are. Your biography can contain
+                                    hashtags, account mentions, and emojis with
+                                    shortcodes.
                                 </Typography>
                                 <br />
                                 <TextField
