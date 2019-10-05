@@ -432,12 +432,21 @@ class ProfilePage extends Component<any, IProfilePageState> {
                                     ? "@" + this.state.account.acct
                                     : ""}
                             </Typography>
-                            <Typography paragraph color="inherit" dangerouslySetInnerHTML={{ __html: this.state.account
-                                    ? this.state.account.note
-                                        ? emojifyString(this.state.account.note, this.state.account.emojis, classes.pageProfileBioEmoji)
-                                        : "No bio provided by user."
-                                    : "No bio available."}}>
-                            </Typography>
+                            <Typography
+                                paragraph
+                                color="inherit"
+                                dangerouslySetInnerHTML={{
+                                    __html: this.state.account
+                                        ? this.state.account.note
+                                            ? emojifyString(
+                                                  this.state.account.note,
+                                                  this.state.account.emojis,
+                                                  classes.pageProfileBioEmoji
+                                              )
+                                            : "No bio provided by user."
+                                        : "No bio available."
+                                }}
+                            ></Typography>
                             <Typography color={"inherit"}>
                                 {this.state.account
                                     ? this.state.account.followers_count
