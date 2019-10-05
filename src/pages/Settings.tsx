@@ -477,7 +477,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                             <div className={classes.profileContent}>
                                 <br />
                                 <Avatar
-                                    className={classes.profileAvatar}
+                                    className={classes.settingsAvatar}
                                     src={this.state.currentUser.avatar_static}
                                 />
                                 <div
@@ -485,7 +485,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                     style={{ margin: "auto" }}
                                 >
                                     <Typography
-                                        variant="h4"
+                                        className={classes.settingsHeaderText}
                                         color="inherit"
                                         component="h1"
                                     >
@@ -494,7 +494,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                     </Typography>
                                     <Typography
                                         color="inherit"
-                                        variant="h6"
+                                        className={classes.settingsDetailText}
                                         component="p"
                                     >
                                         @{this.state.currentUser.acct}
