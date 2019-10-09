@@ -131,8 +131,7 @@ export function createUserDefaults() {
 export async function getConfig(): Promise<Config | undefined> {
     try {
         const resp = await axios.get("config.json");
-        let config: Config = resp.data;
-        return config;
+        return resp.data as Config;
     } catch (err) {
         console.error(
             "Couldn't configure Hyperspace with the config file. Reason: " +

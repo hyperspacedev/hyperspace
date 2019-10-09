@@ -66,7 +66,7 @@ export const styles = (theme: Theme) =>
             paddingRight: theme.spacing.unit * 2
         },
         pageMinimalBreak: {
-            height: isAppbarExpanded() ? 80 : 64,
+            height: isAppbarExpanded() ? 80 : 56,
             [theme.breakpoints.up("md")]: {
                 height: isAppbarExpanded() ? 88 : 64
             }
@@ -78,7 +78,7 @@ export const styles = (theme: Theme) =>
             width: "100%",
             color: theme.palette.common.white,
             zIndex: 1,
-            top: isAppbarExpanded() ? 80 : 64,
+            top: isAppbarExpanded() ? 80 : 56,
             [theme.breakpoints.up("md")]: {
                 top: isAppbarExpanded() ? 88 : 64
             }
@@ -300,5 +300,28 @@ export const styles = (theme: Theme) =>
         },
         pageGrow: {
             flexGrow: 1
+        },
+        settingsHeaderText: {
+            fontSize: theme.typography.h6.fontSize,
+            [theme.breakpoints.up("sm")]: {
+                fontSize: theme.typography.h4.fontSize
+            }
+        },
+        settingsDetailText: {
+            fontSize: theme.typography.body2.fontSize,
+            [theme.breakpoints.up("sm")]: {
+                fontSize: theme.typography.h6.fontSize
+            }
+        },
+        settingsAvatar: {
+            width: 64,
+            height: 64,
+            display: "none",
+            [theme.breakpoints.up("md")]: {
+                width: 128,
+                height: 128,
+                display: "block"
+            },
+            backgroundColor: theme.palette.primary.main
         }
     });

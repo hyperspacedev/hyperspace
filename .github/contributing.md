@@ -20,6 +20,10 @@ Suffice to say, this also means that new components or code _should_ be written 
 
 The Hyperspace structure is organized based on utilities, components, tests, and other types of files to make everything easy to locate. Please try to keep this organization when making a new component or test.
 
+### Prettify your files (pretty please)
+
+Hyperspace includes configurations for using the Prettier code formatter to format code in the project. Please ensure your code has been properly formatted by Prettier before submitting any to a pull request.
+
 ## Issues
 
 These guidelines apply to issues on GitHub.

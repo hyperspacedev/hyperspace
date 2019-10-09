@@ -1,16 +1,33 @@
-# Hyperspace v1.0
+<p align="center">
+    <img src="desktop/app.iconset/icon_512@2x.png" width="128" max-width="25%" alt=“Hyperspace” />
+</p>
+<h1 align="center">Hyperspace</h1>
 
-The new beautiful, fluffy client for the fediverse written in TypeScript and React
+<p align="center">The new beautiful, fluffy client for the fediverse written in TypeScript and React</p>
 
-![Screenshot](screenshot.png)
+![Hyperspace 1.0 on a MacBook Pro](screenshot.png)
 
 [![Matrix room](https://img.shields.io/matrix/hypermasto:matrix.org.svg)](https://matrix.to/#/#hypermasto:matrix.org)
 [![Discord server](https://img.shields.io/discord/554108687434907660.svg?color=blueviolet&label=discord)](https://discord.gg/c69AXwk) 
-![Build Status](https://github.com/hyperspacedev/hyperspace/workflows/Node%20CI/badge.svg)
+![Build Status](https://github.com/hyperspacedev/hyperspace/workflows/Node%20CI/badge.svg) [![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/hyperspacedev/hyperspace?include_prereleases)](https://github.com/hyperspacedev/hyperspace/releases) [![iTunes App Store](https://img.shields.io/itunes/v/1454139710?label=Mac%20App%20Store&logo=apple&logoColor=white)](https://apps.apple.com/us/app/hyperspace/id1454139710?mt=12) [![Hyperspace](https://snapcraft.io/hyperspace/badge.svg)](https://snapcraft.io/hyperspace)
 
 Hyperspace is the fluffiest client for Mastodon and other fediverse networks written in TypeScript and React. Hyperspace offers a fun, clean, fast, and responsive design that scales beautifully across devices and enhances the fediverse experience.
 
-> Note: For more information on how Hyperspace 1.0 is different from the *Hyperspace Classic (0.x)* series, please see [MIGRATING.md](MIGRATING.md).
+## Features
+
+- **Responsive by design**: Hyperspace is beautifully designed to put your content front and center and bring a familiar experience to Mastodon. View threads and profiles with ease and compose anywhere with the compose button. And, of course, Hyperspace scales across devices beautifully, providing the same experience anywhere.
+- **Customizable**: Hyperspace allows customization and configuration at every level, from the server level with branding and instance setup, down to the user level with dark mode, custom themes, and multi-user account support. And, if the default configuration settings aren't enough, anyone can make their own version of Hyperspace with custom additions.
+- **Open-source**: Hyperspace is free (libre) and open-source software. Licensed under the Non-Violent Public License, anyone can modify, redistribute, or contribute to the Hyperspace project without restriction. Hyperspace is written in TypeScript and takes advantage of multiple open-source libraries and projects such as React, Megalodon, and Material-UI, so web and Node.js developers will feel right at home.
+
+> If you've used Hyperspace 0.x, you'll note many changes with the 1.x and later series. You can learn more about these changes in the [migration article](MIGRATING.md).
+
+## Downloads
+
+Hyperspace is available for download on GitHub as well as other platforms.
+
+[**Get latest release &rsaquo;**](https://github.com/hyperspacedev/hyperspace/releases/latest)
+
+[![Get on the Mac App Store](https://hyperspace.marquiskurt.net/images/mas.svg)](https://itunes.apple.com/us/app/hyperspace/id1454139710?mt=12) [![Get on the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/hyperspace)
 
 ## Build instructions
 
@@ -19,7 +36,6 @@ Hyperspace is the fluffiest client for Mastodon and other fediverse networks wri
 To develop Hyperspace, you'll need the following tools and packages:
 
 - Node.js 8 or later
-- (Optional) Visual Studio Code
 
 ### Installing dependencies
 
@@ -37,60 +53,71 @@ npm install
 
 ### Testing changes
 
-Before testing Hyperspace, make the following change in `config.json`, located in the `public` directory:
+Before testing Hyperspace, you'll need to modify the `location` key in `public/config.json`. For example:
 
 ```json
     "location": "https://localhost:3000"
 ```
 
-This is necessary to test Hyperspace locally and will need to be reverted after testing or before releasing to `master`.
+The `location` key can take the following values during testing:
 
-> Note: if you are testing the **desktop** version of Hyperspace, replace `https://localhost:3000` with `desktop`.
+- **https://localhost:3000**: Most suitable for running `npm start` or running via `react-scripts`.
+- **desktop**: Most suitable for when testing the desktop application.
 
-To run a development version of Hyperspace, either run the `start` task from VS Code or run the following in the terminal:
+After changing this setting, run any of the following scripts to test:
 
-```npm
-npm start
-```
-
-The site will be hosted at `https://localhost:3000`, where you can sign in and test Hyperspace using your Mastodon account. If you have signed in before, you will be automatically logged in.
-
-Alternatively, if you are testing the desktop version of Hyperspace, run `npm run electrify` (or `npm run electrify-nobuild`, if you don't want to make another production build). Hyperspace will open in a window where you can sign in and test Hyperspace with your Mastodon account. You'll be logged in automatically if you've signed in before.
+- `npm start` - Starts a local server hosted at https://localhost:3000.
+- `npm run electrify` - Builds a copy of the source code and then runs the app through Electron. Ensure that the `location` key in `config.json` points to `"desktop"` before running this.
+- `npm run electrify-nobuild` - Similar to `electrify` but doesn't build the project before running. 
 
 ### Building a release
 
 To build a release, run the following command:
 
 ```npm
-npm build
+npm run build
 ```
 
-The built files will be available under `build` as static files. These files should get hosted to a web server.
+The built files will be available under `build` as static files that can be hosted on a web server. If you plan to release these files alongside the desktop apps, compress these files in a ZIP.
 
 #### Building desktop releases
 
 You can run any of the following commands to build a release for the desktop:
 
-- `build-desktop`: Builds the desktop apps for all platforms (eg. Windows, macOS, Linux). Will run `npm run build` before building.
-- `build-desktop-win`: Builds the desktop app for Windows without running `npm run build`.
-- `build-desktop-darwin`: Builds the desktop apps for macOS (eg. disk image, Mac App Store) without running `npm run build`.
-- `build-desktop-linux`: Builds the desktop apps for Linux (eg. Debian package, AppImage, and Snap) without running `npm run build`.
-- `build-desktop-linux-select`: Builds the desktop app for Linux without running `npm run build`. _Target is required as a parameter._
-
-> Note: If you are building the macOS version of Hyperspace, add your provisioning profiles and entitlements files in the `desktop` folder and ensure you have installed your developer certificates on your machine before running `build-desktop` or `build-desktop-darwin`.
->
-> While the command will run without needing the signature, it is recommended that you make a signed copy to protect users.
-
-> ⚠️ **Notarization**: If you are building the macOS version of Hyperspace, you will also need to set up notarization processes. Hyperspace will _not_ run on devices running macOS Catalina or later without this notarization; please ensure you have the correct certificates and updated notarization scripts in `desktop/notarize.js`.
-> 
-> When building, the script will aotumatically notarize the app for you after signing it.
+- `npm run build-desktop`: Builds the desktop apps for all platforms (eg. Windows, macOS, Linux). Will run `npm run build` before building.
+- `npm run build-desktop-win`: Builds the desktop app for Windows without running `npm run build`.
+- `npm run build-desktop-darwin`: Builds the desktop apps for macOS (eg. disk image, Mac App Store) without running `npm run build`. See the details below for more information on building for macOS.
+- `npm run build-desktop-linux`: Builds the desktop apps for Linux (eg. Debian package, AppImage, and Snap) without running `npm run build`.
+- `npm run build-desktop-linux-select`: Builds the desktop app for Linux without running `npm run build`. _Target is required as a parameter._
 
 The built files will be available under `dist` that can be uploaded to your app distributor or website.
+
+#### Building for macOS
+
+More recent version of macOS require that the Hyperspace desktop app be both digitally code-signed and notarized (uploaded to Apple to check for malware). Hyperspace includes the tools necessary to automate this process when building the macOS version either by `npm run build-desktop` or by `npm run build-desktop-darwin`.
+
+Make sure you have your provisioning profiles for the Mac App Store (`embedded.provisionprofile`) and standard distribution (`nonmas.provisionprofile`) in the `desktop` directory. These provision profiles can be obtained through Apple Developer. You'll also need to create entitlements files in the `desktop` directory that list the following entitlements for your app:
+
+- `com.apple.security.app-sandbox`
+- `com.apple.security.files.downloads.read-write`
+- `com.apple.security.files.user-selected.read-write`
+- `com.apple.security.allow-unsigned-executable-memory`
+- `com.apple.security.network.client`
+
+It is also recommended to add the `com.apple.security.applications-groups` entry with your bundle's identifier. You'll also need to create an `info.plist` in the `desktop` directory containing the team identifier and application identifier and install the developer certificates on the Mac you plan to build from.
+
+You'll also want to modify the `notarize.js` file to change the details from the default to your App Store Connect account details and app identifier. 
+
+> ⚠️ **Warning**: The package.json file also includes the `build-desktop-darwin-nosign` script. This script is specifically intended for automated systems that cannot run notarization (Azure Pipelines, GitHub Actions, etc.). _Do not use this command to build production-ready versions of Hyperspace_.
+
+## Licensing and Credits
+
+Hyperspace is licensed under the [Non-violent Public License](LICENSE), a permissive license under the conditions that you do not use this for any unethical purposes and to file patent claims. Please read what your rights are as a Hyperspace user/developer in the license for more information.
+
+Hyperspace has been made possible by the React, TypeScript, Megalodon, and Material-UI projects as well our [Patrons](patreon.md) and our contributors on GitHub.
 
 ## Contribute
 
 Contrubition guidelines are available in the [contributing file](.github/contributing.md) and when you make an issue/pull request. Additionally, you can access our [Code of Conduct](.github/code_of_conduct.md).
 
-If you want to aid the project in other ways, consider supporting the project on [Patreon](https://patreon.com/marquiskurt). You can also [view all of our contributors](patreon.md) that help make Hyperspace possible.
-
-If you have Matrix, you can join the Hyperspace community ([+hyperspace-masto:matrix.org](https://matrix.to/#/+hyperspace-masto:matrix.org)).
+If you want to aid the project in other ways, consider supporting the project on [Patreon](https://patreon.com/marquiskurt). 
