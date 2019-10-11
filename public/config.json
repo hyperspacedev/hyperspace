@@ -1,12 +1,12 @@
 {
-    "version": "1.0.0gm",
-    "location": "https://hyperspaceapp-next.herokuapp.com",
+    "version": "1.0.0",
+    "location": "https://hyperspaceapp.herokuapp.com",
     "branding": {
         "name": "Hyperspace",
         "logo": "logo.svg",
         "background": "background.png"
     },
-    "developer": true,
+    "developer": false,
     "federation": {
         "universalLogin": true,
         "allowPublicPosts": true,
