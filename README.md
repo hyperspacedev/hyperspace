@@ -104,6 +104,12 @@ Make sure you have your provisioning profiles for the Mac App Store (`embedded.p
 - `com.apple.security.allow-unsigned-executable-memory`
 - `com.apple.security.network.client`
 
+For the child ones (inherited `entitlements.mas.inherit.plist`):
+
+- `com.apple.security.app-sandbox`
+- `com.apple.security.inherit`
+
+
 It is also recommended to add the `com.apple.security.applications-groups` entry with your bundle's identifier. You'll also need to create an `info.plist` in the `desktop` directory containing the team identifier and application identifier and install the developer certificates on the Mac you plan to build from.
 
 You'll also want to modify the `notarize.js` file to change the details from the default to your App Store Connect account details and app identifier. 
