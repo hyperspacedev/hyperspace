@@ -1,4 +1,4 @@
-import React, { Component, ChangeEvent } from "react";
+import React, { Component } from "react";
 import {
     withStyles,
     Paper,
@@ -26,7 +26,8 @@ import { SaveClientSession } from "../types/SessionData";
 import {
     createHyperspaceApp,
     getRedirectAddress,
-    inDisallowedDomains
+    inDisallowedDomains,
+    instancesBearerKey
 } from "../utilities/login";
 import { parseUrl } from "query-string";
 import { getConfig } from "../utilities/settings";
@@ -354,9 +355,13 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     } else {
                         axios
                             .get(
-                                "https://" +
-                                    baseUrl +
-                                    "/api/v1/timelines/public"
+                                "https://instances.social/api/1.0/instances/show?name=" +
+                                    baseUrl,
+                                {
+                                    headers: {
+                                        Authorization: `Bearer ${instancesBearerKey}`
+                                    }
+                                }
                             )
                             .catch((err: Error) => {
                                 let userInputError = true;
