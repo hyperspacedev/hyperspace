@@ -1,5 +1,8 @@
 import Mastodon from "megalodon";
 
+export const instancesBearerKey =
+    "QBEULaOyF04OKjHsHktx5reOqDUklWMSWfUiKRdcen7iLDjta8kL2ZEgozAlBScizR0LKSMcxg2su9f3VLdJt5dZyfWkSXEPlxHBUlPzBF4Ju9lAiOhklh0TLNpFZBqA";
+
 /**
  * Creates the Hyperspace app with the appropriate Redirect URI
  * @param name The name of the app (if not Hyperspace, will use `name (Hyperspace-like)`)
