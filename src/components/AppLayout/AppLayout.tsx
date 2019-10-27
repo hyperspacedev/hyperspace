@@ -28,6 +28,7 @@ import {
     ListItem,
     Tooltip
 } from "@material-ui/core";
+
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import NotificationsIcon from "@material-ui/icons/Notifications";
@@ -41,6 +42,7 @@ import InfoIcon from "@material-ui/icons/Info";
 import CreateIcon from "@material-ui/icons/Create";
 import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+
 import { styles } from "./AppLayout.styles";
 import { MultiAccount, UAccount } from "../../types/Account";
 import {
@@ -232,6 +234,8 @@ export class AppLayout extends Component<any, IAppLayoutState> {
     }
 
     searchForQuery(what: string) {
+        what = what.replace(/^#/g, "tag:");
+        console.log(what);
         window.location.href = isDesktopApp()
             ? "hyperspace://hyperspace/app/index.html#/search?query=" + what
             : "/#/search?query=" + what;
