@@ -23,7 +23,7 @@ import { parse as parseParams, ParsedQuery } from "query-string";
 import { styles } from "./Compose.styles";
 import { UAccount } from "../types/Account";
 import { Visibility } from "../types/Visibility";
-import CameraAltIcon from "@material-ui/icons/CameraAlt";
+import AttachFileIcon from "@material-ui/icons/AttachFile";
 import TagFacesIcon from "@material-ui/icons/TagFaces";
 import HowToVoteIcon from "@material-ui/icons/HowToVote";
 import VisibilityIcon from "@material-ui/icons/Visibility";
@@ -159,7 +159,7 @@ class Composer extends Component<any, IComposerState> {
     uploadMedia() {
         filedialog({
             multiple: false,
-            accept: "image/*, video/*"
+            accept: ".jpeg,.jpg,.png,.gif,.webm,.mp4,.mov,.ogg,.wav,.mp3,.flac"
         })
             .then((media: FileList) => {
                 let mediaForm = new FormData();
@@ -339,7 +339,6 @@ class Composer extends Component<any, IComposerState> {
         let poll = this.state.poll;
         if (poll) {
             let expiry = (newDate.getTime() - currentDate.getTime()) / 1000;
-            console.log(expiry);
             if (expiry >= 1800) {
                 poll.expires_at = expiry.toString();
                 this.setState({ poll, pollExpiresDate: date });
@@ -394,7 +393,7 @@ class Composer extends Component<any, IComposerState> {
             })
             .catch((err: Error) => {
                 this.props.enqueueSnackbar("Couldn't post: " + err.name);
-                console.log(err.message);
+                console.error(err.message);
             });
     }
 
@@ -412,7 +411,6 @@ class Composer extends Component<any, IComposerState> {
 
     render() {
         const { classes } = this.props;
-        console.log(this.state);
 
         return (
             <Dialog
@@ -605,13 +603,13 @@ class Composer extends Component<any, IComposerState> {
                     ) : null}
                 </DialogContent>
                 <Toolbar className={classes.dialogActions}>
-                    <Tooltip title="Add photos or videos">
+                    <Tooltip title="Add photos, videos, or audio">
                         <IconButton
                             disabled={this.state.poll !== undefined}
                             onClick={() => this.uploadMedia()}
                             id="compose-media"
                         >
-                            <CameraAltIcon />
+                            <AttachFileIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Insert emoji">
