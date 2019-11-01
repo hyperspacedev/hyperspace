@@ -15,7 +15,7 @@ export const styles = (theme: Theme) =>
             marginBottom: theme.spacing.unit
         },
         postReblogMenu: {
-            outline: "none",
+            outline: "none"
         },
         postContent: {
             paddingTop: 0,

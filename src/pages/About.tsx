@@ -88,9 +88,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                         hyperspaceAdmin: account,
                         hyperspaceAdminName: config.admin.name,
                         federation: config.federation,
-                        developer: config.developer
-                            ? config.developer === "true"
-                            : false,
+                        developer: config.developer ? config.developer : false,
                         versionNumber: config.version,
                         brandName: config.branding
                             ? config.branding.name
