@@ -113,7 +113,7 @@ For the child ones (inherited `entitlements.mas.inherit.plist`):
 - `com.apple.security.allow-unsigned-executable-memory`
 - `com.apple.security.network.client`
 
-> ⚠️ Note that the inherited permissions are the same as that of the parent. This is due to an issue where the hardened runtime fails to pass down the inherited properties (see electron/electron#20560). This might change in future versions of macOS.
+> ⚠️ Note that the inherited permissions are the same as that of the parent. This is due to an issue where the hardened runtime fails to pass down the inherited properties (see [electron/electron#20560](https://github.com/electron/electron/issues/20560#issuecomment-546110018)). This might change in future versions of macOS.
 
 
 It is also recommended to add the `com.apple.security.applications-groups` entry with your bundle's identifier. You'll also need to create an `info.plist` in the `desktop` directory containing the team identifier and application identifier and install the developer certificates on the Mac you plan to build from.
