@@ -341,6 +341,13 @@ function createMenubar() {
                     }
                 },
                 {
+                    label: 'Follow Requests',
+                    accelerator: "Alt+CmdOrCtrl+E",
+                    click() {
+                        safelyGoTo("hyperspace://hyperspace/app/#/requests")
+                    }
+                },
+                {
                     label: 'Blocked Servers',
                     accelerator: "Shift+CmdOrCtrl+B",
                     click() {
