@@ -622,6 +622,15 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                                 </ListItemText>
                                             </LinkableListItem>
                                             <LinkableListItem
+                                                button={true}
+                                                to={"/requests"}
+                                            >
+                                                <ListItemText>
+                                                    Manage follow requests
+                                                </ListItemText>
+                                            </LinkableListItem>
+                                            <Divider />
+                                            <LinkableListItem
                                                 to={"/welcome"}
                                                 button={true}
                                             >
