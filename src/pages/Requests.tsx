@@ -17,10 +17,11 @@ import { styles } from "./PageLayout.styles";
 import { Account } from "../types/Account";
 import Mastodon from "megalodon";
 import { LinkableAvatar, LinkableIconButton } from "../interfaces/overrides";
-import CheckIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import CheckIcon from "@material-ui/icons/Check";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import { withSnackbar } from "notistack";
 
 interface IRequestsPageState {
     viewLoading: boolean;
@@ -211,4 +212,4 @@ class RequestsPage extends Component<any, IRequestsPageState> {
     }
 }
 
-export default withStyles(styles)(RequestsPage);
+export default withStyles(styles)(withSnackbar(RequestsPage));

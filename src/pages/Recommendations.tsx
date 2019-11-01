@@ -32,7 +32,6 @@ interface IRecommendationsPageState {
     viewDidError?: Boolean;
     viewDidErrorCode?: string;
     followSuggestions?: [Account];
-    trendingTags?: [any];
 }
 
 class RecommendationsPage extends Component<

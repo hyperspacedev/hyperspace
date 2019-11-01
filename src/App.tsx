@@ -22,6 +22,7 @@ import Missingno from "./pages/Missingno";
 import Blocked from "./pages/Blocked";
 import You from "./pages/You";
 import RequestsPage from "./pages/Requests";
+import ActivityPage from "./pages/Activity";
 import { withSnackbar } from "notistack";
 import { PrivateRoute } from "./interfaces/overrides";
 import { userLoggedIn } from "./utilities/accounts";
@@ -125,6 +126,7 @@ class App extends Component<any, IAppState> {
                         component={RecommendationsPage}
                     />
                     <PrivateRoute path="/requests" component={RequestsPage} />
+                    <PrivateRoute path="/activity" component={ActivityPage} />
                 </div>
             </MuiThemeProvider>
         );
