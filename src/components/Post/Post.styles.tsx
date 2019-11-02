@@ -14,6 +14,9 @@ export const styles = (theme: Theme) =>
             backgroundColor: theme.palette.secondary.main,
             marginBottom: theme.spacing.unit
         },
+        postReblogMenu: {
+            outline: "none"
+        },
         postContent: {
             paddingTop: 0,
             paddingBottom: 0,
