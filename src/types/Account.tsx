@@ -14,6 +14,7 @@ export type Account = {
     followers_count: number;
     following_count: number;
     statuses_count: number;
+    last_status_at: string;
     note: string;
     url: string;
     avatar: string;
