@@ -646,7 +646,7 @@ export class Post extends React.Component<any, IPostState> {
                             />
                         }
                         action={
-                            <Tooltip title="More">
+                            <Tooltip title="More" placement="left">
                                 <IconButton
                                     key={`${post.id}_submenu`}
                                     id={`${post.id}_submenu`}
