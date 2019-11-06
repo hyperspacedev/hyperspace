@@ -798,7 +798,7 @@ export class Post extends React.Component<any, IPostState> {
                             }}
                         />
                         {post.reblog ? (
-                            <div>
+                            <div className={classes.postReblogMenu}>
                                 <LinkableMenuItem
                                     to={`/profile/${post.reblog.account.id}`}
                                 >
