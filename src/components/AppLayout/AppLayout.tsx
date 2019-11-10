@@ -42,6 +42,7 @@ import InfoIcon from "@material-ui/icons/Info";
 import CreateIcon from "@material-ui/icons/Create";
 import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 
 import { styles } from "./AppLayout.styles";
 import { MultiAccount, UAccount } from "../../types/Account";
@@ -434,7 +435,13 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                         </LinkableListItem>
                         <Divider />
                     </div>
-                    <ListSubheader>More</ListSubheader>
+                    <ListSubheader>Community</ListSubheader>
+                    <LinkableListItem button key="activity" to="/activity">
+                        <ListItemIcon>
+                            <TrendingUpIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Activity" />
+                    </LinkableListItem>
                     <LinkableListItem
                         button
                         key="recommended"
@@ -443,8 +450,10 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                         <ListItemIcon>
                             <GroupIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Who to follow" />
+                        <ListItemText primary="Recommended" />
                     </LinkableListItem>
+                    <Divider />
+                    <ListSubheader>More</ListSubheader>
                     <LinkableListItem button key="settings" to="/settings">
                         <ListItemIcon>
                             <SettingsIcon />
@@ -621,6 +630,15 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                                     Edit profile
                                                 </ListItemText>
                                             </LinkableListItem>
+                                            <LinkableListItem
+                                                button={true}
+                                                to={"/requests"}
+                                            >
+                                                <ListItemText>
+                                                    Manage follow requests
+                                                </ListItemText>
+                                            </LinkableListItem>
+                                            <Divider />
                                             <LinkableListItem
                                                 to={"/welcome"}
                                                 button={true}

@@ -62,6 +62,8 @@ import BellAlertIcon from "mdi-material-ui/BellAlert";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import UndoIcon from "@material-ui/icons/Undo";
 import DomainDisabledIcon from "@material-ui/icons/DomainDisabled";
+import AccountSettingsIcon from "mdi-material-ui/AccountSettings";
+
 import { Config } from "../types/Config";
 import { Account } from "../types/Account";
 import Mastodon from "megalodon";
@@ -502,7 +504,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 </div>
                                 <div className={classes.pageGrow} />
                                 <Toolbar>
-                                    <Tooltip title="Edit Profile">
+                                    <Tooltip title="Edit profile">
                                         <LinkableIconButton
                                             to={"/you"}
                                             color="inherit"
@@ -516,6 +518,14 @@ class SettingsPage extends Component<any, ISettingsState> {
                                             color="inherit"
                                         >
                                             <DomainDisabledIcon />
+                                        </LinkableIconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Manage follow requests">
+                                        <LinkableIconButton
+                                            to={"/requests"}
+                                            color="inherit"
+                                        >
+                                            <AccountSettingsIcon />
                                         </LinkableIconButton>
                                     </Tooltip>
                                     <Tooltip title="Configure on Mastodon">
