@@ -139,7 +139,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                             <Typography variant="h4" component="p">
                                 {this.state.brandName
                                     ? this.state.brandName
-                                    : "Hyperspace"}
+                                    : "Hyperspace Desktop"}
                             </Typography>
                             <Typography>
                                 Version{" "}
@@ -470,7 +470,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                         developers. All rights reserved.
                     </Typography>
                     <Typography variant="caption" paragraph>
-                        {this.state ? this.state.brandName : "Hyperspace"} is
+                        {this.state ? this.state.brandName : "Hyperspace"} Desktop is
                         made possible by the{" "}
                         <Link
                             href={"https://material-ui.com"}
