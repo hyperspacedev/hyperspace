@@ -76,6 +76,15 @@ class AttachmentComponent extends Component<
                         className={classes.mediaObject}
                     />
                 );
+            case "audio":
+                return (
+                  <audio
+                      controls
+                      autoPlay={false}
+                      src={slide.url}
+                      className={classes.mediaObject}
+                  />
+                );
             case "gifv":
                 return (
                     <img
