@@ -4,7 +4,7 @@ export const styles = (theme: Theme) =>
     createStyles({
         root: {
             backgroundColor: theme.palette.background.paper,
-            borderColor: theme.palette.background.default,
+            borderColor: theme.palette.action.disabledBackground,
             borderWidth: 1,
             borderStyle: "solid"
         },
