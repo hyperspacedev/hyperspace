@@ -470,8 +470,8 @@ class AboutPage extends Component<any, IAboutPageState> {
                         developers. All rights reserved.
                     </Typography>
                     <Typography variant="caption" paragraph>
-                        {this.state ? this.state.brandName : "Hyperspace"} Desktop is
-                        made possible by the{" "}
+                        {this.state ? this.state.brandName : "Hyperspace"}{" "}
+                        Desktop is made possible by the{" "}
                         <Link
                             href={"https://material-ui.com"}
                             target="_blank"
