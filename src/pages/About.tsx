@@ -115,8 +115,6 @@ class AboutPage extends Component<any, IAboutPageState> {
 
     render() {
         const { classes } = this.props;
-        console.info(this.shouldRenderInstanceContact());
-
         return (
             <div className={classes.pageLayoutConstraints}>
                 <Paper>
