@@ -658,7 +658,9 @@ class SettingsPage extends Component<any, ISettingsState> {
                                             checked={
                                                 this.state.imposeCharacterLimit
                                             }
-                                            onChange={this.toggleCharacterLimit}
+                                            onChange={() =>
+                                                this.toggleCharacterLimit()
+                                            }
                                         />
                                     </ListItemSecondaryAction>
                                 </ListItem>
