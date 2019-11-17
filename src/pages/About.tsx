@@ -23,11 +23,9 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import NetworkCheckIcon from "@material-ui/icons/NetworkCheck";
 import UpdateIcon from "@material-ui/icons/Update";
-import InfoIcon from "@material-ui/icons/Info";
 import NotesIcon from "@material-ui/icons/Notes";
 import CodeIcon from "@material-ui/icons/Code";
 import TicketAccountIcon from "mdi-material-ui/TicketAccount";
-import MastodonIcon from "mdi-material-ui/Mastodon";
 import EditIcon from "@material-ui/icons/Edit";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 
@@ -107,9 +105,16 @@ class AboutPage extends Component<any, IAboutPageState> {
         });
     }
 
+    shouldRenderInstanceContact(): boolean {
+        if (this.state.instance != null) {
+            return this.state.instance.version.match(/Pleroma/) == null;
+        } else {
+            return false;
+        }
+    }
+
     render() {
         const { classes } = this.props;
-
         return (
             <div className={classes.pageLayoutConstraints}>
                 <Paper>
@@ -139,7 +144,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                             <Typography variant="h4" component="p">
                                 {this.state.brandName
                                     ? this.state.brandName
-                                    : "Hyperspace"}
+                                    : "Hyperspace Desktop"}
                             </Typography>
                             <Typography>
                                 Version{" "}
@@ -297,7 +302,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                         </div>
                     </div>
                     <List className={classes.pageListConstraints}>
-                        {localStorage["isPleroma"] == "false" && (
+                        {this.shouldRenderInstanceContact() ? (
                             <ListItem>
                                 <ListItemAvatar>
                                     <LinkableAvatar
@@ -352,7 +357,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                                     </Tooltip>
                                 </ListItemSecondaryAction>
                             </ListItem>
-                        )}
+                        ) : null}
                         <ListItem>
                             <ListItemAvatar>
                                 <Avatar>
@@ -470,8 +475,8 @@ class AboutPage extends Component<any, IAboutPageState> {
                         developers. All rights reserved.
                     </Typography>
                     <Typography variant="caption" paragraph>
-                        {this.state ? this.state.brandName : "Hyperspace"} is
-                        made possible by the{" "}
+                        {this.state ? this.state.brandName : "Hyperspace"}{" "}
+                        Desktop is made possible by the{" "}
                         <Link
                             href={"https://material-ui.com"}
                             target="_blank"

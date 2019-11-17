@@ -287,7 +287,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                         {this.state.brandName
                             ? this.state.brandName
                             : "Hyperspace"}{" "}
-                        {this.state.developerMode ? "(Beta)" : null}
+                        Desktop {this.state.developerMode ? "(Beta)" : null}
                     </Typography>
                 </div>
             );
@@ -295,7 +295,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
             return (
                 <div className={classes.titleBarRoot}>
                     <Typography className={classes.titleBarText}>
-                        Careful: you're running in developer mode.
+                        🛠 Careful: you're running in developer mode.
                     </Typography>
                 </div>
             );

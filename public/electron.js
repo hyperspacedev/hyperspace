@@ -375,7 +375,7 @@ function createMenubar() {
             role: 'help',
             submenu: [
                 {
-                    label: 'Hyperspace Docs',
+                    label: 'Hyperspace Desktop Docs',
                     click () { require('electron').shell.openExternal('https://hyperspace.marquiskurt.net/docs/') }
                 },
                 {
@@ -396,7 +396,7 @@ function createMenubar() {
             label: app.getName(),
             submenu: [
                 {
-                    label: 'About Hyperspace',
+                    label: 'About Hyperspace Desktop',
                     click() {
                         safelyGoTo("hyperspace://hyperspace/app/#/about")
                     }
