@@ -63,6 +63,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import UndoIcon from "@material-ui/icons/Undo";
 import DomainDisabledIcon from "@material-ui/icons/DomainDisabled";
 import AccountSettingsIcon from "mdi-material-ui/AccountSettings";
+import AlphabeticalVariantOffIcon from "mdi-material-ui/AlphabeticalVariantOff";
 
 import { Config } from "../types/Config";
 import { Account } from "../types/Account";
@@ -84,6 +85,7 @@ interface ISettingsState {
     brandName: string;
     federated: boolean;
     currentUser?: Account;
+    imposeCharacterLimit: boolean;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -114,7 +116,8 @@ class SettingsPage extends Component<any, ISettingsState> {
                 setHyperspaceTheme(defaultTheme),
             defaultVisibility: getUserDefaultVisibility() || "public",
             brandName: "Hyperspace",
-            federated: true
+            federated: true,
+            imposeCharacterLimit: getUserDefaultBool("imposeCharacterLimit")
         };
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -216,6 +219,16 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.setState({
             visibilityDialogOpen: !this.state.visibilityDialogOpen
         });
+    }
+
+    toggleCharacterLimit() {
+        this.setState({
+            imposeCharacterLimit: !this.state.imposeCharacterLimit
+        });
+        setUserDefaultBool(
+            "imposeCharacterLimit",
+            !this.state.imposeCharacterLimit
+        );
     }
 
     toggleResetDialog() {
@@ -630,6 +643,25 @@ class SettingsPage extends Component<any, ISettingsState> {
                                         >
                                             Change
                                         </Button>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <AlphabeticalVariantOffIcon color="action" />
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                        primary="Impose character limit"
+                                        secondary="Impose a character limit when creating posts"
+                                    />
+                                    <ListItemSecondaryAction>
+                                        <Switch
+                                            checked={
+                                                this.state.imposeCharacterLimit
+                                            }
+                                            onChange={() =>
+                                                this.toggleCharacterLimit()
+                                            }
+                                        />
                                     </ListItemSecondaryAction>
                                 </ListItem>
                             </List>

@@ -39,7 +39,11 @@ import ComposeMediaAttachment from "../components/ComposeMediaAttachment";
 import EmojiPicker from "../components/EmojiPicker";
 import { DateTimePicker, MuiPickersUtilsProvider } from "material-ui-pickers";
 import MomentUtils from "@date-io/moment";
-import { getUserDefaultVisibility, getConfig } from "../utilities/settings";
+import {
+    getUserDefaultVisibility,
+    getConfig,
+    getUserDefaultBool
+} from "../utilities/settings";
 
 interface IComposerState {
     account: UAccount;
@@ -75,7 +79,9 @@ class Composer extends Component<any, IComposerState> {
             sensitive: false,
             visibilityMenu: false,
             text: "",
-            remainingChars: 500,
+            remainingChars: getUserDefaultBool("imposeCharacterLimit")
+                ? 500
+                : 9999999999999,
             showEmojis: false,
             federated: true
         };
@@ -95,7 +101,9 @@ class Composer extends Component<any, IComposerState> {
                 acct: state.acct,
                 visibility: state.visibility,
                 text,
-                remainingChars: 500 - text.length
+                remainingChars: getUserDefaultBool("imposeCharacterLimit")
+                    ? 500 - text.length
+                    : 99999999
             });
         });
     }
@@ -108,7 +116,9 @@ class Composer extends Component<any, IComposerState> {
             acct: state.acct,
             visibility: state.visibility,
             text,
-            remainingChars: 500 - text.length
+            remainingChars: getUserDefaultBool("imposeCharacterLimit")
+                ? 500 - text.length
+                : 99999999
         });
     }
 
@@ -145,7 +155,12 @@ class Composer extends Component<any, IComposerState> {
     }
 
     updateTextFromField(text: string) {
-        this.setState({ text, remainingChars: 500 - text.length });
+        this.setState({
+            text,
+            remainingChars: getUserDefaultBool("imposeCharacterLimit")
+                ? 500 - text.length
+                : 99999999
+        });
     }
 
     updateWarningFromField(sensitiveText: string) {
@@ -467,18 +482,28 @@ class Composer extends Component<any, IComposerState> {
                         }}
                         value={this.state.text}
                     />
-                    <Typography
-                        variant="caption"
-                        className={
-                            this.state.remainingChars <= 100
-                                ? classes.charsReachingLimit
-                                : null
-                        }
-                    >
-                        {`${this.state.remainingChars} character${
-                            this.state.remainingChars === 1 ? "" : "s"
-                        } remaining`}
-                    </Typography>
+                    {getUserDefaultBool("imposeCharacterLimit") ? (
+                        <Typography
+                            variant="caption"
+                            className={
+                                this.state.remainingChars <= 100
+                                    ? classes.charsReachingLimit
+                                    : null
+                            }
+                        >
+                            {`${this.state.remainingChars} character${
+                                this.state.remainingChars === 1 ? "" : "s"
+                            } remaining`}
+                        </Typography>
+                    ) : (
+                        <Typography variant="caption">
+                            <WarningIcon className={classes.warningCaption} />{" "}
+                            You have the character limit turned off. Make sure
+                            that your post matches your instance's character
+                            limit before posting.
+                        </Typography>
+                    )}
+
                     {this.state.attachments &&
                     this.state.attachments.length > 0 ? (
                         <div className={classes.composeAttachmentArea}>
