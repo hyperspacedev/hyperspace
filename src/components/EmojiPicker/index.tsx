@@ -8,7 +8,12 @@ interface IEmojiPickerProps extends PickerProps {
 
 export class EmojiPicker extends Component<IEmojiPickerProps, any> {
     retrieveFromLocal() {
-        return JSON.parse(localStorage.getItem("emojis") as string);
+        let emojiStorage = localStorage.getItem("emojis");
+        if (emojiStorage != null) {
+            return JSON.parse(emojiStorage as string);
+        } else {
+            return undefined;
+        }
     }
 
     render() {
