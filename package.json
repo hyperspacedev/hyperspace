@@ -45,7 +45,7 @@
   },
   "main": "public/electron.js",
   "scripts": {
-    "start": "HTTPS=true react-scripts start",
+    "start": "react-scripts start",
     "electrify": "npm run build; electron .",
     "electrify-nobuild": "electron .",
     "build": "react-scripts build",
