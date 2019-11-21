@@ -190,8 +190,8 @@ class RecommendationsPage extends Component<
                                     We don't have any suggestions for you.
                                 </Typography>
                                 <Typography paragraph>
-                                    Why not interact with the fediverse a bit by
-                                    creating a new post?
+                                    Take a look around the fediverse or check
+                                    out the Activity page for more.
                                 </Typography>
                                 <br />
                             </div>
