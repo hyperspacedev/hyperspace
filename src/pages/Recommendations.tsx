@@ -21,6 +21,7 @@ import { LinkableIconButton, LinkableAvatar } from "../interfaces/overrides";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import { withSnackbar, withSnackbarProps } from "notistack";
+import GroupIcon from "@material-ui/icons/Group";
 
 interface IRecommendationsPageProps extends withSnackbarProps {
     classes: any;
@@ -179,14 +180,20 @@ class RecommendationsPage extends Component<
                                 className={
                                     classes.pageLayoutEmptyTextConstraints
                                 }
+                                style={{ textAlign: "center" }}
                             >
-                                <Typography variant="h5">
+                                <GroupIcon
+                                    color="action"
+                                    style={{ fontSize: 48 }}
+                                />
+                                <Typography variant="h6">
                                     We don't have any suggestions for you.
                                 </Typography>
                                 <Typography paragraph>
                                     Why not interact with the fediverse a bit by
                                     creating a new post?
                                 </Typography>
+                                <br />
                             </div>
                         )}
                         <br />
