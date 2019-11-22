@@ -316,7 +316,11 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
     }
 
     authorizeEmergencyLogin() {
-        window.location.href = `${this.state.defaultRedirectAddress}/?code=${this.state.authCode}#/`;
+        let redirAddress =
+            this.state.defaultRedirectAddress === "desktop"
+                ? "hyperspace://hyperspace/app"
+                : this.state.defaultRedirectAddress;
+        window.location.href = `${redirAddress}/?code=${this.state.authCode}#/`;
     }
 
     resumeLogin() {
