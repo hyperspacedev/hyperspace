@@ -43,6 +43,7 @@ import CreateIcon from "@material-ui/icons/Create";
 import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import TrendingUpIcon from "@material-ui/icons/TrendingUp";
+import BuildIcon from "@material-ui/icons/Build";
 
 import { styles } from "./AppLayout.styles";
 import { MultiAccount, UAccount } from "../../types/Account";
@@ -295,7 +296,11 @@ export class AppLayout extends Component<any, IAppLayoutState> {
             return (
                 <div className={classes.titleBarRoot}>
                     <Typography className={classes.titleBarText}>
-                        🛠 Careful: you're running in developer mode.
+                        <BuildIcon
+                            color="inherit"
+                            style={{ fontSize: "1em", verticalAlign: "middle" }}
+                        />{" "}
+                        Careful: you're running in developer mode.
                     </Typography>
                 </div>
             );
