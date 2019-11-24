@@ -62,6 +62,9 @@ import BellAlertIcon from "mdi-material-ui/BellAlert";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import UndoIcon from "@material-ui/icons/Undo";
 import DomainDisabledIcon from "@material-ui/icons/DomainDisabled";
+import AccountSettingsIcon from "mdi-material-ui/AccountSettings";
+import AlphabeticalVariantOffIcon from "mdi-material-ui/AlphabeticalVariantOff";
+
 import { Config } from "../types/Config";
 import { Account } from "../types/Account";
 import Mastodon from "megalodon";
@@ -82,6 +85,7 @@ interface ISettingsState {
     brandName: string;
     federated: boolean;
     currentUser?: Account;
+    imposeCharacterLimit: boolean;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -112,7 +116,8 @@ class SettingsPage extends Component<any, ISettingsState> {
                 setHyperspaceTheme(defaultTheme),
             defaultVisibility: getUserDefaultVisibility() || "public",
             brandName: "Hyperspace",
-            federated: true
+            federated: true,
+            imposeCharacterLimit: getUserDefaultBool("imposeCharacterLimit")
         };
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -214,6 +219,16 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.setState({
             visibilityDialogOpen: !this.state.visibilityDialogOpen
         });
+    }
+
+    toggleCharacterLimit() {
+        this.setState({
+            imposeCharacterLimit: !this.state.imposeCharacterLimit
+        });
+        setUserDefaultBool(
+            "imposeCharacterLimit",
+            !this.state.imposeCharacterLimit
+        );
     }
 
     toggleResetDialog() {
@@ -502,7 +517,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 </div>
                                 <div className={classes.pageGrow} />
                                 <Toolbar>
-                                    <Tooltip title="Edit Profile">
+                                    <Tooltip title="Edit profile">
                                         <LinkableIconButton
                                             to={"/you"}
                                             color="inherit"
@@ -516,6 +531,14 @@ class SettingsPage extends Component<any, ISettingsState> {
                                             color="inherit"
                                         >
                                             <DomainDisabledIcon />
+                                        </LinkableIconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Manage follow requests">
+                                        <LinkableIconButton
+                                            to={"/requests"}
+                                            color="inherit"
+                                        >
+                                            <AccountSettingsIcon />
                                         </LinkableIconButton>
                                     </Tooltip>
                                     <Tooltip title="Configure on Mastodon">
@@ -620,6 +643,25 @@ class SettingsPage extends Component<any, ISettingsState> {
                                         >
                                             Change
                                         </Button>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <AlphabeticalVariantOffIcon color="action" />
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                        primary="Impose character limit"
+                                        secondary="Impose a character limit when creating posts"
+                                    />
+                                    <ListItemSecondaryAction>
+                                        <Switch
+                                            checked={
+                                                this.state.imposeCharacterLimit
+                                            }
+                                            onChange={() =>
+                                                this.toggleCharacterLimit()
+                                            }
+                                        />
                                     </ListItemSecondaryAction>
                                 </ListItem>
                             </List>

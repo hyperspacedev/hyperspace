@@ -19,6 +19,7 @@ import {
     DialogActions,
     Tooltip
 } from "@material-ui/core";
+
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import PersonIcon from "@material-ui/icons/Person";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
@@ -27,6 +28,8 @@ import { styles } from "./PageLayout.styles";
 import { LinkableIconButton, LinkableAvatar } from "../interfaces/overrides";
 import ForumIcon from "@material-ui/icons/Forum";
 import ReplyIcon from "@material-ui/icons/Reply";
+import NotificationsIcon from "@material-ui/icons/Notifications";
+
 import Mastodon from "megalodon";
 import { Notification } from "../types/Notification";
 import { Account } from "../types/Account";
@@ -337,12 +340,20 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                             </Paper>
                         </div>
                     ) : (
-                        <div className={classes.pageLayoutEmptyTextConstraints}>
-                            <Typography variant="h4">All clear!</Typography>
+                        <div
+                            className={classes.pageLayoutEmptyTextConstraints}
+                            style={{ textAlign: "center" }}
+                        >
+                            <NotificationsIcon
+                                color="action"
+                                style={{ fontSize: 48 }}
+                            />
+                            <Typography variant="h6">All clear!</Typography>
                             <Typography paragraph>
                                 It looks like you have no notifications. Why not
                                 get the conversation going with a new post?
                             </Typography>
+                            <br />
                         </div>
                     )
                 ) : null}

@@ -23,7 +23,7 @@ import { parse as parseParams, ParsedQuery } from "query-string";
 import { styles } from "./Compose.styles";
 import { UAccount } from "../types/Account";
 import { Visibility } from "../types/Visibility";
-import CameraAltIcon from "@material-ui/icons/CameraAlt";
+import AttachFileIcon from "@material-ui/icons/AttachFile";
 import TagFacesIcon from "@material-ui/icons/TagFaces";
 import HowToVoteIcon from "@material-ui/icons/HowToVote";
 import VisibilityIcon from "@material-ui/icons/Visibility";
@@ -39,7 +39,11 @@ import ComposeMediaAttachment from "../components/ComposeMediaAttachment";
 import EmojiPicker from "../components/EmojiPicker";
 import { DateTimePicker, MuiPickersUtilsProvider } from "material-ui-pickers";
 import MomentUtils from "@date-io/moment";
-import { getUserDefaultVisibility, getConfig } from "../utilities/settings";
+import {
+    getUserDefaultVisibility,
+    getConfig,
+    getUserDefaultBool
+} from "../utilities/settings";
 
 interface IComposerState {
     account: UAccount;
@@ -75,7 +79,9 @@ class Composer extends Component<any, IComposerState> {
             sensitive: false,
             visibilityMenu: false,
             text: "",
-            remainingChars: 500,
+            remainingChars: getUserDefaultBool("imposeCharacterLimit")
+                ? 500
+                : 9999999999999,
             showEmojis: false,
             federated: true
         };
@@ -95,8 +101,29 @@ class Composer extends Component<any, IComposerState> {
                 acct: state.acct,
                 visibility: state.visibility,
                 text,
-                remainingChars: 500 - text.length
+                remainingChars: getUserDefaultBool("imposeCharacterLimit")
+                    ? 500 - text.length
+                    : 99999999
             });
+        });
+
+        window.addEventListener("paste", (evt: Event) => {
+            let thePasteEvent = evt as ClipboardEvent;
+            let fileList: File[] = [];
+            if (thePasteEvent.clipboardData != null) {
+                let clipitems = thePasteEvent.clipboardData.items;
+                if (clipitems != undefined) {
+                    for (let i = 0; i < clipitems.length; i++) {
+                        if (clipitems[i].type.indexOf("image") != -1) {
+                            let clipfile = clipitems[i].getAsFile();
+                            if (clipfile != null) {
+                                fileList.push(clipfile);
+                            }
+                        }
+                    }
+                    this.actuallyUploadMedia(fileList);
+                }
+            }
         });
     }
 
@@ -108,7 +135,9 @@ class Composer extends Component<any, IComposerState> {
             acct: state.acct,
             visibility: state.visibility,
             text,
-            remainingChars: 500 - text.length
+            remainingChars: getUserDefaultBool("imposeCharacterLimit")
+                ? 500 - text.length
+                : 99999999
         });
     }
 
@@ -145,7 +174,12 @@ class Composer extends Component<any, IComposerState> {
     }
 
     updateTextFromField(text: string) {
-        this.setState({ text, remainingChars: 500 - text.length });
+        this.setState({
+            text,
+            remainingChars: getUserDefaultBool("imposeCharacterLimit")
+                ? 500 - text.length
+                : 99999999
+        });
     }
 
     updateWarningFromField(sensitiveText: string) {
@@ -159,42 +193,44 @@ class Composer extends Component<any, IComposerState> {
     uploadMedia() {
         filedialog({
             multiple: false,
-            accept: "image/*, video/*"
+            accept: ".jpeg,.jpg,.png,.gif,.webm,.mp4,.mov,.ogg,.wav,.mp3,.flac"
         })
-            .then((media: FileList) => {
-                let mediaForm = new FormData();
-                mediaForm.append("file", media[0]);
-                this.props.enqueueSnackbar("Uploading media...", {
-                    persist: true,
-                    key: "media-upload"
-                });
-                this.client
-                    .post("/media", mediaForm)
-                    .then((resp: any) => {
-                        let attachment: Attachment = resp.data;
-                        let attachments = this.state.attachments;
-                        if (attachments) {
-                            attachments.push(attachment);
-                        } else {
-                            attachments = [attachment];
-                        }
-                        this.setState({ attachments });
-                        this.props.closeSnackbar("media-upload");
-                        this.props.enqueueSnackbar("Media uploaded.");
-                    })
-                    .catch((err: Error) => {
-                        this.props.closeSnackbar("media-upload");
-                        this.props.enqueueSnackbar(
-                            "Couldn't upload media: " + err.name,
-                            { variant: "error" }
-                        );
-                    });
-            })
+            .then((media: FileList) => this.actuallyUploadMedia(media))
             .catch((err: Error) => {
                 this.props.enqueueSnackbar("Couldn't get media: " + err.name, {
                     variant: "error"
                 });
                 console.error(err.message);
+            });
+    }
+
+    actuallyUploadMedia(media: FileList | File[]) {
+        let mediaForm = new FormData();
+        mediaForm.append("file", media[0]);
+        this.props.enqueueSnackbar("Uploading media...", {
+            persist: true,
+            key: "media-upload"
+        });
+        this.client
+            .post("/media", mediaForm)
+            .then((resp: any) => {
+                let attachment: Attachment = resp.data;
+                let attachments = this.state.attachments;
+                if (attachments) {
+                    attachments.push(attachment);
+                } else {
+                    attachments = [attachment];
+                }
+                this.setState({ attachments });
+                this.props.closeSnackbar("media-upload");
+                this.props.enqueueSnackbar("Media uploaded.");
+            })
+            .catch((err: Error) => {
+                this.props.closeSnackbar("media-upload");
+                this.props.enqueueSnackbar(
+                    "Couldn't upload media: " + err.name,
+                    { variant: "error" }
+                );
             });
     }
 
@@ -339,7 +375,6 @@ class Composer extends Component<any, IComposerState> {
         let poll = this.state.poll;
         if (poll) {
             let expiry = (newDate.getTime() - currentDate.getTime()) / 1000;
-            console.log(expiry);
             if (expiry >= 1800) {
                 poll.expires_at = expiry.toString();
                 this.setState({ poll, pollExpiresDate: date });
@@ -394,7 +429,7 @@ class Composer extends Component<any, IComposerState> {
             })
             .catch((err: Error) => {
                 this.props.enqueueSnackbar("Couldn't post: " + err.name);
-                console.log(err.message);
+                console.error(err.message);
             });
     }
 
@@ -412,7 +447,6 @@ class Composer extends Component<any, IComposerState> {
 
     render() {
         const { classes } = this.props;
-        console.log(this.state);
 
         return (
             <Dialog
@@ -469,18 +503,28 @@ class Composer extends Component<any, IComposerState> {
                         }}
                         value={this.state.text}
                     />
-                    <Typography
-                        variant="caption"
-                        className={
-                            this.state.remainingChars <= 100
-                                ? classes.charsReachingLimit
-                                : null
-                        }
-                    >
-                        {`${this.state.remainingChars} character${
-                            this.state.remainingChars === 1 ? "" : "s"
-                        } remaining`}
-                    </Typography>
+                    {getUserDefaultBool("imposeCharacterLimit") ? (
+                        <Typography
+                            variant="caption"
+                            className={
+                                this.state.remainingChars <= 100
+                                    ? classes.charsReachingLimit
+                                    : null
+                            }
+                        >
+                            {`${this.state.remainingChars} character${
+                                this.state.remainingChars === 1 ? "" : "s"
+                            } remaining`}
+                        </Typography>
+                    ) : (
+                        <Typography variant="caption">
+                            <WarningIcon className={classes.warningCaption} />{" "}
+                            You have the character limit turned off. Make sure
+                            that your post matches your instance's character
+                            limit before posting.
+                        </Typography>
+                    )}
+
                     {this.state.attachments &&
                     this.state.attachments.length > 0 ? (
                         <div className={classes.composeAttachmentArea}>
@@ -605,13 +649,13 @@ class Composer extends Component<any, IComposerState> {
                     ) : null}
                 </DialogContent>
                 <Toolbar className={classes.dialogActions}>
-                    <Tooltip title="Add photos or videos">
+                    <Tooltip title="Add photos, videos, or audio">
                         <IconButton
                             disabled={this.state.poll !== undefined}
                             onClick={() => this.uploadMedia()}
                             id="compose-media"
                         >
-                            <CameraAltIcon />
+                            <AttachFileIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Insert emoji">

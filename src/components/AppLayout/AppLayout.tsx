@@ -28,6 +28,7 @@ import {
     ListItem,
     Tooltip
 } from "@material-ui/core";
+
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import NotificationsIcon from "@material-ui/icons/Notifications";
@@ -41,6 +42,9 @@ import InfoIcon from "@material-ui/icons/Info";
 import CreateIcon from "@material-ui/icons/Create";
 import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import TrendingUpIcon from "@material-ui/icons/TrendingUp";
+import BuildIcon from "@material-ui/icons/Build";
+
 import { styles } from "./AppLayout.styles";
 import { MultiAccount, UAccount } from "../../types/Account";
 import {
@@ -232,6 +236,8 @@ export class AppLayout extends Component<any, IAppLayoutState> {
     }
 
     searchForQuery(what: string) {
+        what = what.replace(/^#/g, "tag:");
+        console.log(what);
         window.location.href = isDesktopApp()
             ? "hyperspace://hyperspace/app/index.html#/search?query=" + what
             : "/#/search?query=" + what;
@@ -290,7 +296,11 @@ export class AppLayout extends Component<any, IAppLayoutState> {
             return (
                 <div className={classes.titleBarRoot}>
                     <Typography className={classes.titleBarText}>
-                        🛠 Careful: you're running in developer mode.
+                        <BuildIcon
+                            color="inherit"
+                            style={{ fontSize: "1em", verticalAlign: "middle" }}
+                        />{" "}
+                        Careful: you're running in developer mode.
                     </Typography>
                 </div>
             );
@@ -430,7 +440,13 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                         </LinkableListItem>
                         <Divider />
                     </div>
-                    <ListSubheader>More</ListSubheader>
+                    <ListSubheader>Community</ListSubheader>
+                    <LinkableListItem button key="activity" to="/activity">
+                        <ListItemIcon>
+                            <TrendingUpIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Activity" />
+                    </LinkableListItem>
                     <LinkableListItem
                         button
                         key="recommended"
@@ -439,8 +455,10 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                         <ListItemIcon>
                             <GroupIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Who to follow" />
+                        <ListItemText primary="Recommended" />
                     </LinkableListItem>
+                    <Divider />
+                    <ListSubheader>More</ListSubheader>
                     <LinkableListItem button key="settings" to="/settings">
                         <ListItemIcon>
                             <SettingsIcon />
@@ -617,6 +635,15 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                                     Edit profile
                                                 </ListItemText>
                                             </LinkableListItem>
+                                            <LinkableListItem
+                                                button={true}
+                                                to={"/requests"}
+                                            >
+                                                <ListItemText>
+                                                    Manage follow requests
+                                                </ListItemText>
+                                            </LinkableListItem>
+                                            <Divider />
                                             <LinkableListItem
                                                 to={"/welcome"}
                                                 button={true}

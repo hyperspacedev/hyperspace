@@ -6,25 +6,22 @@ import {
     ListItem,
     Paper,
     ListItemText,
-    Avatar,
     ListItemSecondaryAction,
     ListItemAvatar,
     ListSubheader,
     CircularProgress,
     IconButton,
-    Divider,
-    Tooltip
+    Tooltip,
+    Link
 } from "@material-ui/core";
 import { styles } from "./PageLayout.styles";
 import Mastodon from "megalodon";
 import { Account } from "../types/Account";
 import { LinkableIconButton, LinkableAvatar } from "../interfaces/overrides";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
-import CheckIcon from "@material-ui/icons/Check";
-import CloseIcon from "@material-ui/icons/Close";
 import { withSnackbar, withSnackbarProps } from "notistack";
+import GroupIcon from "@material-ui/icons/Group";
 
 interface IRecommendationsPageProps extends withSnackbarProps {
     classes: any;
@@ -35,7 +32,6 @@ interface IRecommendationsPageState {
     viewDidLoad?: boolean;
     viewDidError?: Boolean;
     viewDidErrorCode?: string;
-    requestedFollows?: [Account];
     followSuggestions?: [Account];
 }
 
@@ -57,21 +53,6 @@ class RecommendationsPage extends Component<
     }
 
     componentDidMount() {
-        this.client
-            .get("/follow_requests")
-            .then((resp: any) => {
-                let requestedFollows: [Account] = resp.data;
-                this.setState({ requestedFollows });
-            })
-            .catch((err: Error) => {
-                this.setState({
-                    viewIsLoading: false,
-                    viewDidError: true,
-                    viewDidErrorCode: err.name
-                });
-                console.error(err.message);
-            });
-
         this.client
             .get("/suggestions")
             .then((resp: any) => {
@@ -123,110 +104,6 @@ class RecommendationsPage extends Component<
                 );
                 console.error(err.message);
             });
-    }
-
-    handleFollowRequest(acct: Account, type: "authorize" | "reject") {
-        this.client
-            .post(`/follow_requests/${acct.id}/${type}`)
-            .then((resp: any) => {
-                let requestedFollows = this.state.requestedFollows;
-                if (requestedFollows) {
-                    requestedFollows.forEach(
-                        (request: Account, index: number) => {
-                            if (requestedFollows && request.id === acct.id) {
-                                requestedFollows.splice(index, 1);
-                            }
-                        }
-                    );
-                }
-                this.setState({ requestedFollows });
-
-                let verb: string = type;
-                verb === "authorize"
-                    ? (verb = "authorized")
-                    : (verb = "rejected");
-                this.props.enqueueSnackbar(`You have ${verb} this request.`);
-            })
-            .catch((err: Error) => {
-                this.props.enqueueSnackbar(
-                    `Couldn't ${type} this request: ${err.name}`,
-                    { variant: "error" }
-                );
-                console.error(err.message);
-            });
-    }
-
-    showFollowRequests() {
-        const { classes } = this.props;
-        return (
-            <div>
-                <ListSubheader>Follow requests</ListSubheader>
-                <Paper className={classes.pageListConstraints}>
-                    <List>
-                        {this.state.requestedFollows
-                            ? this.state.requestedFollows.map(
-                                  (request: Account) => {
-                                      return (
-                                          <ListItem key={request.id}>
-                                              <ListItemAvatar>
-                                                  <LinkableAvatar
-                                                      to={`/profile/${request.id}`}
-                                                      alt={request.username}
-                                                      src={
-                                                          request.avatar_static
-                                                      }
-                                                  />
-                                              </ListItemAvatar>
-                                              <ListItemText
-                                                  primary={
-                                                      request.display_name ||
-                                                      request.acct
-                                                  }
-                                                  secondary={request.acct}
-                                              />
-                                              <ListItemSecondaryAction>
-                                                  <Tooltip title="Accept request">
-                                                      <IconButton
-                                                          onClick={() =>
-                                                              this.handleFollowRequest(
-                                                                  request,
-                                                                  "authorize"
-                                                              )
-                                                          }
-                                                      >
-                                                          <CheckIcon />
-                                                      </IconButton>
-                                                  </Tooltip>
-                                                  <Tooltip title="Reject request">
-                                                      <IconButton
-                                                          onClick={() =>
-                                                              this.handleFollowRequest(
-                                                                  request,
-                                                                  "reject"
-                                                              )
-                                                          }
-                                                      >
-                                                          <CloseIcon />
-                                                      </IconButton>
-                                                  </Tooltip>
-                                                  <Tooltip title="View profile">
-                                                      <LinkableIconButton
-                                                          to={`/profile/${request.id}`}
-                                                      >
-                                                          <AccountCircleIcon />
-                                                      </LinkableIconButton>
-                                                  </Tooltip>
-                                              </ListItemSecondaryAction>
-                                          </ListItem>
-                                      );
-                                  }
-                              )
-                            : null}
-                    </List>
-                </Paper>
-                <br />
-            </div>
-        );
     }
 
     showFollowSuggestions() {
@@ -295,23 +172,6 @@ class RecommendationsPage extends Component<
             <div className={classes.pageLayoutConstraints}>
                 {this.state.viewDidLoad ? (
                     <div>
-                        {this.state.requestedFollows &&
-                        this.state.requestedFollows.length > 0 ? (
-                            this.showFollowRequests()
-                        ) : (
-                            <div
-                                className={
-                                    classes.pageLayoutEmptyTextConstraints
-                                }
-                            >
-                                <Typography variant="h6">
-                                    You don't have any follow requests.
-                                </Typography>
-                                <br />
-                            </div>
-                        )}
-                        <Divider />
-                        <br />
                         {this.state.followSuggestions &&
                         this.state.followSuggestions.length > 0 ? (
                             this.showFollowSuggestions()
@@ -320,23 +180,35 @@ class RecommendationsPage extends Component<
                                 className={
                                     classes.pageLayoutEmptyTextConstraints
                                 }
+                                style={{ textAlign: "center" }}
                             >
-                                <Typography variant="h5">
+                                <GroupIcon
+                                    color="action"
+                                    style={{ fontSize: 48 }}
+                                />
+                                <Typography variant="h6">
                                     We don't have any suggestions for you.
                                 </Typography>
                                 <Typography paragraph>
-                                    Why not interact with the fediverse a bit by
-                                    creating a new post?
+                                    Take a look around the fediverse or check
+                                    out the Activity page for more.
                                 </Typography>
+                                <br />
                             </div>
                         )}
+                        <br />
+                        <Typography variant="caption" paragraph>
+                            Looking for follow requests? You can find them in
+                            Settings or in the account menu. You can also{" "}
+                            <Link href="/#/requests">click here</Link>.
+                        </Typography>
                     </div>
                 ) : null}
                 {this.state.viewDidError ? (
                     <Paper className={classes.errorCard}>
                         <Typography variant="h4">Bummer.</Typography>
                         <Typography variant="h6">
-                            Something went wrong when loading this timeline.
+                            Something went wrong when loading recommendations.
                         </Typography>
                         <Typography>
                             {this.state.viewDidErrorCode
