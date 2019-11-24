@@ -106,6 +106,25 @@ class Composer extends Component<any, IComposerState> {
                     : 99999999
             });
         });
+
+        window.addEventListener("paste", (evt: Event) => {
+            let thePasteEvent = evt as ClipboardEvent;
+            let fileList: File[] = [];
+            if (thePasteEvent.clipboardData != null) {
+                let clipitems = thePasteEvent.clipboardData.items;
+                if (clipitems != undefined) {
+                    for (let i = 0; i < clipitems.length; i++) {
+                        if (clipitems[i].type.indexOf("image") != -1) {
+                            let clipfile = clipitems[i].getAsFile();
+                            if (clipfile != null) {
+                                fileList.push(clipfile);
+                            }
+                        }
+                    }
+                    this.actuallyUploadMedia(fileList);
+                }
+            }
+        });
     }
 
     componentWillReceiveProps(props: any) {
@@ -176,40 +195,42 @@ class Composer extends Component<any, IComposerState> {
             multiple: false,
             accept: ".jpeg,.jpg,.png,.gif,.webm,.mp4,.mov,.ogg,.wav,.mp3,.flac"
         })
-            .then((media: FileList) => {
-                let mediaForm = new FormData();
-                mediaForm.append("file", media[0]);
-                this.props.enqueueSnackbar("Uploading media...", {
-                    persist: true,
-                    key: "media-upload"
-                });
-                this.client
-                    .post("/media", mediaForm)
-                    .then((resp: any) => {
-                        let attachment: Attachment = resp.data;
-                        let attachments = this.state.attachments;
-                        if (attachments) {
-                            attachments.push(attachment);
-                        } else {
-                            attachments = [attachment];
-                        }
-                        this.setState({ attachments });
-                        this.props.closeSnackbar("media-upload");
-                        this.props.enqueueSnackbar("Media uploaded.");
-                    })
-                    .catch((err: Error) => {
-                        this.props.closeSnackbar("media-upload");
-                        this.props.enqueueSnackbar(
-                            "Couldn't upload media: " + err.name,
-                            { variant: "error" }
-                        );
-                    });
-            })
+            .then((media: FileList) => this.actuallyUploadMedia(media))
             .catch((err: Error) => {
                 this.props.enqueueSnackbar("Couldn't get media: " + err.name, {
                     variant: "error"
                 });
                 console.error(err.message);
+            });
+    }
+
+    actuallyUploadMedia(media: FileList | File[]) {
+        let mediaForm = new FormData();
+        mediaForm.append("file", media[0]);
+        this.props.enqueueSnackbar("Uploading media...", {
+            persist: true,
+            key: "media-upload"
+        });
+        this.client
+            .post("/media", mediaForm)
+            .then((resp: any) => {
+                let attachment: Attachment = resp.data;
+                let attachments = this.state.attachments;
+                if (attachments) {
+                    attachments.push(attachment);
+                } else {
+                    attachments = [attachment];
+                }
+                this.setState({ attachments });
+                this.props.closeSnackbar("media-upload");
+                this.props.enqueueSnackbar("Media uploaded.");
+            })
+            .catch((err: Error) => {
+                this.props.closeSnackbar("media-upload");
+                this.props.enqueueSnackbar(
+                    "Couldn't upload media: " + err.name,
+                    { variant: "error" }
+                );
             });
     }
 
