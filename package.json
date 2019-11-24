@@ -36,7 +36,7 @@
         "react-scripts": "^2.1.8",
         "react-swipeable-views": "^0.13.3",
         "react-web-share-api": "^0.0.2",
-        "typescript": "3.4.1"
+        "typescript": "^3.7.2"
     },
     "dependencies": {
         "electron-notarize": "^0.1.1",

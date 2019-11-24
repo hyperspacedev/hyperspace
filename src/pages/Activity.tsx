@@ -131,7 +131,7 @@ class ActivityPage extends Component<any, IActivityPageState> {
                         textAlign: "center"
                     }}
                 >
-                    <FireplaceIcon style={{ fontSize: 64 }} />
+                    <FireplaceIcon style={{ fontSize: 64 }} color="action" />
                     <Typography variant="h6">
                         Hey there,{" "}
                         {this.state.user
