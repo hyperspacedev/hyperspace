@@ -109,6 +109,21 @@ class Composer extends Component<any, IComposerState> {
 
         window.addEventListener("paste", (evt: Event) => {
             let thePasteEvent = evt as ClipboardEvent;
+            let fileList: File[] = [];
+            if (thePasteEvent.clipboardData != null) {
+                let clipitems = thePasteEvent.clipboardData.items;
+                if (clipitems != undefined) {
+                    for (let i = 0; i < clipitems.length; i++) {
+                        if (clipitems[i].type.indexOf("image") != -1) {
+                            let clipfile = clipitems[i].getAsFile();
+                            if (clipfile != null) {
+                                fileList.push(clipfile);
+                            }
+                        }
+                    }
+                    this.actuallyUploadMedia(fileList);
+                }
+            }
         });
     }
 
@@ -189,7 +204,7 @@ class Composer extends Component<any, IComposerState> {
             });
     }
 
-    actuallyUploadMedia(media: FileList) {
+    actuallyUploadMedia(media: FileList | File[]) {
         let mediaForm = new FormData();
         mediaForm.append("file", media[0]);
         this.props.enqueueSnackbar("Uploading media...", {
