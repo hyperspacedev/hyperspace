@@ -404,7 +404,7 @@ function createMenubar() {
             label: app.getName(),
             submenu: [
                 {
-                    label: 'About Hyperspace Desktop',
+                    label: `About ${app.getName()}`,
                     click() {
                         safelyGoTo("hyperspace://hyperspace/app/#/about")
                     }
