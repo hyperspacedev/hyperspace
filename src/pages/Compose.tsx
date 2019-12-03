@@ -121,7 +121,10 @@ class Composer extends Component<any, IComposerState> {
                             }
                         }
                     }
-                    this.actuallyUploadMedia(fileList);
+
+                    if (fileList.length > 0) {
+                        this.uploadMedia(fileList);
+                    }
                 }
             }
         });
@@ -190,12 +193,12 @@ class Composer extends Component<any, IComposerState> {
         this.setState({ visibility });
     }
 
-    uploadMedia() {
+    promptMediaDialog() {
         filedialog({
             multiple: false,
             accept: ".jpeg,.jpg,.png,.gif,.webm,.mp4,.mov,.ogg,.wav,.mp3,.flac"
         })
-            .then((media: FileList) => this.actuallyUploadMedia(media))
+            .then((media: FileList) => this.uploadMedia(media))
             .catch((err: Error) => {
                 this.props.enqueueSnackbar("Couldn't get media: " + err.name, {
                     variant: "error"
@@ -204,7 +207,7 @@ class Composer extends Component<any, IComposerState> {
             });
     }
 
-    actuallyUploadMedia(media: FileList | File[]) {
+    uploadMedia(media: FileList | File[]) {
         let mediaForm = new FormData();
         mediaForm.append("file", media[0]);
         this.props.enqueueSnackbar("Uploading media...", {
@@ -652,7 +655,7 @@ class Composer extends Component<any, IComposerState> {
                     <Tooltip title="Add photos, videos, or audio">
                         <IconButton
                             disabled={this.state.poll !== undefined}
-                            onClick={() => this.uploadMedia()}
+                            onClick={() => this.promptMediaDialog()}
                             id="compose-media"
                         >
                             <AttachFileIcon />
