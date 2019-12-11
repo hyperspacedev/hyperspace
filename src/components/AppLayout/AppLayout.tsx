@@ -68,6 +68,7 @@ import {
     getAccountRegistry,
     removeAccountFromRegistry
 } from "../../utilities/accounts";
+import { isChildView } from "../../utilities/appbar";
 
 interface IAppLayoutState {
     acctMenuOpen: boolean;
@@ -489,7 +490,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                     {this.titlebar()}
                     <AppBar className={classes.appBar} position="static">
                         <Toolbar>
-                            {isDesktopApp() && this.canGoBack() ? (
+                            {isDesktopApp() && isChildView() ? (
                                 <IconButton
                                     className={classes.appBarBackButton}
                                     color="inherit"
