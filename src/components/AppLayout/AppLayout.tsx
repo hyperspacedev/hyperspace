@@ -68,7 +68,6 @@ import {
     getAccountRegistry,
     removeAccountFromRegistry
 } from "../../utilities/accounts";
-import { isChildView } from "../../utilities/appbar";
 
 interface IAppLayoutState {
     acctMenuOpen: boolean;
@@ -221,6 +220,10 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                 sendNotificationRequest(primaryMessage, secondaryMessage);
             }
         });
+    }
+
+    canGoBack(): boolean {
+        return window.history.length > 1;
     }
 
     toggleAcctMenu() {
@@ -486,7 +489,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                     {this.titlebar()}
                     <AppBar className={classes.appBar} position="static">
                         <Toolbar>
-                            {isChildView(window.location.hash) ? (
+                            {isDesktopApp() && this.canGoBack() ? (
                                 <IconButton
                                     className={classes.appBarBackButton}
                                     color="inherit"
