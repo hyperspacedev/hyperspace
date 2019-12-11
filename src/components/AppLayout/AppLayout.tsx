@@ -44,6 +44,7 @@ import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 import BuildIcon from "@material-ui/icons/Build";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import { styles } from "./AppLayout.styles";
 import { MultiAccount, UAccount } from "../../types/Account";
@@ -67,6 +68,7 @@ import {
     getAccountRegistry,
     removeAccountFromRegistry
 } from "../../utilities/accounts";
+import { isChildView } from "../../utilities/appbar";
 
 interface IAppLayoutState {
     acctMenuOpen: boolean;
@@ -484,6 +486,17 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                     {this.titlebar()}
                     <AppBar className={classes.appBar} position="static">
                         <Toolbar>
+                            {isChildView(window.location.hash) ? (
+                                <IconButton
+                                    className={classes.appBarBackButton}
+                                    color="inherit"
+                                    aria-label="Go back"
+                                    onClick={() => window.history.back()}
+                                >
+                                    <ArrowBackIcon />
+                                </IconButton>
+                            ) : null}
+
                             <IconButton
                                 className={classes.appBarMenuButton}
                                 color="inherit"

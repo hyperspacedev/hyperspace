@@ -9,3 +9,20 @@ import { isDarwinApp } from "./desktop";
 export function isAppbarExpanded(): boolean {
     return isDarwinApp() || process.env.NODE_ENV === "development";
 }
+
+/**
+ * Determine whether the current page is a child view and can go back.
+ */
+export function isChildView(hash: string): boolean {
+    const childViews = ["#/conversation", "#/profile"];
+    let foundProtocol = false;
+
+    childViews.forEach((childViewProtocol: string) => {
+        if (hash.includes(childViewProtocol)) {
+            console.log(childViewProtocol);
+            foundProtocol = true;
+        }
+    });
+
+    return foundProtocol;
+}
