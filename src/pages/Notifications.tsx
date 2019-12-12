@@ -36,33 +36,80 @@ import { Account } from "../types/Account";
 import { Relationship } from "../types/Relationship";
 import { withSnackbar } from "notistack";
 
+/**
+ * The state interface for the notifications page.
+ */
 interface INotificationsPageState {
+    /**
+     * The list of notifications, if it exists.
+     */
     notifications?: [Notification];
+
+    /**
+     * Whether the view is still loading.
+     */
     viewIsLoading: boolean;
+
+    /**
+     * Whether the view has loaded.
+     */
     viewDidLoad?: boolean;
+
+    /**
+     * Whether the view has loaded but in error.
+     */
     viewDidError?: boolean;
+
+    /**
+     * The error code for an errored state, if possible.
+     */
     viewDidErrorCode?: string;
+
+    /**
+     * Whether the delete confirmation dialog should be open.
+     */
     deleteDialogOpen: boolean;
 }
 
+/**
+ * The notifications page.
+ */
 class NotificationsPage extends Component<any, INotificationsPageState> {
+    /**
+     * The Mastodon object to perform notification operations on.
+     */
     client: Mastodon;
+
+    /**
+     * The stream listener for tuning in to notifications.
+     */
     streamListener: any;
 
+    /**
+     * Construct the notifications page.
+     * @param props The properties to pass in
+     */
     constructor(props: any) {
         super(props);
+
+        // Create the Mastodon object.
         this.client = new Mastodon(
             localStorage.getItem("access_token") as string,
             localStorage.getItem("baseurl") + "/api/v1"
         );
 
+        // Initialize the state.
         this.state = {
             viewIsLoading: true,
             deleteDialogOpen: false
         };
     }
 
+    /**
+     * Perform pre-mount tasks.
+     */
     componentWillMount() {
+        // Get the list of notifications and update the state.
         this.client
             .get("/notifications")
             .then((resp: any) => {
@@ -83,10 +130,17 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
             });
     }
 
+    /**
+     * Perform post-mount tasks.
+     */
     componentDidMount() {
+        // Start listening for new notifications after fetching.
         this.streamNotifications();
     }
 
+    /**
+     * Set up a stream listener and keep updating notifications.
+     */
     streamNotifications() {
         this.streamListener = this.client.stream("/streaming/user");
 
@@ -99,10 +153,19 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
         });
     }
 
+    /**
+     * Toggle the state of the delete dialog.
+     */
     toggleDeleteDialog() {
         this.setState({ deleteDialogOpen: !this.state.deleteDialogOpen });
     }
 
+    /**
+     * Strip HTML content from a string containing HTML content.
+     *
+     * @param text The sanitized HTML to strip
+     * @returns A string containing the contents of the sanitized HTML
+     */
     removeHTMLContent(text: string) {
         const div = document.createElement("div");
         div.innerHTML = text;
@@ -112,6 +175,10 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
         return innerContent;
     }
 
+    /**
+     * Remove a notification from the server.
+     * @param id The notification's ID
+     */
     removeNotification(id: string) {
         this.client
             .post(`/notifications/${id}/dismiss`)
@@ -143,6 +210,9 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
             });
     }
 
+    /**
+     * Purge all notifications from the server.
+     */
     removeAllNotifications() {
         this.client
             .post("/notifications/clear")
@@ -160,6 +230,10 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
             });
     }
 
+    /**
+     * Render a single notification unit to be used in a list
+     * @param notif The notification to work with.
+     */
     createNotification(notif: Notification) {
         const { classes } = this.props;
         let primary = "";
@@ -294,12 +368,19 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
         );
     }
 
+    /**
+     * Follow an account from a notification if already not followed.
+     * @param acct The account to follow, if possible
+     */
     followMember(acct: Account) {
+        // Get the relationships for this account.
         this.client
             .get(`/accounts/relationships`, { id: acct.id })
             .then((resp: any) => {
+                // Returns a list, so grab only the first item.
                 let relationship: Relationship = resp.data[0];
 
+                // Follow if not following already.
                 if (relationship.following == false) {
                     this.client
                         .post(`/accounts/${acct.id}/follow`)
@@ -315,7 +396,10 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                             );
                             console.error(err.message);
                         });
-                } else {
+                }
+
+                // Otherwise notify the user.
+                else {
                     this.props.enqueueSnackbar(
                         "You already follow this account."
                     );
@@ -328,6 +412,9 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
             });
     }
 
+    /**
+     * Render the notification page.
+     */
     render() {
         const { classes } = this.props;
         return (
