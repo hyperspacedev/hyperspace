@@ -33,6 +33,7 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import Mastodon from "megalodon";
 import { Notification } from "../types/Notification";
 import { Account } from "../types/Account";
+import { Relationship } from "../types/Relationship";
 import { withSnackbar } from "notistack";
 
 interface INotificationsPageState {
@@ -295,18 +296,35 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
 
     followMember(acct: Account) {
         this.client
-            .post(`/accounts/${acct.id}/follow`)
+            .get(`/accounts/relationships`, { id: acct.id })
             .then((resp: any) => {
-                this.props.enqueueSnackbar(
-                    "You are now following this account."
-                );
+                let relationship: Relationship = resp.data[0];
+
+                if (relationship.following == false) {
+                    this.client
+                        .post(`/accounts/${acct.id}/follow`)
+                        .then((resp: any) => {
+                            this.props.enqueueSnackbar(
+                                "You are now following this account."
+                            );
+                        })
+                        .catch((err: Error) => {
+                            this.props.enqueueSnackbar(
+                                "Couldn't follow account: " + err.name,
+                                { variant: "error" }
+                            );
+                            console.error(err.message);
+                        });
+                } else {
+                    this.props.enqueueSnackbar(
+                        "You already follow this account."
+                    );
+                }
             })
             .catch((err: Error) => {
-                this.props.enqueueSnackbar(
-                    "Couldn't follow account: " + err.name,
-                    { variant: "error" }
-                );
-                console.error(err.message);
+                this.props.enqueueSnackbar("Couldn't find relationship.", {
+                    variant: "error"
+                });
             });
     }
 
