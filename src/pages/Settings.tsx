@@ -371,7 +371,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 this.state.federated
                                     ? ""
                                     : "(disabled by provider)"
-                            }`}
+                                }`}
                             disabled={!this.state.federated}
                         />
                         <FormControlLabel
@@ -559,7 +559,38 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 </Toolbar>
                             </div>
                         </div>
-                    ) : null}
+                    ) : (
+                            <div className={classes.pageHeroBackground}>
+                                <div className={classes.pageHeroBackgroundImage} />
+                                <div className={classes.profileContent}>
+                                    <br />
+                                    <Avatar
+                                        className={classes.settingsAvatar}
+                                    />
+                                    <div
+                                        className={classes.profileUserBox}
+                                        style={{ margin: "auto" }}
+                                    >
+                                        <Typography
+                                            className={classes.settingsHeaderText}
+                                            color="inherit"
+                                            component="h1"
+                                        >
+                                            {'Loading...'}
+                                        </Typography>
+                                        <Typography
+                                            color="inherit"
+                                            className={classes.settingsDetailText}
+                                            component="p"
+                                        >
+                                            @{'...'}
+                                        </Typography>
+                                    </div>
+                                    <div className={classes.pageGrow} />
+                                    <Toolbar />
+                                </div>
+                            </div>
+                        )}
                     <div className={classes.pageContentLayoutConstraints}>
                         <ListSubheader>Appearance</ListSubheader>
                         <Paper className={classes.pageListConstraints}>
@@ -682,8 +713,8 @@ class SettingsPage extends Component<any, ISettingsState> {
                                             )
                                                 ? "Check your browser's notification permissions."
                                                 : browserSupportsNotificationRequests()
-                                                ? "Sends a push notification when not focused."
-                                                : "Notifications aren't supported."
+                                                    ? "Sends a push notification when not focused."
+                                                    : "Notifications aren't supported."
                                         }
                                     />
                                     <ListItemSecondaryAction>
