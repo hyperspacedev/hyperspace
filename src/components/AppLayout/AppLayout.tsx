@@ -675,7 +675,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                 variant="temporary"
                                 anchor={"left"}
                                 open={this.state.drawerOpenOnMobile}
-                                onClose={this.toggleDrawerOnMobile}
+                                onClick={this.toggleDrawerOnMobile}
                                 classes={{ paper: classes.drawerPaper }}
                             >
                                 {this.appDrawer()}
