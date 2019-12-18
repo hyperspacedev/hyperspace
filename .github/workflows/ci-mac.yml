@@ -12,11 +12,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
-      - name: Show github.actor
-        run: echo $actor
-        env:
-          actor: ${{ github.actor }}
-      - name: Install certificated and entitlements
+      - name: Install certificates and entitlements
         if: github.actor == 'alicerunsonfedora' || github.actor == 'Nomad1556' || github.actor == 'audmaxwell'
         run: |
           echo "Downloading certificates and profiles..."
