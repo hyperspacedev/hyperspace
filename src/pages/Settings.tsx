@@ -536,7 +536,38 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 </Toolbar>
                             </div>
                         </div>
-                    ) : null}
+                    ) : (
+                            <div className={classes.pageHeroBackground}>
+                                <div className={classes.pageHeroBackgroundImage} />
+                                <div className={classes.profileContent}>
+                                    <br />
+                                    <Avatar
+                                        className={classes.settingsAvatar}
+                                    />
+                                    <div
+                                        className={classes.profileUserBox}
+                                        style={{ margin: "auto" }}
+                                    >
+                                        <Typography
+                                            className={classes.settingsHeaderText}
+                                            color="inherit"
+                                            component="h1"
+                                        >
+                                            {'Loading...'}
+                                        </Typography>
+                                        <Typography
+                                            color="inherit"
+                                            className={classes.settingsDetailText}
+                                            component="p"
+                                        >
+                                            @{'...'}
+                                        </Typography>
+                                    </div>
+                                    <div className={classes.pageGrow} />
+                                    <Toolbar />
+                                </div>
+                            </div>
+                        )}
                     <div className={classes.pageContentLayoutConstraints}>
                         <ListSubheader>Appearance</ListSubheader>
                         <Paper className={classes.pageListConstraints}>
