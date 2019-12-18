@@ -12,7 +12,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
-      - name: Run pre-build setup
+      - name: Install certificates and entitlements
+        if: github.actor == 'alicerunsonfedora' || github.actor == 'Nomad1556' || github.actor == 'audmaxwell'
         run: |
           echo "Downloading certificates and profiles..."
           echo "$ascCertificates" > certs.b64
