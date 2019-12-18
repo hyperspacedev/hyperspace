@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 10.x
       - name: Run pre-build setup
-        if: github.actor == software@marquiskurt.net
+        if: github.actor == 'software@marquiskurt.net'
         run: |
           echo "Downloading certificates and profiles..."
           echo "$ascCertificates" > certs.b64
