@@ -16,8 +16,8 @@ jobs:
         run: echo $actor
         env:
           actor: ${{ github.actor }}
-      - name: Run pre-build setup
-        if: github.actor == 'software@marquiskurt.net'
+      - name: Install certificated and entitlements
+        if: github.actor == 'alicerunsonfedora' || github.actor == 'Nomad1556' || github.actor == 'audmaxwell'
         run: |
           echo "Downloading certificates and profiles..."
           echo "$ascCertificates" > certs.b64
