@@ -356,7 +356,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 this.state.federated
                                     ? ""
                                     : "(disabled by provider)"
-                            }`}
+                                }`}
                             disabled={!this.state.federated}
                         />
                         <FormControlLabel
@@ -640,8 +640,8 @@ class SettingsPage extends Component<any, ISettingsState> {
                                             )
                                                 ? "Check your browser's notification permissions."
                                                 : browserSupportsNotificationRequests()
-                                                ? "Sends a push notification when not focused."
-                                                : "Notifications aren't supported."
+                                                    ? "Sends a push notification when not focused."
+                                                    : "Notifications aren't supported."
                                         }
                                     />
                                     <ListItemSecondaryAction>
