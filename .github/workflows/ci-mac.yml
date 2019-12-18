@@ -12,6 +12,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
+      - name: Show github.actor
+        run: echo $actor
+        env:
+          actor: ${{ github.actor }}
       - name: Run pre-build setup
         if: github.actor == 'software@marquiskurt.net'
         run: |
