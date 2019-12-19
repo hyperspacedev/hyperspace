@@ -60,6 +60,25 @@ import ShareMenu from "./PostShareMenu";
 import { emojifyString } from "../../utilities/emojis";
 import { PollOption } from "../../types/Poll";
 
+const log = (post: Status, msg = '') => {
+    let {
+        replies_count,
+        reblogs_count,
+        favourites_count,
+        favourited,
+        reblogged,
+        reblog
+    } = post
+    console.log(msg, {
+        replies_count,
+        reblogs_count,
+        favourites_count,
+        favourited,
+        reblogged,
+        reblog
+    })
+}
+
 interface IPostProps {
     post: Status;
     classes: any;
@@ -512,11 +531,20 @@ export class Post extends React.Component<any, IPostState> {
 
     toggleFavorited(post: Status) {
         let _this = this;
+        log(post, 'before un/favorite')
+        let { favourites_count, reblog } = post
         if (post.favourited) {
             this.client
                 .post(`/statuses/${post.id}/unfavourite`)
                 .then((resp: any) => {
                     let post: Status = resp.data;
+                    if (post.favourites_count === favourites_count) {
+                        post.favourites_count--
+                    }
+                    if (post.reblog !== reblog) {
+                        post.reblog = reblog
+                    }
+                    log(post, 'after unfavorite')
                     this.setState({ post });
                 })
                 .catch((err: Error) => {
@@ -533,6 +561,13 @@ export class Post extends React.Component<any, IPostState> {
                 .post(`/statuses/${post.id}/favourite`)
                 .then((resp: any) => {
                     let post: Status = resp.data;
+                    if (post.reblog !== reblog) {
+                        post.reblog = reblog
+                    }
+                    if (post.favourites_count === favourites_count) {
+                        post.favourites_count++
+                    }
+                    log(post, 'after favorite')
                     this.setState({ post });
                 })
                 .catch((err: Error) => {
@@ -548,11 +583,26 @@ export class Post extends React.Component<any, IPostState> {
     }
 
     toggleReblogged(post: Status) {
+        log(post, 'before un/reblog')
+        let { reblogs_count, reblogged, favourited, reblog } = post
         if (post.reblogged) {
             this.client
                 .post(`/statuses/${post.id}/unreblog`)
                 .then((resp: any) => {
                     let post: Status = resp.data;
+                    if (post.reblogs_count === reblogs_count) {
+                        post.reblogs_count--
+                    }
+                    if (post.reblogged === reblogged) {
+                        post.reblogged = !reblogged
+                    }
+                    if (post.favourited !== favourited) {
+                        post.favourited = favourited
+                    }
+                    if (post.reblog === reblog) {
+                        post.reblog = null
+                    }
+                    log(post, 'after unreblog')
                     this.setState({ post });
                 })
                 .catch((err: Error) => {
@@ -569,6 +619,19 @@ export class Post extends React.Component<any, IPostState> {
                 .post(`/statuses/${post.id}/reblog`)
                 .then((resp: any) => {
                     let post: Status = resp.data;
+                    if (post.reblogs_count === reblogs_count) {
+                        post.reblogs_count++
+                    }
+                    if (post.reblogged === reblogged) {
+                        post.reblogged = !reblogged
+                    }
+                    if (post.favourited !== favourited) {
+                        post.favourited = favourited
+                    }
+                    if (post.reblog === null) {
+                        post.reblog = reblog
+                    }
+                    log(post, 'after reblog')
                     this.setState({ post });
                 })
                 .catch((err: Error) => {
@@ -631,6 +694,7 @@ export class Post extends React.Component<any, IPostState> {
                     elevation={this.props.threadHeader ? 0 : 1}
                 >
                     <CardHeader
+                        onClick={() => log(post)}
                         avatar={
                             <LinkableAvatar
                                 to={`/profile/${
