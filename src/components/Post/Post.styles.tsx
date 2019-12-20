@@ -81,6 +81,15 @@ export const styles = (theme: Theme) =>
             paddingTop: theme.spacing.unit,
             paddingBottom: theme.spacing.unit
         },
+        postAuthorAccount: {
+            color: theme.palette.grey[500],
+            marginLeft: theme.spacing.unit * 0.5,
+        },
+        postReblogIcon: {
+            marginBottom: theme.spacing.unit * -0.5,
+            marginLeft: theme.spacing.unit * 0.5,
+            marginRight: theme.spacing.unit * 0.5,
+        },
         postAuthorEmoji: {
             height: theme.typography.fontSize,
             verticalAlign: "middle"
