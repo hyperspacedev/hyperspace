@@ -14,6 +14,7 @@ import Post from "../components/Post";
 import { Status } from "../types/Status";
 import Mastodon, { StreamListener } from "megalodon";
 import { withSnackbar } from "notistack";
+import Masonry from 'react-masonry-css'
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 
 interface IHomePageState {
@@ -185,15 +186,28 @@ class HomePage extends Component<any, IHomePageState> {
                 ) : null}
                 {this.state.posts ? (
                     <div>
+                        <Masonry
+                            breakpointCols={{
+                                default: 4,
+                                2000: 3,
+                                1400: 2,
+                                1050: 1,
+                            }}
+                            className={classes.masonryGrid}
+                            columnClassName={classes['my-masonry-grid_column']}
+                            >
                         {this.state.posts.map((post: Status) => {
                             return (
-                                <Post
-                                    key={post.id}
-                                    post={post}
-                                    client={this.client}
-                                />
+                                <div className={classes.masonryGrid_item}>
+                                    <Post
+                                        key={post.id}
+                                        post={post}
+                                        client={this.client}
+                                    />
+                                </div>
                             );
                         })}
+                        </Masonry>
                         <br />
                         {this.state.viewDidLoad && !this.state.viewDidError ? (
                             <div

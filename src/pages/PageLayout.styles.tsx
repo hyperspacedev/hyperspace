@@ -1,4 +1,4 @@
-import { Theme, createStyles } from "@material-ui/core";
+import { Theme, createStyles, FormHelperText } from "@material-ui/core";
 import { isDarwinApp } from "../utilities/desktop";
 import { isAppbarExpanded } from "../utilities/appbar";
 
@@ -33,22 +33,22 @@ export const styles = (theme: Theme) =>
                 marginLeft: 250,
                 marginTop: 88,
                 padding: theme.spacing.unit * 3,
-                paddingLeft: theme.spacing.unit * 16,
-                paddingRight: theme.spacing.unit * 16
+                paddingLeft: theme.spacing.unit * 3,
+                paddingRight: theme.spacing.unit * 3
             },
             [theme.breakpoints.up("lg")]: {
                 marginLeft: 250,
                 marginTop: 88,
                 padding: theme.spacing.unit * 3,
-                paddingLeft: theme.spacing.unit * 32,
-                paddingRight: theme.spacing.unit * 32
+                paddingLeft: theme.spacing.unit * 3,
+                paddingRight: theme.spacing.unit * 3
             },
             [theme.breakpoints.up("xl")]: {
                 marginLeft: 250,
                 marginTop: 88,
                 padding: theme.spacing.unit * 3,
-                paddingLeft: theme.spacing.unit * 40,
-                paddingRight: theme.spacing.unit * 40
+                paddingLeft: theme.spacing.unit * 3,
+                paddingRight: theme.spacing.unit * 3
             },
             backgroundColor: theme.palette.background.default,
             minHeight: isDarwinApp() ? "100vh" : "auto"
@@ -323,5 +323,12 @@ export const styles = (theme: Theme) =>
                 display: "block"
             },
             backgroundColor: theme.palette.primary.main
-        }
+        },
+        masonryGrid: {
+            display: 'flex',
+            width: 'auto',
+        },
+        'my-masonry-grid_column': { // non-standard name fixes react-masonry-css bug :shrug:
+            padding: 5,
+        },
     });
