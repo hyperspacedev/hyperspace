@@ -16,6 +16,10 @@ import Mastodon, { StreamListener } from "megalodon";
 import { withSnackbar } from "notistack";
 import Masonry from 'react-masonry-css'
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+import {
+    getConfig,
+    getUserDefaultBool
+} from "../utilities/settings";
 
 interface IHomePageState {
     posts?: [Status];
@@ -24,6 +28,7 @@ interface IHomePageState {
     viewDidLoad?: boolean;
     viewDidError?: boolean;
     viewDidErrorCode?: any;
+    isMasonryLayout?: boolean;
 }
 
 class HomePage extends Component<any, IHomePageState> {
@@ -35,7 +40,8 @@ class HomePage extends Component<any, IHomePageState> {
 
         this.state = {
             viewIsLoading: true,
-            backlogPosts: null
+            backlogPosts: null,
+            isMasonryLayout: getUserDefaultBool('isMasonryLayout')
         };
 
         this.client = new Mastodon(
@@ -186,28 +192,45 @@ class HomePage extends Component<any, IHomePageState> {
                 ) : null}
                 {this.state.posts ? (
                     <div>
-                        <Masonry
-                            breakpointCols={{
-                                default: 4,
-                                2000: 3,
-                                1400: 2,
-                                1050: 1,
-                            }}
-                            className={classes.masonryGrid}
-                            columnClassName={classes['my-masonry-grid_column']}
-                            >
-                        {this.state.posts.map((post: Status) => {
-                            return (
-                                <div className={classes.masonryGrid_item}>
-                                    <Post
-                                        key={post.id}
-                                        post={post}
-                                        client={this.client}
-                                    />
-                                </div>
-                            );
-                        })}
-                        </Masonry>
+                        {this.state.isMasonryLayout ? (
+                            <Masonry
+                                breakpointCols={{
+                                    default: 4,
+                                    2000: 3,
+                                    1400: 2,
+                                    1050: 1,
+                                }}
+                                className={classes.masonryGrid}
+                                columnClassName={classes['my-masonry-grid_column']}
+                                >
+                            {this.state.posts.map((post: Status) => {
+                                return (
+                                    <div className={classes.masonryGrid_item}>
+                                        <Post
+                                            key={post.id}
+                                            post={post}
+                                            client={this.client}
+                                        />
+                                    </div>
+                                );
+                            })}
+                            </Masonry>)
+                        : (
+                            <div>
+                                {this.state.posts.map((post: Status) => {
+                                    return (
+                                        <div className={classes.masonryGrid_item}>
+                                            <Post
+                                                key={post.id}
+                                                post={post}
+                                                client={this.client}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            )
+                        }
                         <br />
                         {this.state.viewDidLoad && !this.state.viewDidError ? (
                             <div
