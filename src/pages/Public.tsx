@@ -14,6 +14,8 @@ import Post from "../components/Post";
 import { Status } from "../types/Status";
 import Mastodon, { StreamListener } from "megalodon";
 import { withSnackbar } from "notistack";
+import Masonry from 'react-masonry-css';
+import { getUserDefaultBool } from "../utilities/settings";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 
 interface IPublicPageState {
@@ -23,6 +25,7 @@ interface IPublicPageState {
     viewDidLoad?: boolean;
     viewDidError?: boolean;
     viewDidErrorCode?: any;
+    isMasonryLayout?:boolean;
 }
 
 class PublicPage extends Component<any, IPublicPageState> {
@@ -34,7 +37,8 @@ class PublicPage extends Component<any, IPublicPageState> {
 
         this.state = {
             viewIsLoading: true,
-            backlogPosts: null
+            backlogPosts: null,
+            isMasonryLayout: getUserDefaultBool('isMasonryLayout')
         };
 
         this.client = new Mastodon(
@@ -185,15 +189,44 @@ class PublicPage extends Component<any, IPublicPageState> {
                 ) : null}
                 {this.state.posts ? (
                     <div>
-                        {this.state.posts.map((post: Status) => {
-                            return (
-                                <Post
-                                    key={post.id}
-                                    post={post}
-                                    client={this.client}
-                                />
-                            );
-                        })}
+                        {this.state.isMasonryLayout ? (
+                            <Masonry
+                                breakpointCols={{
+                                    default: 4,
+                                    2000: 3,
+                                    1400: 2,
+                                    1050: 1,
+                                }}
+                                className={classes.masonryGrid}
+                                columnClassName={classes['my-masonry-grid_column']}
+                            >
+                                {this.state.posts.map((post: Status) => {
+                                    return (
+                                        <div className={classes.masonryGrid_item}>
+                                            <Post
+                                                key={post.id}
+                                                post={post}
+                                                client={this.client}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </Masonry>
+                        ) : (
+                            <div>
+                                {this.state.posts.map((post: Status) => {
+                                    return (
+                                        <div className={classes.masonryGrid_item}>
+                                            <Post
+                                                key={post.id}
+                                                post={post}
+                                                client={this.client}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
                         <br />
                         {this.state.viewDidLoad && !this.state.viewDidError ? (
                             <div

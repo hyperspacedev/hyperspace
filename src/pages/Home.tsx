@@ -15,11 +15,8 @@ import { Status } from "../types/Status";
 import Mastodon, { StreamListener } from "megalodon";
 import { withSnackbar } from "notistack";
 import Masonry from 'react-masonry-css'
+import { getUserDefaultBool } from "../utilities/settings";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
-import {
-    getConfig,
-    getUserDefaultBool
-} from "../utilities/settings";
 
 interface IHomePageState {
     posts?: [Status];
@@ -214,8 +211,8 @@ class HomePage extends Component<any, IHomePageState> {
                                     </div>
                                 );
                             })}
-                            </Masonry>)
-                        : (
+                            </Masonry>
+                        ) : (
                             <div>
                                 {this.state.posts.map((post: Status) => {
                                     return (
@@ -229,8 +226,7 @@ class HomePage extends Component<any, IHomePageState> {
                                     );
                                 })}
                             </div>
-                            )
-                        }
+                        )}
                         <br />
                         {this.state.viewDidLoad && !this.state.viewDidError ? (
                             <div
