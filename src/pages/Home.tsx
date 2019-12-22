@@ -158,9 +158,13 @@ class HomePage extends Component<any, IHomePageState> {
 
     render() {
         const { classes } = this.props;
-
+        const containerClasses = `${classes.pageLayoutMaxConstraints}${
+            this.state.isMasonryLayout
+                ? ' ' + classes.pageLayoutMasonry
+                : ''
+        }`;
         return (
-            <div className={classes.pageLayoutMaxConstraints}>
+            <div className={containerClasses}>
                 {this.state.backlogPosts ? (
                     <div className={classes.pageTopChipContainer}>
                         <div className={classes.pageTopChips}>
@@ -216,13 +220,11 @@ class HomePage extends Component<any, IHomePageState> {
                             <div>
                                 {this.state.posts.map((post: Status) => {
                                     return (
-                                        <div className={classes.masonryGrid_item}>
-                                            <Post
-                                                key={post.id}
-                                                post={post}
-                                                client={this.client}
-                                            />
-                                        </div>
+                                        <Post
+                                            key={post.id}
+                                            post={post}
+                                            client={this.client}
+                                        />
                                     );
                                 })}
                             </div>
