@@ -668,7 +668,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                         <DashboardIcon color="action" />
                                     </ListItemAvatar>
                                     <ListItemText
-                                        primary="Masonry layout"
+                                        primary="Show more posts"
                                         secondary="Shows additional columns of posts on wider screens"
                                     />
                                     <ListItemSecondaryAction>
