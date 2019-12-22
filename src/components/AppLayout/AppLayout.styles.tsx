@@ -35,7 +35,8 @@ export const styles = (theme: Theme) =>
         titleBarText: {
             fontSize: 12,
             paddingTop: 2,
-            paddingBottom: 1
+            paddingBottom: 1,
+            color: theme.palette.getContrastText(theme.palette.primary.main)
         },
         appBar: {
             zIndex: 1000,
