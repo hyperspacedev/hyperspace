@@ -41,7 +41,8 @@
     "dependencies": {
         "electron-notarize": "^0.1.1",
         "electron-updater": "^4.1.2",
-        "electron-window-state": "^5.0.3"
+        "electron-window-state": "^5.0.3",
+        "react-masonry-css": "^1.0.14"
     },
     "main": "public/electron.js",
     "scripts": {
