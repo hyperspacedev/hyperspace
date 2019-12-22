@@ -60,7 +60,7 @@ import ShareMenu from "./PostShareMenu";
 import { emojifyString } from "../../utilities/emojis";
 import { PollOption } from "../../types/Poll";
 
-const log = (post: Status, msg = '') => {
+const log = (post: Status, msg = "") => {
     let {
         replies_count,
         reblogs_count,
@@ -68,7 +68,7 @@ const log = (post: Status, msg = '') => {
         favourited,
         reblogged,
         reblog
-    } = post
+    } = post;
     console.log(msg, {
         replies_count,
         reblogs_count,
@@ -76,8 +76,8 @@ const log = (post: Status, msg = '') => {
         favourited,
         reblogged,
         reblog
-    })
-}
+    });
+};
 
 interface IPostProps {
     post: Status;
@@ -519,131 +519,39 @@ export class Post extends React.Component<any, IPostState> {
         }
     }
 
+    /**
+     * Get the post's URL
+     * @param post The post to get the URL from
+     * @returns A string containing the post's URI
+     */
     getMastodonUrl(post: Status) {
-        let url = "";
-        if (post.reblog) {
-            url = post.reblog.uri;
-        } else {
-            url = post.uri;
-        }
-        return url;
+        return post.reblog ? post.reblog.uri : post.uri;
     }
 
-    toggleFavorited(post: Status) {
-        let _this = this;
-        log(post, 'before un/favorite')
-        let { favourites_count, reblog } = post
-        if (post.favourited) {
-            this.client
-                .post(`/statuses/${post.id}/unfavourite`)
-                .then((resp: any) => {
-                    let post: Status = resp.data;
-                    if (post.favourites_count === favourites_count) {
-                        post.favourites_count--
-                    }
-                    if (post.reblog !== reblog) {
-                        post.reblog = reblog
-                    }
-                    log(post, 'after unfavorite')
-                    this.setState({ post });
-                })
-                .catch((err: Error) => {
-                    _this.props.enqueueSnackbar(
-                        `Couldn't unfavorite post: ${err.name}`,
-                        {
-                            variant: "error"
-                        }
-                    );
-                    console.log(err.message);
-                });
-        } else {
-            this.client
-                .post(`/statuses/${post.id}/favourite`)
-                .then((resp: any) => {
-                    let post: Status = resp.data;
-                    if (post.reblog !== reblog) {
-                        post.reblog = reblog
-                    }
-                    if (post.favourites_count === favourites_count) {
-                        post.favourites_count++
-                    }
-                    log(post, 'after favorite')
-                    this.setState({ post });
-                })
-                .catch((err: Error) => {
-                    _this.props.enqueueSnackbar(
-                        `Couldn't favorite post: ${err.name}`,
-                        {
-                            variant: "error"
-                        }
-                    );
-                    console.log(err.message);
-                });
-        }
-    }
-
-    toggleReblogged(post: Status) {
-        log(post, 'before un/reblog')
-        let { reblogs_count, reblogged, favourited, reblog } = post
-        if (post.reblogged) {
-            this.client
-                .post(`/statuses/${post.id}/unreblog`)
-                .then((resp: any) => {
-                    let post: Status = resp.data;
-                    if (post.reblogs_count === reblogs_count) {
-                        post.reblogs_count--
-                    }
-                    if (post.reblogged === reblogged) {
-                        post.reblogged = !reblogged
-                    }
-                    if (post.favourited !== favourited) {
-                        post.favourited = favourited
-                    }
-                    if (post.reblog === reblog) {
-                        post.reblog = null
-                    }
-                    log(post, 'after unreblog')
-                    this.setState({ post });
-                })
-                .catch((err: Error) => {
-                    this.props.enqueueSnackbar(
-                        `Couldn't unboost post: ${err.name}`,
-                        {
-                            variant: "error"
-                        }
-                    );
-                    console.log(err.message);
-                });
-        } else {
-            this.client
-                .post(`/statuses/${post.id}/reblog`)
-                .then((resp: any) => {
-                    let post: Status = resp.data;
-                    if (post.reblogs_count === reblogs_count) {
-                        post.reblogs_count++
-                    }
-                    if (post.reblogged === reblogged) {
-                        post.reblogged = !reblogged
-                    }
-                    if (post.favourited !== favourited) {
-                        post.favourited = favourited
-                    }
-                    if (post.reblog === null) {
-                        post.reblog = reblog
-                    }
-                    log(post, 'after reblog')
-                    this.setState({ post });
-                })
-                .catch((err: Error) => {
-                    this.props.enqueueSnackbar(
-                        `Couldn't boost post: ${err.name}`,
-                        {
-                            variant: "error"
-                        }
-                    );
-                    console.log(err.message);
-                });
-        }
+    /**
+     * Toggle the status of a post's action and update the state
+     * @param type Either the "reblog" or "favorite" action
+     * @param post The post to toggle the status of
+     */
+    togglePostStatus(type: "reblog" | "favourite", post: Status) {
+        const shouldUndo = post.favourited || post.reblogged;
+        let requestBuilder = `/statuses/${post.id}/${
+            shouldUndo ? "un" : ""
+        }${type}`;
+        this.client
+            .post(requestBuilder)
+            .then((resp: any) => {
+                this.setState({ post: resp.data as Status });
+            })
+            .catch((err: Error) => {
+                this.props.enqueueSnackbar(
+                    `Couldn't ${shouldUndo ? "un" : ""}${type} post: ${
+                        err.name
+                    }`,
+                    { variant: "error" }
+                );
+                console.error(err.message);
+            });
     }
 
     showDeleteDialog() {
@@ -764,7 +672,9 @@ export class Post extends React.Component<any, IPostState> {
                         </Typography>
                         <Tooltip title="Favorite">
                             <IconButton
-                                onClick={() => this.toggleFavorited(post)}
+                                onClick={() =>
+                                    this.togglePostStatus("favourite", post)
+                                }
                             >
                                 <FavoriteIcon
                                     className={
@@ -786,7 +696,9 @@ export class Post extends React.Component<any, IPostState> {
                         </Typography>
                         <Tooltip title="Boost">
                             <IconButton
-                                onClick={() => this.toggleReblogged(post)}
+                                onClick={() =>
+                                    this.togglePostStatus("reblog", post)
+                                }
                             >
                                 <AutorenewIcon
                                     className={
