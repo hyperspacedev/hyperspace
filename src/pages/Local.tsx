@@ -159,9 +159,12 @@ class LocalPage extends Component<any, ILocalPageState> {
 
     render() {
         const { classes } = this.props;
+        const containerClasses = `${classes.pageLayoutMaxConstraints}${
+            this.state.isMasonryLayout ? " " + classes.pageLayoutMasonry : ""
+        }`;
 
         return (
-            <div className={classes.pageLayoutMaxConstraints}>
+            <div className={containerClasses}>
                 {this.state.backlogPosts ? (
                     <div className={classes.pageTopChipContainer}>
                         <div className={classes.pageTopChips}>
