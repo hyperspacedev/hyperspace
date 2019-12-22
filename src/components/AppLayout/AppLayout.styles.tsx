@@ -58,6 +58,10 @@ export const styles = (theme: Theme) =>
                 display: "none"
             }
         },
+        appBarBackButton: {
+            marginLeft: -12,
+            marginRight: 20
+        },
         appBarTitle: {
             display: "none",
             [theme.breakpoints.up("md")]: {

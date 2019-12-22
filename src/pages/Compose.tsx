@@ -44,6 +44,7 @@ import {
     getConfig,
     getUserDefaultBool
 } from "../utilities/settings";
+import { draftExists, writeDraft, loadDraft } from "../utilities/compose";
 
 /**
  * The state for the Composer page.
@@ -228,6 +229,31 @@ class Composer extends Component<any, IComposerState> {
                 ? 500 - text.length
                 : 99999999
         });
+    }
+
+    /**
+     * Check if there is unsaved text and store it as a draft.
+     */
+    componentWillUnmount() {
+        if (this.state.text !== "") {
+            writeDraft(
+                this.state.text,
+                this.state.reply ? Number(this.state.reply) : -999
+            );
+            this.props.enqueueSnackbar("Draft saved.");
+        }
+    }
+
+    /**
+     * Restore the draft from session storage and pre-load it into the state.
+     */
+    restoreDraft() {
+        const draft = loadDraft();
+        const text = draft.contents;
+        const reply =
+            draft.replyId !== -999 ? draft.replyId.toString() : undefined;
+        this.setState({ text, reply });
+        this.props.enqueueSnackbar("Restored draft.");
     }
 
     /**
@@ -930,6 +956,21 @@ class Composer extends Component<any, IComposerState> {
                         ) : null}
                     </Menu>
                 </Toolbar>
+                {draftExists() ? (
+                    <DialogContent className={classes.draftDisplayArea}>
+                        <Typography className={classes.draftText}>
+                            You have an unsaved post.
+                        </Typography>
+                        <div className={classes.draftFlexGrow} />
+                        <Button
+                            color="primary"
+                            size="small"
+                            onClick={() => this.restoreDraft()}
+                        >
+                            Restore
+                        </Button>
+                    </DialogContent>
+                ) : null}
                 <DialogActions>
                     <Button color="secondary" onClick={() => this.post()}>
                         Post

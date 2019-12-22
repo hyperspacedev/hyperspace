@@ -45,5 +45,25 @@ export const styles = (theme: Theme) =>
         },
         pollWizardFlexGrow: {
             flexGrow: 1
+        },
+        draftDisplayArea: {
+            display: "flex",
+            paddingLeft: 8,
+            paddingRight: 8,
+            paddingTop: 4,
+            paddingBottom: 4,
+            borderColor: theme.palette.action.disabledBackground,
+            borderWidth: 0.25,
+            borderStyle: "solid",
+            borderRadius: 2,
+            verticalAlign: "middle",
+            marginLeft: 16,
+            marginRight: 16
+        },
+        draftText: {
+            padding: theme.spacing.unit / 2
+        },
+        draftFlexGrow: {
+            flexGrow: 1
         }
     });
