@@ -64,7 +64,7 @@ import UndoIcon from "@material-ui/icons/Undo";
 import DomainDisabledIcon from "@material-ui/icons/DomainDisabled";
 import AccountSettingsIcon from "mdi-material-ui/AccountSettings";
 import AlphabeticalVariantOffIcon from "mdi-material-ui/AlphabeticalVariantOff";
-import DashboardIcon from '@material-ui/icons/Dashboard'
+import DashboardIcon from "@material-ui/icons/Dashboard";
 
 import { Config } from "../types/Config";
 import { Account } from "../types/Account";
@@ -120,7 +120,7 @@ class SettingsPage extends Component<any, ISettingsState> {
             brandName: "Hyperspace",
             federated: true,
             imposeCharacterLimit: getUserDefaultBool("imposeCharacterLimit"),
-            masonryLayout: getUserDefaultBool("isMasonryLayout"),
+            masonryLayout: getUserDefaultBool("isMasonryLayout")
         };
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -129,7 +129,7 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.toggleBadgeCount = this.toggleBadgeCount.bind(this);
         this.toggleThemeDialog = this.toggleThemeDialog.bind(this);
         this.toggleVisibilityDialog = this.toggleVisibilityDialog.bind(this);
-        this.toggleMasonryLayout = this.toggleMasonryLayout.bind(this)
+        this.toggleMasonryLayout = this.toggleMasonryLayout.bind(this);
         this.changeThemeName = this.changeThemeName.bind(this);
         this.changeTheme = this.changeTheme.bind(this);
         this.setVisibility = this.setVisibility.bind(this);
@@ -246,11 +246,8 @@ class SettingsPage extends Component<any, ISettingsState> {
     }
 
     toggleMasonryLayout() {
-        this.setState({ masonryLayout: !this.state.masonryLayout })
-        setUserDefaultBool(
-            "isMasonryLayout",
-            !this.state.masonryLayout
-        )
+        this.setState({ masonryLayout: !this.state.masonryLayout });
+        setUserDefaultBool("isMasonryLayout", !this.state.masonryLayout);
     }
 
     changeTheme() {

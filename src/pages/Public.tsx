@@ -14,7 +14,7 @@ import Post from "../components/Post";
 import { Status } from "../types/Status";
 import Mastodon, { StreamListener } from "megalodon";
 import { withSnackbar } from "notistack";
-import Masonry from 'react-masonry-css';
+import Masonry from "react-masonry-css";
 import { getUserDefaultBool } from "../utilities/settings";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 
@@ -25,7 +25,7 @@ interface IPublicPageState {
     viewDidLoad?: boolean;
     viewDidError?: boolean;
     viewDidErrorCode?: any;
-    isMasonryLayout?:boolean;
+    isMasonryLayout?: boolean;
 }
 
 class PublicPage extends Component<any, IPublicPageState> {
@@ -38,7 +38,7 @@ class PublicPage extends Component<any, IPublicPageState> {
         this.state = {
             viewIsLoading: true,
             backlogPosts: null,
-            isMasonryLayout: getUserDefaultBool('isMasonryLayout')
+            isMasonryLayout: getUserDefaultBool("isMasonryLayout")
         };
 
         this.client = new Mastodon(
@@ -195,14 +195,18 @@ class PublicPage extends Component<any, IPublicPageState> {
                                     default: 4,
                                     2000: 3,
                                     1400: 2,
-                                    1050: 1,
+                                    1050: 1
                                 }}
                                 className={classes.masonryGrid}
-                                columnClassName={classes['my-masonry-grid_column']}
+                                columnClassName={
+                                    classes["my-masonry-grid_column"]
+                                }
                             >
                                 {this.state.posts.map((post: Status) => {
                                     return (
-                                        <div className={classes.masonryGrid_item}>
+                                        <div
+                                            className={classes.masonryGrid_item}
+                                        >
                                             <Post
                                                 key={post.id}
                                                 post={post}
@@ -216,7 +220,9 @@ class PublicPage extends Component<any, IPublicPageState> {
                             <div>
                                 {this.state.posts.map((post: Status) => {
                                     return (
-                                        <div className={classes.masonryGrid_item}>
+                                        <div
+                                            className={classes.masonryGrid_item}
+                                        >
                                             <Post
                                                 key={post.id}
                                                 post={post}

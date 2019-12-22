@@ -102,7 +102,7 @@ export function createUserDefaults() {
         displayAllOnNotificationBadge: false,
         defaultVisibility: "public",
         imposeCharacterLimit: true,
-        isMasonryLayout: false,
+        isMasonryLayout: false
     };
 
     let settings = [
@@ -112,7 +112,7 @@ export function createUserDefaults() {
         "displayAllOnNotificationBadge",
         "defaultVisibility",
         "imposeCharacterLimit",
-        "isMasonryLayout",
+        "isMasonryLayout"
     ];
 
     migrateExistingSettings();

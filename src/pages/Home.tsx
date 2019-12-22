@@ -14,7 +14,7 @@ import Post from "../components/Post";
 import { Status } from "../types/Status";
 import Mastodon, { StreamListener } from "megalodon";
 import { withSnackbar } from "notistack";
-import Masonry from 'react-masonry-css'
+import Masonry from "react-masonry-css";
 import { getUserDefaultBool } from "../utilities/settings";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 
@@ -38,7 +38,7 @@ class HomePage extends Component<any, IHomePageState> {
         this.state = {
             viewIsLoading: true,
             backlogPosts: null,
-            isMasonryLayout: getUserDefaultBool('isMasonryLayout')
+            isMasonryLayout: getUserDefaultBool("isMasonryLayout")
         };
 
         this.client = new Mastodon(
@@ -159,9 +159,7 @@ class HomePage extends Component<any, IHomePageState> {
     render() {
         const { classes } = this.props;
         const containerClasses = `${classes.pageLayoutMaxConstraints}${
-            this.state.isMasonryLayout
-                ? ' ' + classes.pageLayoutMasonry
-                : ''
+            this.state.isMasonryLayout ? " " + classes.pageLayoutMasonry : ""
         }`;
         return (
             <div className={containerClasses}>
@@ -199,22 +197,26 @@ class HomePage extends Component<any, IHomePageState> {
                                     default: 4,
                                     2000: 3,
                                     1400: 2,
-                                    1050: 1,
+                                    1050: 1
                                 }}
                                 className={classes.masonryGrid}
-                                columnClassName={classes['my-masonry-grid_column']}
-                                >
-                            {this.state.posts.map((post: Status) => {
-                                return (
-                                    <div className={classes.masonryGrid_item}>
-                                        <Post
-                                            key={post.id}
-                                            post={post}
-                                            client={this.client}
-                                        />
-                                    </div>
-                                );
-                            })}
+                                columnClassName={
+                                    classes["my-masonry-grid_column"]
+                                }
+                            >
+                                {this.state.posts.map((post: Status) => {
+                                    return (
+                                        <div
+                                            className={classes.masonryGrid_item}
+                                        >
+                                            <Post
+                                                key={post.id}
+                                                post={post}
+                                                client={this.client}
+                                            />
+                                        </div>
+                                    );
+                                })}
                             </Masonry>
                         ) : (
                             <div>
