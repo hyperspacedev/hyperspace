@@ -14,7 +14,7 @@ jobs:
           node-version: 10.x
       - name: Modify config.json
         run: |
-          ((Get-Content -Path .\public\config,json -Raw) -replace '/\"location\"?: \"https?:\/\/([A-Za-z0-9.]+)\",/g','\"location\": \"desktop\",') | Set-Content -Path .\public\config.json
+          ((Get-Content -Path .\public\config.json -Raw) -replace '/\"location\"?: \"https?:\/\/([A-Za-z0-9.]+)\",/g','\"location\": \"desktop\",') | Set-Content -Path .\public\config.json
         shell: powershell
       - name: Install dependencies and build
         run: |
