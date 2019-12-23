@@ -24,8 +24,10 @@ jobs:
 
           with open('public/config.json', 'w+') as out:
             dump(json_dict, out)
-
         shell: python
+      - name: Verify changes
+        run: (Get-Content -Path .\public\config.json -Raw) -match "location"
+        uses: powershell
       - name: Install dependencies and build
         run: |
           npm install
