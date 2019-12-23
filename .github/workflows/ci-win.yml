@@ -12,6 +12,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
+      - name: Modify config.json
+        run: |
+          replacer=$(cat public/config.json | grep "location")
+          echo $replacer
+          sed -i "s/$replacer/\"location\": \"desktop"/g" public/config.json;
       - name: Install dependencies and build
         run: |
           npm install
@@ -21,5 +26,5 @@ jobs:
         uses: actions/upload-artifact@v1
         if: success()
         with:
-          name: 'Windows executable'
-          path: dist/Hyperspace-*.exe
+          name: 'Windows executable (output dir)'
+          path: dist
