@@ -14,9 +14,7 @@ jobs:
           node-version: 10.x
       - name: Modify config.json
         run: |
-          replacer=$(cat public/config.json | grep "location")
-          echo $replacer
-          sed -i "s/$replacer/\"location\": \"desktop"/g" public/config.json;
+          sed -i "s/$(cat public/config.json | grep "location")/\"location\": \"desktop"/g" public/config.json;
       - name: Install dependencies and build
         run: |
           npm install
