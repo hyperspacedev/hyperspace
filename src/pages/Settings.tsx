@@ -64,6 +64,7 @@ import UndoIcon from "@material-ui/icons/Undo";
 import DomainDisabledIcon from "@material-ui/icons/DomainDisabled";
 import AccountSettingsIcon from "mdi-material-ui/AccountSettings";
 import AlphabeticalVariantOffIcon from "mdi-material-ui/AlphabeticalVariantOff";
+import DashboardIcon from "@material-ui/icons/Dashboard";
 
 import { Config } from "../types/Config";
 import { Account } from "../types/Account";
@@ -86,6 +87,7 @@ interface ISettingsState {
     federated: boolean;
     currentUser?: Account;
     imposeCharacterLimit: boolean;
+    masonryLayout?: boolean;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -117,7 +119,8 @@ class SettingsPage extends Component<any, ISettingsState> {
             defaultVisibility: getUserDefaultVisibility() || "public",
             brandName: "Hyperspace",
             federated: true,
-            imposeCharacterLimit: getUserDefaultBool("imposeCharacterLimit")
+            imposeCharacterLimit: getUserDefaultBool("imposeCharacterLimit"),
+            masonryLayout: getUserDefaultBool("isMasonryLayout")
         };
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -126,6 +129,7 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.toggleBadgeCount = this.toggleBadgeCount.bind(this);
         this.toggleThemeDialog = this.toggleThemeDialog.bind(this);
         this.toggleVisibilityDialog = this.toggleVisibilityDialog.bind(this);
+        this.toggleMasonryLayout = this.toggleMasonryLayout.bind(this);
         this.changeThemeName = this.changeThemeName.bind(this);
         this.changeTheme = this.changeTheme.bind(this);
         this.setVisibility = this.setVisibility.bind(this);
@@ -239,6 +243,11 @@ class SettingsPage extends Component<any, ISettingsState> {
 
     toggleResetSettingsDialog() {
         this.setState({ resetSettingsDialog: !this.state.resetSettingsDialog });
+    }
+
+    toggleMasonryLayout() {
+        this.setState({ masonryLayout: !this.state.masonryLayout });
+        setUserDefaultBool("isMasonryLayout", !this.state.masonryLayout);
     }
 
     changeTheme() {
@@ -559,7 +568,36 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 </Toolbar>
                             </div>
                         </div>
-                    ) : null}
+                    ) : (
+                        <div className={classes.pageHeroBackground}>
+                            <div className={classes.pageHeroBackgroundImage} />
+                            <div className={classes.profileContent}>
+                                <br />
+                                <Avatar className={classes.settingsAvatar} />
+                                <div
+                                    className={classes.profileUserBox}
+                                    style={{ margin: "auto" }}
+                                >
+                                    <Typography
+                                        className={classes.settingsHeaderText}
+                                        color="inherit"
+                                        component="h1"
+                                    >
+                                        {"Loading..."}
+                                    </Typography>
+                                    <Typography
+                                        color="inherit"
+                                        className={classes.settingsDetailText}
+                                        component="p"
+                                    >
+                                        @{"..."}
+                                    </Typography>
+                                </div>
+                                <div className={classes.pageGrow} />
+                                <Toolbar />
+                            </div>
+                        </div>
+                    )}
                     <div className={classes.pageContentLayoutConstraints}>
                         <ListSubheader>Appearance</ListSubheader>
                         <Paper className={classes.pageListConstraints}>
@@ -619,6 +657,22 @@ class SettingsPage extends Component<any, ISettingsState> {
                                         >
                                             Set theme
                                         </Button>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <DashboardIcon color="action" />
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                        primary="Show more posts"
+                                        secondary="Shows additional columns of posts on wider screens"
+                                    />
+                                    <ListItemSecondaryAction>
+                                        <Switch
+                                            checked={this.state.masonryLayout}
+                                            onChange={this.toggleMasonryLayout}
+                                        />
                                     </ListItemSecondaryAction>
                                 </ListItem>
                             </List>

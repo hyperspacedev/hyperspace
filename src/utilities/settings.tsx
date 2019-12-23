@@ -101,7 +101,8 @@ export function createUserDefaults() {
         clearNotificationsOnRead: false,
         displayAllOnNotificationBadge: false,
         defaultVisibility: "public",
-        imposeCharacterLimit: true
+        imposeCharacterLimit: true,
+        isMasonryLayout: false
     };
 
     let settings = [
@@ -110,7 +111,8 @@ export function createUserDefaults() {
         "clearNotificationsOnRead",
         "displayAllOnNotificationBadge",
         "defaultVisibility",
-        "imposeCharacterLimit"
+        "imposeCharacterLimit",
+        "isMasonryLayout"
     ];
 
     migrateExistingSettings();

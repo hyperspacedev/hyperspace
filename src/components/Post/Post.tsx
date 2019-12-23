@@ -398,21 +398,34 @@ export class Post extends React.Component<any, IPostState> {
         const { classes } = this.props;
         if (post.reblog) {
             let author = post.reblog.account;
-            let origString = `<span>${author.display_name ||
-                author.username} (@${author.acct}) 🔄 ${post.account
-                .display_name || post.account.username}</span>`;
             let emojis = author.emojis;
             emojis.concat(post.account.emojis);
-            return emojifyString(origString, emojis, classes.postAuthorEmoji);
+            return (
+                <>
+                    <span>
+                        {emojifyString(author.display_name || author.username, author.emojis, classes.postAuthorEmoji)}
+                    </span>
+                    <span className={classes.postAuthorAccount}>
+                        @{emojifyString(author.acct, author.emojis, classes.postAuthorEmoji)}
+                    </span>
+                    <AutorenewIcon fontSize='small' className={classes.postReblogIcon} />
+                    <span>
+                        {emojifyString(post.account.display_name || post.account.username, emojis, classes.postAuthorEmoji)}
+                    </span>
+                </>
+            )
         } else {
             let author = post.account;
-            let origString = `<span>${author.display_name ||
-                author.username} (@${author.acct})</span>`;
-            return emojifyString(
-                origString,
-                author.emojis,
-                classes.postAuthorEmoji
-            );
+            return (
+                <>
+                    <span>
+                        {emojifyString(author.display_name || author.username, author.emojis, classes.postAuthorEmoji)}
+                    </span>
+                    <span className={classes.postAuthorAccount}>
+                        @{emojifyString(author.acct, author.emojis, classes.postAuthorEmoji)}
+                    </span>
+                </>
+            )
         }
     }
 
@@ -656,13 +669,7 @@ export class Post extends React.Component<any, IPostState> {
                                 </IconButton>
                             </Tooltip>
                         }
-                        title={
-                            <Typography
-                                dangerouslySetInnerHTML={{
-                                    __html: this.getReblogAuthors(post)
-                                }}
-                            />
-                        }
+                        title={<Typography>{this.getReblogAuthors(post)}</Typography>}
                         subheader={moment(post.created_at).format(
                             "MMMM Do YYYY [at] h:mm A"
                         )}
