@@ -26,8 +26,7 @@ jobs:
             dump(json_dict, out)
         shell: python
       - name: Verify changes
-        run: (Get-Content -Path .\public\config.json -Raw) -match "location"
-        shell: powershell
+        run: cat public/config.json | grep 'location'
       - name: Install dependencies and build
         run: |
           npm install
