@@ -12,10 +12,20 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
-      - name: Modify config.json
+      - name: Change desktop field
         run: |
-          ((Get-Content -Path .\public\config.json -Raw) -replace '/\"location\"?: \"https?:\/\/([A-Za-z0-9.]+)\",/g','\"location\": \"desktop\",') | Set-Content -Path .\public\config.json
-        shell: powershell
+          from json import load, dump
+
+          json_dict = {}
+          with open('public/config.json', 'r') as file:
+            json_dict = load(file)
+          
+          json_dict["location"] = "desktop"
+
+          with open('public/config.json', 'w+') as out:
+            dump(json_dict, out)
+
+        shell: python
       - name: Install dependencies and build
         run: |
           npm install
