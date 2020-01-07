@@ -28,6 +28,11 @@ interface IHomePageState {
     isMasonryLayout?: boolean;
 }
 
+/**
+ * The base class for the home timeline.
+ * @deprecated Use TimelinePage with the props `timeline="/timelines/home"`
+ * and `stream="/streaming/user"`.
+ */
 class HomePage extends Component<any, IHomePageState> {
     client: Mastodon;
     streamListener: StreamListener;
