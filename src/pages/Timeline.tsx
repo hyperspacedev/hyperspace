@@ -33,7 +33,7 @@ interface ITimelinePageProps extends withSnackbarProps, StyledComponentProps {
      * The API endpoint for the timeline to stream.
      */
     stream: string;
-    classes: any;
+    classes?: any;
 }
 
 /**
