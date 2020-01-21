@@ -46,32 +46,133 @@ import { Account, MultiAccount } from "../types/Account";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import CloseIcon from "@material-ui/icons/Close";
 
+/**
+ * Basic props for Welcome page
+ */
 interface IWelcomeProps extends withSnackbarProps {
     classes: any;
 }
 
+/**
+ * Basic state for welcome page
+ */
 interface IWelcomeState {
+    /**
+     * The custom-defined URL to the logo to display
+     */
     logoUrl?: string;
+
+    /**
+     * The custom-defined URL to the background image to display
+     */
     backgroundUrl?: string;
+
+    /**
+     * The custom-defined brand name of this app
+     */
     brandName?: string;
+
+    /**
+     * The custom-defined server address to register to
+     */
     registerBase?: string;
+
+    /**
+     * Whether this version of Hyperspace has federation
+     */
     federates?: boolean;
+
+    /**
+     * Whether Hyperspace is ready to get the auth code
+     */
     proceedToGetCode: boolean;
+
+    /**
+     * The currently "logged-in" user after the first step
+     */
     user: string;
+
+    /**
+     * Whether the user's input errors
+     */
     userInputError: boolean;
+
+    /**
+     * The user input error message, if any
+     */
     userInputErrorMessage: string;
+
+    /**
+     * The app's client ID, if registered
+     */
     clientId?: string;
+
+    /**
+     * The app's client secret, if registered
+     */
     clientSecret?: string;
+
+    /**
+     * The authorization URL provided by Mastodon from the
+     * client ID and secret
+     */
     authUrl?: string;
+
+    /**
+     * Whether a previous login attempt is present
+     */
     foundSavedLogin: boolean;
+
+    /**
+     * Whether Hyperspace is in the process of authorizing
+     */
     authorizing: boolean;
+
+    /**
+     * The custom-defined license for the Hyperspace source code
+     */
     license?: string;
+
+    /**
+     * The custom-defined URL to the source code of Hyperspace
+     */
     repo?: string;
+
+    /**
+     * The default address to redirect to. Used in login inits and
+     * when the authorization code completes.
+     */
     defaultRedirectAddress: string;
+
+    /**
+     * Whether the redirect address is set to 'dynamic'.
+     */
+    redirectAddressIsDynamic: boolean;
+
+    /**
+     * Whether the authorization dialog for the emergency login is
+     * open.
+     */
     openAuthDialog: boolean;
+
+    /**
+     * The authorization code to fetch an access token with
+     */
     authCode: string;
+
+    /**
+     * Whether the Emergency Mode has been initiated
+     */
     emergencyMode: boolean;
+
+    /**
+     * The current app version
+     */
     version: string;
+
+    /**
+     * Whether we are in the process of adding a new account or not
+     */
     willAddAccount: boolean;
 }
 
@@ -89,6 +190,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             authorizing: false,
             userInputErrorMessage: "",
             defaultRedirectAddress: "",
+            redirectAddressIsDynamic: false,
             openAuthDialog: false,
             authCode: "",
             emergencyMode: false,
@@ -133,6 +235,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             config.location != "dynamic"
                                 ? config.location
                                 : `https://${window.location.host}`,
+                        redirectAddressIsDynamic: config.location == "dynamic",
                         version: config.version
                     });
                 }
@@ -433,10 +536,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             "access_token",
                             tokenData.access_token
                         );
-                        window.location.href =
-                            window.location.protocol === "hyperspace:"
-                                ? "hyperspace://hyperspace/app/"
-                                : `https://${window.location.host}/#/`;
+                        this.redirectToApp();
                     })
                     .catch((err: Error) => {
                         this.props.enqueueSnackbar(
@@ -451,6 +551,18 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     });
             }
         }
+    }
+
+    /**
+     * Redirect to the app's main view after a login.
+     */
+    redirectToApp() {
+        window.location.href =
+            window.location.protocol === "hyperspace:"
+                ? "hyperspace://hyperspace/app"
+                : this.state.redirectAddressIsDynamic
+                ? `https://${window.location.host}/#/`
+                : this.state.defaultRedirectAddress + "/#/";
     }
 
     titlebar() {
@@ -481,11 +593,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             <ListItem
                                 onClick={() => {
                                     loginWithAccount(account);
-                                    window.location.href =
-                                        window.location.protocol ===
-                                        "hyperspace:"
-                                            ? "hyperspace://hyperspace/app/"
-                                            : `https://${window.location.host}/#/`;
+                                    this.redirectToApp();
                                 }}
                                 button={true}
                             >
