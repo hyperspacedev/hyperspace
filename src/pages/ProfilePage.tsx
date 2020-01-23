@@ -309,7 +309,7 @@ class ProfilePage extends Component<any, IProfilePageState> {
         }
     }
 
-    renderPosts(posts: [Status]) {
+    renderPosts(posts: Status[]) {
         const { classes } = this.props;
         const postComponents = posts.map((post: Status) => {
             return (
@@ -318,8 +318,8 @@ class ProfilePage extends Component<any, IProfilePageState> {
                     post={post}
                     client={this.client}
                 />
-            )
-        })
+            );
+        });
         if (this.state.isMasonryLayout) {
             return (
                 <Masonry
@@ -334,13 +334,13 @@ class ProfilePage extends Component<any, IProfilePageState> {
                 >
                     {postComponents}
                 </Masonry>
-            )
+            );
         } else {
             return (
                 <div>
                     {postComponents}
                 </div>
-            )
+            );
         }
     }
 
