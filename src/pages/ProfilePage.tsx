@@ -496,7 +496,7 @@ class ProfilePage extends Component<any, IProfilePageState> {
                         </div>
                     </div>
                 </div>
-                <div className={classes.pageContentLayoutConstraints}>
+                <div className={containerClasses}>
                     {this.state.viewDidError ? (
                         <Paper className={classes.errorCard}>
                             <Typography variant="h4">Bummer.</Typography>
