@@ -81,9 +81,11 @@ class AttachmentComponent extends Component<
                 return <AudioPlayer src={slide.url} id={slide.id} />;
             case "gifv":
                 return (
-                    <img
+                    <video
+                        autoPlay
+                        loop
                         src={slide.url}
-                        alt={slide.description ? slide.description : ""}
+                        title={slide.description ? slide.description : ""}
                         className={classes.mediaObject}
                     />
                 );
