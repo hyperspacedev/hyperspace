@@ -8,9 +8,7 @@ import AboutPage from "./pages/About";
 import Settings from "./pages/Settings";
 import { getUserDefaultBool, getUserDefaultTheme } from "./utilities/settings";
 import ProfilePage from "./pages/ProfilePage";
-import HomePage from "./pages/Home";
-import LocalPage from "./pages/Local";
-import PublicPage from "./pages/Public";
+import TimelinePage from "./pages/Timeline";
 import Conversation from "./pages/Conversation";
 import NotificationsPage from "./pages/Notifications";
 import SearchPage from "./pages/Search";
@@ -98,10 +96,47 @@ class App extends Component<any, IAppState> {
                 <Route path="/welcome" component={WelcomePage} />
                 <div>
                     {this.state.showLayout ? <AppLayout /> : null}
-                    <PrivateRoute exact path="/" component={HomePage} />
-                    <PrivateRoute path="/home" component={HomePage} />
-                    <PrivateRoute path="/local" component={LocalPage} />
-                    <PrivateRoute path="/public" component={PublicPage} />
+                    <PrivateRoute
+                        exact
+                        path="/"
+                        render={(props: any) => (
+                            <TimelinePage
+                                {...props}
+                                stream="/streaming/user"
+                                timeline="/timelines/home"
+                            />
+                        )}
+                    />
+                    <PrivateRoute
+                        path="/home"
+                        render={(props: any) => (
+                            <TimelinePage
+                                {...props}
+                                stream="/streaming/user"
+                                timeline="/timelines/home"
+                            />
+                        )}
+                    />
+                    <PrivateRoute
+                        path="/local"
+                        render={(props: any) => (
+                            <TimelinePage
+                                {...props}
+                                stream="/streaming/public/local"
+                                timeline="/timelines/public?local=true"
+                            />
+                        )}
+                    />
+                    <PrivateRoute
+                        path="/public"
+                        render={(props: any) => (
+                            <TimelinePage
+                                {...props}
+                                stream="/streaming/public"
+                                timeline="/timelines/public"
+                            />
+                        )}
+                    />
                     <PrivateRoute path="/messages" component={MessagesPage} />
                     <PrivateRoute
                         path="/notifications"
