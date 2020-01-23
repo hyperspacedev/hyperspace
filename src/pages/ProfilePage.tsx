@@ -63,7 +63,7 @@ class ProfilePage extends Component<any, IProfilePageState> {
         this.state = {
             viewIsLoading: true,
             blockDialogOpen: false,
-            isMasonryLayout: getUserDefaultBool("isMasonryLayout"),
+            isMasonryLayout: getUserDefaultBool("isMasonryLayout")
         };
     }
 
@@ -312,13 +312,7 @@ class ProfilePage extends Component<any, IProfilePageState> {
     renderPosts(posts: Status[]) {
         const { classes } = this.props;
         const postComponents = posts.map((post: Status) => {
-            return (
-                <Post
-                    key={post.id}
-                    post={post}
-                    client={this.client}
-                />
-            );
+            return <Post key={post.id} post={post} client={this.client} />;
         });
         if (this.state.isMasonryLayout) {
             return (
@@ -329,18 +323,14 @@ class ProfilePage extends Component<any, IProfilePageState> {
                         default: 4,
                         2000: 3,
                         1400: 2,
-                        1050: 1,
+                        1050: 1
                     }}
                 >
                     {postComponents}
                 </Masonry>
             );
         } else {
-            return (
-                <div>
-                    {postComponents}
-                </div>
-            );
+            return <div>{postComponents}</div>;
         }
     }
 
@@ -348,7 +338,7 @@ class ProfilePage extends Component<any, IProfilePageState> {
         const { classes } = this.props;
         const containerClasses = `${classes.pageContentLayoutConstraints} ${
             this.state.isMasonryLayout ? classes.pageLayoutMasonry : ""
-        }`
+        }`;
         return (
             <div className={classes.pageLayoutMinimalConstraints}>
                 <div className={classes.pageHeroBackground}>

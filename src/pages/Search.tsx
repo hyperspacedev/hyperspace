@@ -58,7 +58,7 @@ class SearchPage extends Component<any, ISearchPageState> {
             viewIsLoading: true,
             query: searchParams.query,
             type: searchParams.type,
-            isMasonryLayout: getUserDefaultBool("isMasonryLayout"),
+            isMasonryLayout: getUserDefaultBool("isMasonryLayout")
         };
 
         if (searchParams.type === "tag") {
@@ -264,17 +264,10 @@ class SearchPage extends Component<any, ISearchPageState> {
         );
     }
 
-
     renderPosts(posts: Status[]) {
         const { classes } = this.props;
         const postComponents = posts.map((post: Status) => {
-            return (
-                <Post
-                    key={post.id}
-                    post={post}
-                    client={this.client}
-                />
-            );
+            return <Post key={post.id} post={post} client={this.client} />;
         });
         if (this.state.isMasonryLayout) {
             return (
@@ -285,18 +278,14 @@ class SearchPage extends Component<any, ISearchPageState> {
                         default: 4,
                         2000: 3,
                         1400: 2,
-                        1050: 1,
+                        1050: 1
                     }}
                 >
                     {postComponents}
                 </Masonry>
             );
         } else {
-            return (
-                <div>
-                    {postComponents}
-                </div>
-            );
+            return <div>{postComponents}</div>;
         }
     }
 
@@ -329,9 +318,7 @@ class SearchPage extends Component<any, ISearchPageState> {
     showAllPostsWithTag() {
         const { classes } = this.props;
         const containerClasses = `${classes.pageLayoutMaxConstraints} ${
-            this.state.isMasonryLayout
-                ? classes.pageLayoutMasonry
-                : ""
+            this.state.isMasonryLayout ? classes.pageLayoutMasonry : ""
         }`;
         return (
             <div className={containerClasses}>

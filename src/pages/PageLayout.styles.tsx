@@ -338,6 +338,6 @@ export const styles = (theme: Theme) =>
         },
         noTopPaddingMargin: {
             marginTop: 0,
-            paddingTop: 0,
-        },
+            paddingTop: 0
+        }
     });
