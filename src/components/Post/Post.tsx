@@ -405,8 +405,6 @@ export class Post extends React.Component<any, IPostState> {
             emojis.concat(reblogger.emojis);
         }
 
-        console.log(post);
-
         return (
             <>
                 <span
@@ -660,7 +658,6 @@ export class Post extends React.Component<any, IPostState> {
         const { classes } = this.props;
         const post = this.state.post;
         return (
-            <Zoom in={true}>
                 <Card
                     className={classes.post}
                     id={`post_${post.id}`}
@@ -885,7 +882,6 @@ export class Post extends React.Component<any, IPostState> {
                         {this.showDeleteDialog()}
                     </Menu>
                 </Card>
-            </Zoom>
         );
     }
 }

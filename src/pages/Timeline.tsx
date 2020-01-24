@@ -120,6 +120,9 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
 
         // Create the stream listener from the properties.
         this.streamListener = this.client.stream(this.props.stream);
+
+        this.loadMoreTimelinePieces = this.loadMoreTimelinePieces.bind(this);
+        this.shouldLoadMorePosts = this.shouldLoadMorePosts.bind(this);
     }
 
     /**
@@ -198,10 +201,18 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
     }
 
     /**
-     * Halt the stream listener when unmounting the component.
+     * Listen for when scroll position changes
+     */
+    componentDidMount() {
+        window.addEventListener("scroll", this.shouldLoadMorePosts);
+    }
+
+    /**
+     * Halt the stream and scroll listeners when unmounting the component.
      */
     componentWillUnmount() {
         this.streamListener.stop();
+        window.removeEventListener("scroll", this.shouldLoadMorePosts);
     }
 
     /**
@@ -258,6 +269,19 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
                         variant: "error"
                     });
                 });
+        }
+    }
+
+    /**
+     * Load more posts when scroll is near the end of the page
+     */
+    shouldLoadMorePosts(e: Event) {
+        let difference =
+            document.body.clientHeight - window.scrollY - window.innerHeight;
+        console.log(difference);
+        if (difference < 5000) {
+            console.log("load!");
+            this.loadMoreTimelinePieces();
         }
     }
 
