@@ -28,6 +28,11 @@ interface IPublicPageState {
     isMasonryLayout?: boolean;
 }
 
+/**
+ * The base class for the public timeline.
+ * @deprecated Use TimelinePage with the props `timeline="/timelines/public"`
+ * and `stream="/streaming/public"`.
+ */
 class PublicPage extends Component<any, IPublicPageState> {
     client: Mastodon;
     streamListener: StreamListener;

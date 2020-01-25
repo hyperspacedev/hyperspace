@@ -396,37 +396,60 @@ export class Post extends React.Component<any, IPostState> {
 
     getReblogAuthors(post: Status) {
         const { classes } = this.props;
-        if (post.reblog) {
-            let author = post.reblog.account;
-            let emojis = author.emojis;
-            emojis.concat(post.account.emojis);
-            return (
-                <>
-                    <span>
-                        {emojifyString(author.display_name || author.username, author.emojis, classes.postAuthorEmoji)}
-                    </span>
-                    <span className={classes.postAuthorAccount}>
-                        @{emojifyString(author.acct, author.emojis, classes.postAuthorEmoji)}
-                    </span>
-                    <AutorenewIcon fontSize='small' className={classes.postReblogIcon} />
-                    <span>
-                        {emojifyString(post.account.display_name || post.account.username, emojis, classes.postAuthorEmoji)}
-                    </span>
-                </>
-            )
-        } else {
-            let author = post.account;
-            return (
-                <>
-                    <span>
-                        {emojifyString(author.display_name || author.username, author.emojis, classes.postAuthorEmoji)}
-                    </span>
-                    <span className={classes.postAuthorAccount}>
-                        @{emojifyString(author.acct, author.emojis, classes.postAuthorEmoji)}
-                    </span>
-                </>
-            )
+
+        let author = post.reblog ? post.reblog.account : post.account;
+        let emojis = author.emojis;
+        let reblogger = post.reblog ? post.account : undefined;
+
+        if (reblogger != undefined) {
+            emojis.concat(reblogger.emojis);
         }
+
+        console.log(post);
+
+        return (
+            <>
+                <span
+                    dangerouslySetInnerHTML={{
+                        __html: emojifyString(
+                            author.display_name || author.username,
+                            emojis,
+                            classes.postAuthorEmoji
+                        )
+                    }}
+                ></span>
+                <span
+                    className={classes.postAuthorAccount}
+                    dangerouslySetInnerHTML={{
+                        __html:
+                            "@" +
+                            emojifyString(
+                                author.acct || author.username,
+                                emojis,
+                                classes.postAuthorEmoji
+                            )
+                    }}
+                ></span>
+                {reblogger ? (
+                    <>
+                        <AutorenewIcon
+                            fontSize="small"
+                            className={classes.postReblogIcon}
+                        />
+                        <span
+                            dangerouslySetInnerHTML={{
+                                __html: emojifyString(
+                                    reblogger.display_name ||
+                                        reblogger.username,
+                                    emojis,
+                                    classes.postAuthorEmoji
+                                )
+                            }}
+                        ></span>
+                    </>
+                ) : null}
+            </>
+        );
     }
 
     getMentions(mention: [Mention]) {
@@ -669,7 +692,11 @@ export class Post extends React.Component<any, IPostState> {
                                 </IconButton>
                             </Tooltip>
                         }
-                        title={<Typography>{this.getReblogAuthors(post)}</Typography>}
+                        title={
+                            <Typography>
+                                {this.getReblogAuthors(post)}
+                            </Typography>
+                        }
                         subheader={moment(post.created_at).format(
                             "MMMM Do YYYY [at] h:mm A"
                         )}
