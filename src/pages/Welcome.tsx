@@ -413,42 +413,51 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 let clientLoginSession: SaveClientSession = JSON.parse(
                     loginData
                 );
-                Mastodon.fetchAccessToken(
-                    clientLoginSession.clientId,
-                    clientLoginSession.clientSecret,
-                    code,
-                    localStorage.getItem("baseurl") as string,
-                    this.state.emergencyMode
-                        ? undefined
-                        : clientLoginSession.authUrl.includes(
-                              "urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
-                          )
-                        ? undefined
-                        : window.location.protocol === "hyperspace:"
-                        ? "hyperspace://hyperspace/app/"
-                        : `https://${window.location.host}`
-                )
-                    .then((tokenData: any) => {
-                        localStorage.setItem(
-                            "access_token",
-                            tokenData.access_token
-                        );
-                        window.location.href =
-                            window.location.protocol === "hyperspace:"
-                                ? "hyperspace://hyperspace/app/"
-                                : `https://${window.location.host}/#/`;
-                    })
-                    .catch((err: Error) => {
-                        this.props.enqueueSnackbar(
-                            `Couldn't authorize ${
-                                this.state.brandName
-                                    ? this.state.brandName
-                                    : "Hyperspace"
-                            }: ${err.name}`,
-                            { variant: "error" }
-                        );
-                        console.error(err.message);
-                    });
+
+                getConfig().then((resp: any) => {
+                    if (resp == undefined) {
+                        return;
+                    }
+
+                    let conf: Config = resp;
+
+                    let redirectUrl: string | undefined =
+                        this.state.emergencyMode ||
+                        clientLoginSession.authUrl.includes(
+                            "urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
+                        )
+                            ? undefined
+                            : getRedirectAddress(conf.location);
+
+                    Mastodon.fetchAccessToken(
+                        clientLoginSession.clientId,
+                        clientLoginSession.clientSecret,
+                        code,
+                        localStorage.getItem("baseurl") as string,
+                        redirectUrl
+                    )
+                        .then((tokenData: any) => {
+                            localStorage.setItem(
+                                "access_token",
+                                tokenData.access_token
+                            );
+                            window.location.href =
+                                window.location.protocol === "hyperspace:"
+                                    ? "hyperspace://hyperspace/app/"
+                                    : this.state.defaultRedirectAddress;
+                        })
+                        .catch((err: Error) => {
+                            this.props.enqueueSnackbar(
+                                `Couldn't authorize ${
+                                    this.state.brandName
+                                        ? this.state.brandName
+                                        : "Hyperspace"
+                                }: ${err.name}`,
+                                { variant: "error" }
+                            );
+                            console.error(err.message);
+                        });
+                });
             }
         }
     }

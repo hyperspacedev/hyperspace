@@ -44,18 +44,18 @@ export function createHyperspaceApp(
 
 /**
  * Gets the appropriate redirect address.
- * @param type The address or configuration to use
+ * @param url The address or configuration to use
  */
 export function getRedirectAddress(
-    type: "desktop" | "dynamic" | string
+    url: "desktop" | "dynamic" | string
 ): string {
-    switch (type) {
+    switch (url) {
         case "desktop":
             return "hyperspace://hyperspace/app/";
         case "dynamic":
             return `https://${window.location.host}`;
         default:
-            return type;
+            return url;
     }
 }
 
