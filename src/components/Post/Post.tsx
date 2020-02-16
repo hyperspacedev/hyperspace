@@ -60,25 +60,6 @@ import ShareMenu from "./PostShareMenu";
 import { emojifyString } from "../../utilities/emojis";
 import { PollOption } from "../../types/Poll";
 
-const log = (post: Status, msg = "") => {
-    let {
-        replies_count,
-        reblogs_count,
-        favourites_count,
-        favourited,
-        reblogged,
-        reblog
-    } = post;
-    console.log(msg, {
-        replies_count,
-        reblogs_count,
-        favourites_count,
-        favourited,
-        reblogged,
-        reblog
-    });
-};
-
 interface IPostProps {
     post: Status;
     classes: any;
@@ -529,29 +510,54 @@ export class Post extends React.Component<any, IPostState> {
     }
 
     /**
-     * Toggle the status of a post's action and update the state
-     * @param type Either the "reblog" or "favorite" action
-     * @param post The post to toggle the status of
+     * Tell server a post has been un/favorited and update post state
+     * @param post The post to un/favorite
      */
-    togglePostStatus(type: "reblog" | "favourite", post: Status) {
-        const shouldUndo = post.favourited || post.reblogged;
-        let requestBuilder = `/statuses/${post.id}/${
-            shouldUndo ? "un" : ""
-        }${type}`;
-        this.client
-            .post(requestBuilder)
-            .then((resp: any) => {
-                this.setState({ post: resp.data as Status });
-            })
-            .catch((err: Error) => {
-                this.props.enqueueSnackbar(
-                    `Couldn't ${shouldUndo ? "un" : ""}${type} post: ${
-                        err.name
-                    }`,
-                    { variant: "error" }
-                );
-                console.error(err.message);
-            });
+    async toggleFavorite(post: Status) {
+        let action: string = post.favourited ? "unfavourite" : "favourite";
+        try {
+            // favorite the original post, not the reblog
+            let resp: any = await this.client.post(
+                `/statuses/${post.reblog ? post.reblog.id : post.id}/${action}`
+            );
+            // compensate for slow server update
+            if (action === "unfavourite") {
+                resp.data.favourites_count -= 1;
+                // if you unlike both original and reblog before refresh
+                // and the post has only one favorite:
+                if (resp.data.favourites_count < 0) {
+                    resp.data.favourites_count = 0;
+                }
+            }
+            this.setState({ post: resp.data as Status });
+        } catch (e) {
+            this.props.enqueueSnackbar(`Could not ${action} post: ${e.name}`);
+            console.error(e.message);
+        }
+    }
+
+    /**
+     * Tell server a post has been un/reblogged and update post state
+     * @param post The post to un/reblog
+     */
+    async toggleReblog(post: Status) {
+        let action: string =
+            post.reblogged || post.reblog ? "unreblog" : "reblog";
+        try {
+            // modify the original post, not the reblog
+            let resp: any = await this.client.post(
+                `/statuses/${post.reblog ? post.reblog.id : post.id}/${action}`
+            );
+            // compensate for slow server update
+            if (action === "unreblog") {
+                resp.data.reblogs_count -= 1;
+            }
+            if (resp.data.reblog) resp.data = resp.data.reblog;
+            this.setState({ post: resp.data as Status });
+        } catch (e) {
+            this.props.enqueueSnackbar(`Could not ${action} post: ${e.name}`);
+            console.error(e.message);
+        }
     }
 
     showDeleteDialog() {
@@ -602,7 +608,6 @@ export class Post extends React.Component<any, IPostState> {
                     elevation={this.props.threadHeader ? 0 : 1}
                 >
                     <CardHeader
-                        onClick={() => log(post)}
                         avatar={
                             <LinkableAvatar
                                 to={`/profile/${
@@ -672,34 +677,20 @@ export class Post extends React.Component<any, IPostState> {
                         </Typography>
                         <Tooltip title="Favorite">
                             <IconButton
-                                onClick={() =>
-                                    this.togglePostStatus("favourite", post)
-                                }
+                                onClick={() => this.toggleFavorite(post)}
                             >
                                 <FavoriteIcon
                                     className={
-                                        post.reblog
-                                            ? post.reblog.favourited
-                                                ? classes.postDidAction
-                                                : ""
-                                            : post.favourited
+                                        post.favourited
                                             ? classes.postDidAction
                                             : ""
                                     }
                                 />
                             </IconButton>
                         </Tooltip>
-                        <Typography>
-                            {post.reblog
-                                ? post.reblog.favourites_count
-                                : post.favourites_count}
-                        </Typography>
+                        <Typography>{post.favourites_count}</Typography>
                         <Tooltip title="Boost">
-                            <IconButton
-                                onClick={() =>
-                                    this.togglePostStatus("reblog", post)
-                                }
-                            >
+                            <IconButton onClick={() => this.toggleReblog(post)}>
                                 <AutorenewIcon
                                     className={
                                         post.reblog
