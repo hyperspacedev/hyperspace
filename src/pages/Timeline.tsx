@@ -132,7 +132,7 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
         this.streamListener.on("connect", () => {
             // Get the latest posts from this timeline.
             this.client
-                .get(this.props.timeline, { limit: 40 })
+                .get(this.props.timeline, { limit: 10 })
 
                 // If we succeeded, update the state and turn off loading.
                 .then((resp: any) => {
@@ -278,9 +278,7 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
     shouldLoadMorePosts(e: Event) {
         let difference =
             document.body.clientHeight - window.scrollY - window.innerHeight;
-        console.log(difference);
-        if (difference < 5000) {
-            console.log("load!");
+        if (difference < 10000 && this.state.viewIsLoading === false) {
             this.loadMoreTimelinePieces();
         }
     }
@@ -340,9 +338,9 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
                                     return (
                                         <div
                                             className={classes.masonryGrid_item}
+                                            key={post.id}
                                         >
                                             <Post
-                                                key={post.id}
                                                 post={post}
                                                 client={this.client}
                                             />
