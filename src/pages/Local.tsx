@@ -28,6 +28,11 @@ interface ILocalPageState {
     isMasonryLayout?: boolean;
 }
 
+/**
+ * The base class for the local timeline.
+ * @deprecated Use TimelinePage with the props `timeline="/timelines/public?local=true"`
+ * and `stream="/streaming/public/local"`.
+ */
 class LocalPage extends Component<any, ILocalPageState> {
     client: Mastodon;
     streamListener: StreamListener;

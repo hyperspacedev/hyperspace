@@ -396,37 +396,60 @@ export class Post extends React.Component<any, IPostState> {
 
     getReblogAuthors(post: Status) {
         const { classes } = this.props;
-        if (post.reblog) {
-            let author = post.reblog.account;
-            let emojis = author.emojis;
-            emojis.concat(post.account.emojis);
-            return (
-                <>
-                    <span>
-                        {emojifyString(author.display_name || author.username, author.emojis, classes.postAuthorEmoji)}
-                    </span>
-                    <span className={classes.postAuthorAccount}>
-                        @{emojifyString(author.acct, author.emojis, classes.postAuthorEmoji)}
-                    </span>
-                    <AutorenewIcon fontSize='small' className={classes.postReblogIcon} />
-                    <span>
-                        {emojifyString(post.account.display_name || post.account.username, emojis, classes.postAuthorEmoji)}
-                    </span>
-                </>
-            )
-        } else {
-            let author = post.account;
-            return (
-                <>
-                    <span>
-                        {emojifyString(author.display_name || author.username, author.emojis, classes.postAuthorEmoji)}
-                    </span>
-                    <span className={classes.postAuthorAccount}>
-                        @{emojifyString(author.acct, author.emojis, classes.postAuthorEmoji)}
-                    </span>
-                </>
-            )
+
+        let author = post.reblog ? post.reblog.account : post.account;
+        let emojis = author.emojis;
+        let reblogger = post.reblog ? post.account : undefined;
+
+        if (reblogger != undefined) {
+            emojis.concat(reblogger.emojis);
         }
+
+        console.log(post);
+
+        return (
+            <>
+                <span
+                    dangerouslySetInnerHTML={{
+                        __html: emojifyString(
+                            author.display_name || author.username,
+                            emojis,
+                            classes.postAuthorEmoji
+                        )
+                    }}
+                ></span>
+                <span
+                    className={classes.postAuthorAccount}
+                    dangerouslySetInnerHTML={{
+                        __html:
+                            "@" +
+                            emojifyString(
+                                author.acct || author.username,
+                                emojis,
+                                classes.postAuthorEmoji
+                            )
+                    }}
+                ></span>
+                {reblogger ? (
+                    <>
+                        <AutorenewIcon
+                            fontSize="small"
+                            className={classes.postReblogIcon}
+                        />
+                        <span
+                            dangerouslySetInnerHTML={{
+                                __html: emojifyString(
+                                    reblogger.display_name ||
+                                        reblogger.username,
+                                    emojis,
+                                    classes.postAuthorEmoji
+                                )
+                            }}
+                        ></span>
+                    </>
+                ) : null}
+            </>
+        );
     }
 
     getMentions(mention: [Mention]) {
@@ -513,86 +536,63 @@ export class Post extends React.Component<any, IPostState> {
         }
     }
 
+    /**
+     * Get the post's URL
+     * @param post The post to get the URL from
+     * @returns A string containing the post's URI
+     */
     getMastodonUrl(post: Status) {
-        let url = "";
-        if (post.reblog) {
-            url = post.reblog.uri;
-        } else {
-            url = post.uri;
-        }
-        return url;
+        return post.reblog ? post.reblog.uri : post.uri;
     }
 
-    toggleFavorited(post: Status) {
-        let _this = this;
-        if (post.favourited) {
-            this.client
-                .post(`/statuses/${post.id}/unfavourite`)
-                .then((resp: any) => {
-                    let post: Status = resp.data;
-                    this.setState({ post });
-                })
-                .catch((err: Error) => {
-                    _this.props.enqueueSnackbar(
-                        `Couldn't unfavorite post: ${err.name}`,
-                        {
-                            variant: "error"
-                        }
-                    );
-                    console.log(err.message);
-                });
-        } else {
-            this.client
-                .post(`/statuses/${post.id}/favourite`)
-                .then((resp: any) => {
-                    let post: Status = resp.data;
-                    this.setState({ post });
-                })
-                .catch((err: Error) => {
-                    _this.props.enqueueSnackbar(
-                        `Couldn't favorite post: ${err.name}`,
-                        {
-                            variant: "error"
-                        }
-                    );
-                    console.log(err.message);
-                });
+    /**
+     * Tell server a post has been un/favorited and update post state
+     * @param post The post to un/favorite
+     */
+    async toggleFavorite(post: Status) {
+        let action: string = post.favourited ? "unfavourite" : "favourite";
+        try {
+            // favorite the original post, not the reblog
+            let resp: any = await this.client.post(
+                `/statuses/${post.reblog ? post.reblog.id : post.id}/${action}`
+            );
+            // compensate for slow server update
+            if (action === "unfavourite") {
+                resp.data.favourites_count -= 1;
+                // if you unlike both original and reblog before refresh
+                // and the post has only one favorite:
+                if (resp.data.favourites_count < 0) {
+                    resp.data.favourites_count = 0;
+                }
+            }
+            this.setState({ post: resp.data as Status });
+        } catch (e) {
+            this.props.enqueueSnackbar(`Could not ${action} post: ${e.name}`);
+            console.error(e.message);
         }
     }
 
-    toggleReblogged(post: Status) {
-        if (post.reblogged) {
-            this.client
-                .post(`/statuses/${post.id}/unreblog`)
-                .then((resp: any) => {
-                    let post: Status = resp.data;
-                    this.setState({ post });
-                })
-                .catch((err: Error) => {
-                    this.props.enqueueSnackbar(
-                        `Couldn't unboost post: ${err.name}`,
-                        {
-                            variant: "error"
-                        }
-                    );
-                    console.log(err.message);
-                });
-        } else {
-            this.client
-                .post(`/statuses/${post.id}/reblog`)
-                .then((resp: any) => {
-                    let post: Status = resp.data;
-                    this.setState({ post });
-                })
-                .catch((err: Error) => {
-                    this.props.enqueueSnackbar(
-                        `Couldn't boost post: ${err.name}`,
-                        {
-                            variant: "error"
-                        }
-                    );
-                    console.log(err.message);
-                });
+    /**
+     * Tell server a post has been un/reblogged and update post state
+     * @param post The post to un/reblog
+     */
+    async toggleReblog(post: Status) {
+        let action: string =
+            post.reblogged || post.reblog ? "unreblog" : "reblog";
+        try {
+            // modify the original post, not the reblog
+            let resp: any = await this.client.post(
+                `/statuses/${post.reblog ? post.reblog.id : post.id}/${action}`
+            );
+            // compensate for slow server update
+            if (action === "unreblog") {
+                resp.data.reblogs_count -= 1;
+            }
+            if (resp.data.reblog) resp.data = resp.data.reblog;
+            this.setState({ post: resp.data as Status });
+        } catch (e) {
+            this.props.enqueueSnackbar(`Could not ${action} post: ${e.name}`);
+            console.error(e.message);
         }
     }
 
@@ -669,7 +669,11 @@ export class Post extends React.Component<any, IPostState> {
                                 </IconButton>
                             </Tooltip>
                         }
-                        title={<Typography>{this.getReblogAuthors(post)}</Typography>}
+                        title={
+                            <Typography>
+                                {this.getReblogAuthors(post)}
+                            </Typography>
+                        }
                         subheader={moment(post.created_at).format(
                             "MMMM Do YYYY [at] h:mm A"
                         )}
@@ -707,30 +711,20 @@ export class Post extends React.Component<any, IPostState> {
                         </Typography>
                         <Tooltip title="Favorite">
                             <IconButton
-                                onClick={() => this.toggleFavorited(post)}
+                                onClick={() => this.toggleFavorite(post)}
                             >
                                 <FavoriteIcon
                                     className={
-                                        post.reblog
-                                            ? post.reblog.favourited
-                                                ? classes.postDidAction
-                                                : ""
-                                            : post.favourited
+                                        post.favourited
                                             ? classes.postDidAction
                                             : ""
                                     }
                                 />
                             </IconButton>
                         </Tooltip>
-                        <Typography>
-                            {post.reblog
-                                ? post.reblog.favourites_count
-                                : post.favourites_count}
-                        </Typography>
+                        <Typography>{post.favourites_count}</Typography>
                         <Tooltip title="Boost">
-                            <IconButton
-                                onClick={() => this.toggleReblogged(post)}
-                            >
+                            <IconButton onClick={() => this.toggleReblog(post)}>
                                 <AutorenewIcon
                                     className={
                                         post.reblog

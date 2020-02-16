@@ -650,70 +650,49 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     loginData
                 );
 
-                // Re-read the config file. It's possible the state doesn't take
-                // effect immediately.
-                getConfig().then((result: any) => {
-                    if (result !== undefined) {
-                        let config: Config = result;
-                        let redirectUrl =
-                            `https://${window.location.host}` || undefined;
-
-                        // Is this an emergency login? Don't pass a redirect
-                        // URI
-                        if (
-                            this.state.emergencyMode ||
-                            clientLoginSession.authUrl.includes(
-                                "urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
-                            )
-                        ) {
-                            redirectUrl = undefined;
-                        }
-
-                        // Is this the desktop app? Change the redirect URI
-                        else if (window.location.protocol === "hyperspace:") {
-                            redirectUrl = "hyperspace://hyperspace/app/";
-                        }
-
-                        // Otherwise, read the config
-                        else if (
-                            config.location !== "dynamic" &&
-                            config.location !== "desktop" &&
-                            !inDisallowedDomains(config.location)
-                        ) {
-                            redirectUrl = config.location;
-                        }
-
-                        // Fetch the access token
-                        Mastodon.fetchAccessToken(
-                            clientLoginSession.clientId,
-                            clientLoginSession.clientSecret,
-                            code,
-                            localStorage.getItem("baseurl") as string,
-                            redirectUrl
-                        )
-                            // If we succeeded, store the access token and redirect to the
-                            // main view.
-                            .then((tokenData: any) => {
-                                localStorage.setItem(
-                                    "access_token",
-                                    tokenData.access_token
-                                );
-                                this.redirectToApp();
-                            })
-
-                            // Otherwise, present an error
-                            .catch((err: Error) => {
-                                this.props.enqueueSnackbar(
-                                    `Couldn't authorize ${
-                                        this.state.brandName
-                                            ? this.state.brandName
-                                            : "Hyperspace"
-                                    }: ${err.name}`,
-                                    { variant: "error" }
-                                );
-                                console.error(err.message);
-                            });
+                getConfig().then((resp: any) => {
+                    if (resp == undefined) {
+                        return;
                     }
+
+                    let conf: Config = resp;
+
+                    let redirectUrl: string | undefined =
+                        this.state.emergencyMode ||
+                        clientLoginSession.authUrl.includes(
+                            "urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
+                        )
+                            ? undefined
+                            : getRedirectAddress(conf.location);
+
+                    Mastodon.fetchAccessToken(
+                        clientLoginSession.clientId,
+                        clientLoginSession.clientSecret,
+                        code,
+                        localStorage.getItem("baseurl") as string,
+                        redirectUrl
+                    )
+                        .then((tokenData: any) => {
+                            localStorage.setItem(
+                                "access_token",
+                                tokenData.access_token
+                            );
+                            window.location.href =
+                                window.location.protocol === "hyperspace:"
+                                    ? "hyperspace://hyperspace/app/"
+                                    : this.state.defaultRedirectAddress;
+                        })
+                        .catch((err: Error) => {
+                            this.props.enqueueSnackbar(
+                                `Couldn't authorize ${
+                                    this.state.brandName
+                                        ? this.state.brandName
+                                        : "Hyperspace"
+                                }: ${err.name}`,
+                                { variant: "error" }
+                            );
+                            console.error(err.message);
+                        });
                 });
             }
         }
