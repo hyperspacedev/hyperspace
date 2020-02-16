@@ -119,7 +119,7 @@ export class Post extends React.Component<any, IPostState> {
             })
             .catch((err: Error) => {
                 this.props.enqueueSnackbar("Couldn't delete post: " + err.name);
-                console.log(err.message);
+                console.error(err.message);
             });
     }
 
@@ -405,7 +405,7 @@ export class Post extends React.Component<any, IPostState> {
             emojis.concat(reblogger.emojis);
         }
 
-        console.log(post);
+        // console.log(post);
 
         return (
             <>

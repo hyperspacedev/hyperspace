@@ -74,7 +74,7 @@ class You extends Component<IYouProps, IYouState> {
 
     getAccount() {
         let acct = localStorage.getItem("account");
-        console.log(acct);
+        // console.log(acct);
         if (acct) {
             return JSON.parse(acct);
         }

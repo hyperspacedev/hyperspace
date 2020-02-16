@@ -159,7 +159,7 @@ class SearchPage extends Component<any, ISearchPageState> {
                     viewDidLoad: true,
                     viewIsLoading: false
                 });
-                console.log(this.state.tagResults);
+                // console.log(this.state.tagResults);
             })
             .catch((err: Error) => {
                 this.setState({

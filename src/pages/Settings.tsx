@@ -170,7 +170,7 @@ class SettingsPage extends Component<any, ISettingsState> {
         getConfig().then((result: any) => {
             if (result !== undefined) {
                 let config: Config = result;
-                console.log(!config.federation.allowPublicPosts);
+                // console.log(!config.federation.allowPublicPosts);
                 this.setState({
                     federated: config.federation.allowPublicPosts
                 });
