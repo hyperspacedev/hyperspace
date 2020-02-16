@@ -77,6 +77,11 @@ interface ITimelinePageState {
      * the user settings.
      */
     isMasonryLayout?: boolean;
+
+    /**
+     * Whether posts should automatically load when scrolling.
+     */
+    isInfiniteScroll?: boolean;
 }
 
 /**
@@ -109,7 +114,8 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
         this.state = {
             viewIsLoading: true,
             backlogPosts: null,
-            isMasonryLayout: getUserDefaultBool("isMasonryLayout")
+            isMasonryLayout: getUserDefaultBool("isMasonryLayout"),
+            isInfiniteScroll: getUserDefaultBool("isInfiniteScroll"),
         };
 
         // Generate the client.
@@ -132,8 +138,7 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
         this.streamListener.on("connect", () => {
             // Get the latest posts from this timeline.
             this.client
-                .get(this.props.timeline, { limit: 10 })
-
+                .get(this.props.timeline, { limit: 50 })
                 // If we succeeded, update the state and turn off loading.
                 .then((resp: any) => {
                     let statuses: [Status] = resp.data;
@@ -201,10 +206,33 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
     }
 
     /**
+     * Insert a delay between repeated function calls
+     * codeburst.io/throttling-and-debouncing-in-javascript-646d076d0a44
+     * @param delay How long to wait before calling function (ms)
+     * @param fn The function to call
+     */
+    debounced(delay: number, fn: Function) {
+        let lastCall = 0
+        return function(...args: any) {
+            const now = (new Date).getTime();
+            if (now - lastCall < delay) {
+                return
+            }
+            lastCall = now;
+            return fn(...args)
+        }
+    }
+
+    /**
      * Listen for when scroll position changes
      */
     componentDidMount() {
-        window.addEventListener("scroll", this.shouldLoadMorePosts);
+        if (this.state.isInfiniteScroll) {
+            window.addEventListener(
+                "scroll", 
+                this.debounced(200, this.shouldLoadMorePosts),
+            );
+        }
     }
 
     /**
@@ -212,7 +240,12 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
      */
     componentWillUnmount() {
         this.streamListener.stop();
-        window.removeEventListener("scroll", this.shouldLoadMorePosts);
+        if (this.state.isInfiniteScroll) {
+            window.removeEventListener(
+                "scroll", 
+                this.shouldLoadMorePosts,
+            );
+        }
     }
 
     /**
@@ -241,7 +274,7 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
             this.client
                 .get(this.props.timeline, {
                     max_id: this.state.posts[this.state.posts.length - 1].id,
-                    limit: 20
+                    limit: 50
                 })
 
                 // If we succeeded, append them to the end of the list of posts.

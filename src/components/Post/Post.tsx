@@ -101,6 +101,11 @@ export class Post extends React.Component<any, IPostState> {
         });
     }
 
+    shouldComponentUpdate(nextProps: any, nextState: any) {
+        if (nextState == this.state) return false
+        return true
+    }
+
     togglePostMenu() {
         this.setState({ menuIsOpen: !this.state.menuIsOpen });
     }
