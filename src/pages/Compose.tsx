@@ -626,9 +626,15 @@ class Composer extends Component<any, IComposerState> {
                     : null
             })
 
-            // If we succeed, send a success message and go back.
+            // If we succeed, send a success message, clear the status
+            // text field, and go back.
             .then(() => {
                 this.props.enqueueSnackbar("Posted!");
+
+                // This is necessary to prevent session drafts from saving
+                // posts that were already posted.
+                this.setState({ text: "" });
+
                 window.history.back();
             })
 

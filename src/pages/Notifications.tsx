@@ -17,7 +17,9 @@ import {
     DialogContent,
     DialogContentText,
     DialogActions,
-    Tooltip
+    Tooltip,
+    Menu,
+    MenuItem
 } from "@material-ui/core";
 
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
@@ -25,16 +27,22 @@ import PersonIcon from "@material-ui/icons/Person";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { styles } from "./PageLayout.styles";
-import { LinkableIconButton, LinkableAvatar } from "../interfaces/overrides";
+import {
+    LinkableIconButton,
+    LinkableAvatar,
+    LinkableMenuItem
+} from "../interfaces/overrides";
 import ForumIcon from "@material-ui/icons/Forum";
 import ReplyIcon from "@material-ui/icons/Reply";
 import NotificationsIcon from "@material-ui/icons/Notifications";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 import Mastodon from "megalodon";
 import { Notification } from "../types/Notification";
 import { Account } from "../types/Account";
 import { Relationship } from "../types/Relationship";
 import { withSnackbar } from "notistack";
+import { Dictionary } from "../interfaces/utils";
 
 /**
  * The state interface for the notifications page.
@@ -69,6 +77,11 @@ interface INotificationsPageState {
      * Whether the delete confirmation dialog should be open.
      */
     deleteDialogOpen: boolean;
+
+    /**
+     * Whether the menu should be open on smaller devices.
+     */
+    mobileMenuOpen: Dictionary<boolean>;
 }
 
 /**
@@ -101,7 +114,8 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
         // Initialize the state.
         this.state = {
             viewIsLoading: true,
-            deleteDialogOpen: false
+            deleteDialogOpen: false,
+            mobileMenuOpen: {}
         };
     }
 
@@ -114,10 +128,17 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
             .get("/notifications")
             .then((resp: any) => {
                 let notifications: [Notification] = resp.data;
+                let notifMenus: Dictionary<boolean> = {};
+
+                notifications.forEach((notif: Notification) => {
+                    notifMenus[notif.id] = false;
+                });
+
                 this.setState({
                     notifications,
                     viewIsLoading: false,
-                    viewDidLoad: true
+                    viewDidLoad: true,
+                    mobileMenuOpen: notifMenus
                 });
             })
             .catch((err: Error) => {
@@ -158,6 +179,12 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
      */
     toggleDeleteDialog() {
         this.setState({ deleteDialogOpen: !this.state.deleteDialogOpen });
+    }
+
+    toggleMobileMenu(id: string) {
+        let mobileMenuOpen = this.state.mobileMenuOpen;
+        mobileMenuOpen[id] = !mobileMenuOpen[id];
+        this.setState({ mobileMenuOpen });
     }
 
     /**
@@ -306,6 +333,108 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                     }
                 />
                 <ListItemSecondaryAction>
+                    {this.getActions(notif)}
+                </ListItemSecondaryAction>
+            </ListItem>
+        );
+    }
+
+    /**
+     * Follow an account from a notification if already not followed.
+     * @param acct The account to follow, if possible
+     */
+    followMember(acct: Account) {
+        // Get the relationships for this account.
+        this.client
+            .get(`/accounts/relationships`, { id: acct.id })
+            .then((resp: any) => {
+                // Returns a list, so grab only the first item.
+                let relationship: Relationship = resp.data[0];
+
+                // Follow if not following already.
+                if (relationship.following == false) {
+                    this.client
+                        .post(`/accounts/${acct.id}/follow`)
+                        .then((resp: any) => {
+                            this.props.enqueueSnackbar(
+                                "You are now following this account."
+                            );
+                        })
+                        .catch((err: Error) => {
+                            this.props.enqueueSnackbar(
+                                "Couldn't follow account: " + err.name,
+                                { variant: "error" }
+                            );
+                            console.error(err.message);
+                        });
+                }
+
+                // Otherwise notify the user.
+                else {
+                    this.props.enqueueSnackbar(
+                        "You already follow this account."
+                    );
+                }
+            })
+            .catch((err: Error) => {
+                this.props.enqueueSnackbar("Couldn't find relationship.", {
+                    variant: "error"
+                });
+            });
+    }
+
+    getActions = (notif: Notification) => {
+        const { classes } = this.props;
+        return (
+            <>
+                <IconButton
+                    onClick={() => this.toggleMobileMenu(notif.id)}
+                    className={classes.mobileOnly}
+                    id={`notification-list-${notif.id}`}
+                >
+                    <MoreVertIcon />
+                </IconButton>
+                <Menu
+                    open={this.state.mobileMenuOpen[notif.id]}
+                    anchorEl={document.getElementById(
+                        `notification-list-${notif.id}`
+                    )}
+                    onClose={() => this.toggleMobileMenu(notif.id)}
+                >
+                    {notif.type == "follow" ? (
+                        <>
+                            <LinkableMenuItem
+                                to={`profile/${notif.account.id}`}
+                            >
+                                View Profile
+                            </LinkableMenuItem>
+                            <MenuItem
+                                onClick={() => this.followMember(notif.account)}
+                            >
+                                Follow
+                            </MenuItem>
+                        </>
+                    ) : null}
+                    {notif.type == "mention" && notif.status ? (
+                        <LinkableMenuItem
+                            to={`/compose?reply=${
+                                notif.status.reblog
+                                    ? notif.status.reblog.id
+                                    : notif.status.id
+                            }&visibility=${notif.status.visibility}&acct=${
+                                notif.status.reblog
+                                    ? notif.status.reblog.account.acct
+                                    : notif.status.account.acct
+                            }`}
+                        >
+                            Reply
+                        </LinkableMenuItem>
+                    ) : null}
+                    <MenuItem onClick={() => this.removeNotification(notif.id)}>
+                        Remove
+                    </MenuItem>
+                </Menu>
+                <div className={classes.desktopOnly}>
                     {notif.type === "follow" ? (
                         <span>
                             <Tooltip title="View profile">
@@ -363,54 +492,10 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
-                </ListItemSecondaryAction>
-            </ListItem>
+                </div>
+            </>
         );
-    }
-
-    /**
-     * Follow an account from a notification if already not followed.
-     * @param acct The account to follow, if possible
-     */
-    followMember(acct: Account) {
-        // Get the relationships for this account.
-        this.client
-            .get(`/accounts/relationships`, { id: acct.id })
-            .then((resp: any) => {
-                // Returns a list, so grab only the first item.
-                let relationship: Relationship = resp.data[0];
-
-                // Follow if not following already.
-                if (relationship.following == false) {
-                    this.client
-                        .post(`/accounts/${acct.id}/follow`)
-                        .then((resp: any) => {
-                            this.props.enqueueSnackbar(
-                                "You are now following this account."
-                            );
-                        })
-                        .catch((err: Error) => {
-                            this.props.enqueueSnackbar(
-                                "Couldn't follow account: " + err.name,
-                                { variant: "error" }
-                            );
-                            console.error(err.message);
-                        });
-                }
-
-                // Otherwise notify the user.
-                else {
-                    this.props.enqueueSnackbar(
-                        "You already follow this account."
-                    );
-                }
-            })
-            .catch((err: Error) => {
-                this.props.enqueueSnackbar("Couldn't find relationship.", {
-                    variant: "error"
-                });
-            });
-    }
+    };
 
     /**
      * Render the notification page.
