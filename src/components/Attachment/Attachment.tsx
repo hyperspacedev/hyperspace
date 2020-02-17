@@ -7,7 +7,6 @@ import {
 } from "@material-ui/core";
 import { styles } from "./Attachment.styles";
 import { Attachment } from "../../types/Attachment";
-import AudioPlayer from "../AudioPlayer";
 import SwipeableViews from "react-swipeable-views";
 
 interface IAttachmentProps {
@@ -77,15 +76,11 @@ class AttachmentComponent extends Component<
                         className={classes.mediaObject}
                     />
                 );
-            case "audio":
-                return <AudioPlayer src={slide.url} id={slide.id} />;
             case "gifv":
                 return (
-                    <video
-                        autoPlay
-                        loop
+                    <img
                         src={slide.url}
-                        title={slide.description ? slide.description : ""}
+                        alt={slide.description ? slide.description : ""}
                         className={classes.mediaObject}
                     />
                 );
@@ -111,36 +106,33 @@ class AttachmentComponent extends Component<
                         );
                     })}
                 </SwipeableViews>
-                {this.state.totalSteps > 1 ? (
-                    <MobileStepper
-                        steps={this.state.totalSteps}
-                        position="static"
-                        activeStep={this.state.currentStep}
-                        className={classes.mobileStepper}
-                        nextButton={
-                            <Button
-                                size="small"
-                                onClick={() => this.moveForward()}
-                                disabled={
-                                    this.state.currentStep ===
-                                    this.state.totalSteps - 1
-                                }
-                            >
-                                Next
-                            </Button>
-                        }
-                        backButton={
-                            <Button
-                                size="small"
-                                onClick={() => this.moveBack()}
-                                disabled={this.state.currentStep === 0}
-                            >
-                                Back
-                            </Button>
-                        }
-                    />
-                ) : null}
-                <br />
+                <MobileStepper
+                    steps={this.state.totalSteps}
+                    position="static"
+                    activeStep={this.state.currentStep}
+                    className={classes.mobileStepper}
+                    nextButton={
+                        <Button
+                            size="small"
+                            onClick={() => this.moveForward()}
+                            disabled={
+                                this.state.currentStep ===
+                                this.state.totalSteps - 1
+                            }
+                        >
+                            Next
+                        </Button>
+                    }
+                    backButton={
+                        <Button
+                            size="small"
+                            onClick={() => this.moveBack()}
+                            disabled={this.state.currentStep === 0}
+                        >
+                            Back
+                        </Button>
+                    }
+                />
                 <Typography variant="caption">
                     {mediaItem.description
                         ? mediaItem.description

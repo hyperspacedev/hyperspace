@@ -12,7 +12,6 @@ type SettingsTemplate = {
     clearNotificationsOnRead: boolean;
     displayAllOnNotificationBadge: boolean;
     defaultVisibility: string;
-    imposeCharacterLimit: boolean;
 };
 
 /**
@@ -100,9 +99,7 @@ export function createUserDefaults() {
         enablePushNotifications: true,
         clearNotificationsOnRead: false,
         displayAllOnNotificationBadge: false,
-        defaultVisibility: "public",
-        imposeCharacterLimit: true,
-        isMasonryLayout: false
+        defaultVisibility: "public"
     };
 
     let settings = [
@@ -110,9 +107,7 @@ export function createUserDefaults() {
         "systemDecidesDarkMode",
         "clearNotificationsOnRead",
         "displayAllOnNotificationBadge",
-        "defaultVisibility",
-        "imposeCharacterLimit",
-        "isMasonryLayout"
+        "defaultVisibility"
     ];
 
     migrateExistingSettings();

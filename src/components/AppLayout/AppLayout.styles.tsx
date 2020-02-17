@@ -35,8 +35,7 @@ export const styles = (theme: Theme) =>
         titleBarText: {
             fontSize: 12,
             paddingTop: 2,
-            paddingBottom: 1,
-            color: theme.palette.getContrastText(theme.palette.primary.main)
+            paddingBottom: 1
         },
         appBar: {
             zIndex: 1000,
@@ -57,10 +56,6 @@ export const styles = (theme: Theme) =>
             [theme.breakpoints.up("md")]: {
                 display: "none"
             }
-        },
-        appBarBackButton: {
-            marginLeft: -12,
-            marginRight: 20
         },
         appBarTitle: {
             display: "none",

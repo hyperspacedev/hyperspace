@@ -1,4 +1,4 @@
-import { Theme, createStyles, FormHelperText } from "@material-ui/core";
+import { Theme, createStyles } from "@material-ui/core";
 import { isDarwinApp } from "../utilities/desktop";
 import { isAppbarExpanded } from "../utilities/appbar";
 
@@ -323,21 +323,5 @@ export const styles = (theme: Theme) =>
                 display: "block"
             },
             backgroundColor: theme.palette.primary.main
-        },
-        pageLayoutMasonry: {
-            paddingLeft: theme.spacing.unit * 3,
-            paddingRight: theme.spacing.unit * 3
-        },
-        masonryGrid: {
-            display: "flex",
-            width: "auto"
-        },
-        "my-masonry-grid_column": {
-            // non-standard name fixes react-masonry-css bug :shrug:
-            padding: 5
-        },
-        noTopPaddingMargin: {
-            marginTop: 0,
-            paddingTop: 0
         }
     });

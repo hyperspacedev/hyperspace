@@ -14,8 +14,6 @@ import Post from "../components/Post";
 import { Status } from "../types/Status";
 import Mastodon, { StreamListener } from "megalodon";
 import { withSnackbar } from "notistack";
-import Masonry from "react-masonry-css";
-import { getUserDefaultBool } from "../utilities/settings";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 
 interface IHomePageState {
@@ -25,14 +23,8 @@ interface IHomePageState {
     viewDidLoad?: boolean;
     viewDidError?: boolean;
     viewDidErrorCode?: any;
-    isMasonryLayout?: boolean;
 }
 
-/**
- * The base class for the home timeline.
- * @deprecated Use TimelinePage with the props `timeline="/timelines/home"`
- * and `stream="/streaming/user"`.
- */
 class HomePage extends Component<any, IHomePageState> {
     client: Mastodon;
     streamListener: StreamListener;
@@ -42,8 +34,7 @@ class HomePage extends Component<any, IHomePageState> {
 
         this.state = {
             viewIsLoading: true,
-            backlogPosts: null,
-            isMasonryLayout: getUserDefaultBool("isMasonryLayout")
+            backlogPosts: null
         };
 
         this.client = new Mastodon(
@@ -163,11 +154,9 @@ class HomePage extends Component<any, IHomePageState> {
 
     render() {
         const { classes } = this.props;
-        const containerClasses = `${classes.pageLayoutMaxConstraints}${
-            this.state.isMasonryLayout ? " " + classes.pageLayoutMasonry : ""
-        }`;
+
         return (
-            <div className={containerClasses}>
+            <div className={classes.pageLayoutMaxConstraints}>
                 {this.state.backlogPosts ? (
                     <div className={classes.pageTopChipContainer}>
                         <div className={classes.pageTopChips}>
@@ -196,46 +185,15 @@ class HomePage extends Component<any, IHomePageState> {
                 ) : null}
                 {this.state.posts ? (
                     <div>
-                        {this.state.isMasonryLayout ? (
-                            <Masonry
-                                breakpointCols={{
-                                    default: 4,
-                                    2000: 3,
-                                    1400: 2,
-                                    1050: 1
-                                }}
-                                className={classes.masonryGrid}
-                                columnClassName={
-                                    classes["my-masonry-grid_column"]
-                                }
-                            >
-                                {this.state.posts.map((post: Status) => {
-                                    return (
-                                        <div
-                                            className={classes.masonryGrid_item}
-                                        >
-                                            <Post
-                                                key={post.id}
-                                                post={post}
-                                                client={this.client}
-                                            />
-                                        </div>
-                                    );
-                                })}
-                            </Masonry>
-                        ) : (
-                            <div>
-                                {this.state.posts.map((post: Status) => {
-                                    return (
-                                        <Post
-                                            key={post.id}
-                                            post={post}
-                                            client={this.client}
-                                        />
-                                    );
-                                })}
-                            </div>
-                        )}
+                        {this.state.posts.map((post: Status) => {
+                            return (
+                                <Post
+                                    key={post.id}
+                                    post={post}
+                                    client={this.client}
+                                />
+                            );
+                        })}
                         <br />
                         {this.state.viewDidLoad && !this.state.viewDidError ? (
                             <div

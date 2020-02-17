@@ -25,8 +25,6 @@ import Post from "../components/Post";
 import { withSnackbar } from "notistack";
 import { LinkableIconButton } from "../interfaces/overrides";
 import { emojifyString } from "../utilities/emojis";
-import Masonry from "react-masonry-css";
-import { getUserDefaultBool } from "..//utilities/settings";
 
 import AccountEditIcon from "mdi-material-ui/AccountEdit";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
@@ -46,7 +44,6 @@ interface IProfilePageState {
     viewDidError?: boolean;
     viewDidErrorCode?: string;
     blockDialogOpen: boolean;
-    isMasonryLayout?: boolean;
 }
 
 class ProfilePage extends Component<any, IProfilePageState> {
@@ -62,8 +59,7 @@ class ProfilePage extends Component<any, IProfilePageState> {
 
         this.state = {
             viewIsLoading: true,
-            blockDialogOpen: false,
-            isMasonryLayout: getUserDefaultBool("isMasonryLayout")
+            blockDialogOpen: false
         };
     }
 
@@ -309,36 +305,8 @@ class ProfilePage extends Component<any, IProfilePageState> {
         }
     }
 
-    renderPosts(posts: Status[]) {
-        const { classes } = this.props;
-        const postComponents = posts.map((post: Status) => {
-            return <Post key={post.id} post={post} client={this.client} />;
-        });
-        if (this.state.isMasonryLayout) {
-            return (
-                <Masonry
-                    className={classes.masonryGrid}
-                    columnClassName={classes["my-masonry-grid_column"]}
-                    breakpointCols={{
-                        default: 4,
-                        2000: 3,
-                        1400: 2,
-                        1050: 1
-                    }}
-                >
-                    {postComponents}
-                </Masonry>
-            );
-        } else {
-            return <div>{postComponents}</div>;
-        }
-    }
-
     render() {
         const { classes } = this.props;
-        const containerClasses = `${classes.pageContentLayoutConstraints} ${
-            this.state.isMasonryLayout ? classes.pageLayoutMasonry : ""
-        }`;
         return (
             <div className={classes.pageLayoutMinimalConstraints}>
                 <div className={classes.pageHeroBackground}>
@@ -496,7 +464,7 @@ class ProfilePage extends Component<any, IProfilePageState> {
                         </div>
                     </div>
                 </div>
-                <div className={containerClasses}>
+                <div className={classes.pageContentLayoutConstraints}>
                     {this.state.viewDidError ? (
                         <Paper className={classes.errorCard}>
                             <Typography variant="h4">Bummer.</Typography>
@@ -514,7 +482,15 @@ class ProfilePage extends Component<any, IProfilePageState> {
                     )}
                     {this.state.posts ? (
                         <div>
-                            {this.renderPosts(this.state.posts)}
+                            {this.state.posts.map((post: Status) => {
+                                return (
+                                    <Post
+                                        key={post.id}
+                                        post={post}
+                                        client={this.client}
+                                    />
+                                );
+                            })}
                             <br />
                             {this.state.viewDidLoad &&
                             !this.state.viewDidError ? (

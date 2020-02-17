@@ -10,12 +10,10 @@ import {
     ListItemAvatar,
     Avatar,
     ListItemSecondaryAction,
-    Tooltip,
-    Typography
+    Tooltip
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import ForumIcon from "@material-ui/icons/Forum";
-import MailIcon from "@material-ui/icons/Mail";
 import { styles } from "./PageLayout.styles";
 import Mastodon from "megalodon";
 import { Status } from "../types/Status";
@@ -72,82 +70,67 @@ class MessagesPage extends Component<any, IMessagesState> {
         return innerContent;
     }
 
-    renderMessage(message: Status) {
-        return (
-            <ListItem>
-                <ListItemAvatar>
-                    <LinkableAvatar
-                        to={`/profile/${message.account.id}`}
-                        alt={message.account.username}
-                        src={message.account.avatar_static}
-                    >
-                        <PersonIcon />
-                    </LinkableAvatar>
-                </ListItemAvatar>
-                <ListItemText
-                    primary={
-                        message.account.display_name ||
-                        "@" + message.account.acct
-                    }
-                    secondary={this.removeHTMLContent(message.content)}
-                />
-                <ListItemSecondaryAction>
-                    <Tooltip title="View conversation">
-                        <LinkableIconButton to={`/conversation/${message.id}`}>
-                            <ForumIcon />
-                        </LinkableIconButton>
-                    </Tooltip>
-                </ListItemSecondaryAction>
-            </ListItem>
-        );
-    }
-
     render() {
         const { classes } = this.props;
         return (
             <div className={classes.pageLayoutConstraints}>
                 {this.state.viewDidLoad ? (
                     <div className={classes.pageListContsraints}>
-                        {this.state.posts && this.state.posts.length > 0 ? (
-                            <div>
-                                <ListSubheader>Recent messages</ListSubheader>
-                                <Paper className={classes.pageListConstraints}>
-                                    <List>
-                                        {this.state.posts
-                                            ? this.state.posts.map(
-                                                  (message: Status) =>
-                                                      this.renderMessage(
-                                                          message
-                                                      )
-                                              )
-                                            : null}
-                                    </List>
-                                </Paper>
-                                <br />
-                            </div>
-                        ) : (
-                            <div>
-                                <div
-                                    className={
-                                        classes.pageLayoutEmptyTextConstraints
-                                    }
-                                    style={{ textAlign: "center" }}
-                                >
-                                    <MailIcon
-                                        color="action"
-                                        style={{ fontSize: 48 }}
-                                    />
-                                    <Typography variant="h6">
-                                        You don't have any messages.
-                                    </Typography>
-                                    <Typography paragraph>
-                                        Why not interact with the fediverse a
-                                        bit by sending a message?
-                                    </Typography>
-                                    <br />
-                                </div>
-                            </div>
-                        )}
+                        <ListSubheader>Recent messages</ListSubheader>
+                        <Paper className={classes.pageListConstraints}>
+                            <List>
+                                {this.state.posts
+                                    ? this.state.posts.map(
+                                          (message: Status) => {
+                                              return (
+                                                  <ListItem>
+                                                      <ListItemAvatar>
+                                                          <LinkableAvatar
+                                                              to={`/profile/${message.account.id}`}
+                                                              alt={
+                                                                  message
+                                                                      .account
+                                                                      .username
+                                                              }
+                                                              src={
+                                                                  message
+                                                                      .account
+                                                                      .avatar_static
+                                                              }
+                                                          >
+                                                              <PersonIcon />
+                                                          </LinkableAvatar>
+                                                      </ListItemAvatar>
+                                                      <ListItemText
+                                                          primary={
+                                                              message.account
+                                                                  .display_name ||
+                                                              "@" +
+                                                                  message
+                                                                      .account
+                                                                      .acct
+                                                          }
+                                                          secondary={this.removeHTMLContent(
+                                                              message.content
+                                                          )}
+                                                      />
+                                                      <ListItemSecondaryAction>
+                                                          <Tooltip title="View conversation">
+                                                              <LinkableIconButton
+                                                                  to={`/conversation/${message.id}`}
+                                                              >
+                                                                  <ForumIcon />
+                                                              </LinkableIconButton>
+                                                          </Tooltip>
+                                                      </ListItemSecondaryAction>
+                                                  </ListItem>
+                                              );
+                                          }
+                                      )
+                                    : null}
+                            </List>
+                        </Paper>
+                        <br />
                     </div>
                 ) : null}
                 {this.state.viewIsLoading ? (

@@ -1,12 +1,12 @@
 {
-    "version": "1.1.0",
-    "location": "https://hyperspaceapp-next.herokuapp.com",
+    "version": "1.0.4",
+    "location": "https://hyperspaceapp.herokuapp.com",
     "branding": {
         "name": "Hyperspace",
         "logo": "logo.svg",
         "background": "background.png"
     },
-    "developer": true,
+    "developer": false,
     "federation": {
         "universalLogin": true,
         "allowPublicPosts": true,
@@ -20,7 +20,7 @@
         "account": "774314"
     },
     "license": {
-        "name": "Non-violent Public License v4+",
+        "name": "Non-violent Public License",
         "url": "https://thufie.lain.haus/NPL.html"
     },
     "repository": "https://github.com/hyperspacedev/hyperspace"

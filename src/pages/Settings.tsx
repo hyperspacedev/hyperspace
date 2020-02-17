@@ -62,11 +62,6 @@ import BellAlertIcon from "mdi-material-ui/BellAlert";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import UndoIcon from "@material-ui/icons/Undo";
 import DomainDisabledIcon from "@material-ui/icons/DomainDisabled";
-import AccountSettingsIcon from "mdi-material-ui/AccountSettings";
-import AlphabeticalVariantOffIcon from "mdi-material-ui/AlphabeticalVariantOff";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import InfiniteIcon from "@material-ui/icons/AllInclusive";
-
 import { Config } from "../types/Config";
 import { Account } from "../types/Account";
 import Mastodon from "megalodon";
@@ -87,9 +82,6 @@ interface ISettingsState {
     brandName: string;
     federated: boolean;
     currentUser?: Account;
-    imposeCharacterLimit: boolean;
-    masonryLayout?: boolean;
-    infiniteScroll?: boolean;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -120,10 +112,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                 setHyperspaceTheme(defaultTheme),
             defaultVisibility: getUserDefaultVisibility() || "public",
             brandName: "Hyperspace",
-            federated: true,
-            imposeCharacterLimit: getUserDefaultBool("imposeCharacterLimit"),
-            masonryLayout: getUserDefaultBool("isMasonryLayout"),
-            infiniteScroll: getUserDefaultBool("isInfiniteScroll")
+            federated: true
         };
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -132,8 +121,6 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.toggleBadgeCount = this.toggleBadgeCount.bind(this);
         this.toggleThemeDialog = this.toggleThemeDialog.bind(this);
         this.toggleVisibilityDialog = this.toggleVisibilityDialog.bind(this);
-        this.toggleMasonryLayout = this.toggleMasonryLayout.bind(this);
-        this.toggleInfiniteScroll = this.toggleInfiniteScroll.bind(this);
         this.changeThemeName = this.changeThemeName.bind(this);
         this.changeTheme = this.changeTheme.bind(this);
         this.setVisibility = this.setVisibility.bind(this);
@@ -174,6 +161,7 @@ class SettingsPage extends Component<any, ISettingsState> {
         getConfig().then((result: any) => {
             if (result !== undefined) {
                 let config: Config = result;
+                console.log(!config.federation.allowPublicPosts);
                 this.setState({
                     federated: config.federation.allowPublicPosts
                 });
@@ -228,16 +216,6 @@ class SettingsPage extends Component<any, ISettingsState> {
         });
     }
 
-    toggleCharacterLimit() {
-        this.setState({
-            imposeCharacterLimit: !this.state.imposeCharacterLimit
-        });
-        setUserDefaultBool(
-            "imposeCharacterLimit",
-            !this.state.imposeCharacterLimit
-        );
-    }
-
     toggleResetDialog() {
         this.setState({
             resetHyperspaceDialog: !this.state.resetHyperspaceDialog
@@ -246,16 +224,6 @@ class SettingsPage extends Component<any, ISettingsState> {
 
     toggleResetSettingsDialog() {
         this.setState({ resetSettingsDialog: !this.state.resetSettingsDialog });
-    }
-
-    toggleMasonryLayout() {
-        this.setState({ masonryLayout: !this.state.masonryLayout });
-        setUserDefaultBool("isMasonryLayout", !this.state.masonryLayout);
-    }
-
-    toggleInfiniteScroll() {
-        this.setState({ infiniteScroll: !this.state.infiniteScroll });
-        setUserDefaultBool("isInfiniteScroll", !this.state.infiniteScroll);
     }
 
     changeTheme() {
@@ -534,7 +502,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 </div>
                                 <div className={classes.pageGrow} />
                                 <Toolbar>
-                                    <Tooltip title="Edit profile">
+                                    <Tooltip title="Edit Profile">
                                         <LinkableIconButton
                                             to={"/you"}
                                             color="inherit"
@@ -548,14 +516,6 @@ class SettingsPage extends Component<any, ISettingsState> {
                                             color="inherit"
                                         >
                                             <DomainDisabledIcon />
-                                        </LinkableIconButton>
-                                    </Tooltip>
-                                    <Tooltip title="Manage follow requests">
-                                        <LinkableIconButton
-                                            to={"/requests"}
-                                            color="inherit"
-                                        >
-                                            <AccountSettingsIcon />
                                         </LinkableIconButton>
                                     </Tooltip>
                                     <Tooltip title="Configure on Mastodon">
@@ -576,36 +536,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 </Toolbar>
                             </div>
                         </div>
-                    ) : (
-                        <div className={classes.pageHeroBackground}>
-                            <div className={classes.pageHeroBackgroundImage} />
-                            <div className={classes.profileContent}>
-                                <br />
-                                <Avatar className={classes.settingsAvatar} />
-                                <div
-                                    className={classes.profileUserBox}
-                                    style={{ margin: "auto" }}
-                                >
-                                    <Typography
-                                        className={classes.settingsHeaderText}
-                                        color="inherit"
-                                        component="h1"
-                                    >
-                                        {"Loading..."}
-                                    </Typography>
-                                    <Typography
-                                        color="inherit"
-                                        className={classes.settingsDetailText}
-                                        component="p"
-                                    >
-                                        @{"..."}
-                                    </Typography>
-                                </div>
-                                <div className={classes.pageGrow} />
-                                <Toolbar />
-                            </div>
-                        </div>
-                    )}
+                    ) : null}
                     <div className={classes.pageContentLayoutConstraints}>
                         <ListSubheader>Appearance</ListSubheader>
                         <Paper className={classes.pageListConstraints}>
@@ -667,38 +598,6 @@ class SettingsPage extends Component<any, ISettingsState> {
                                         </Button>
                                     </ListItemSecondaryAction>
                                 </ListItem>
-
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <DashboardIcon color="action" />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary="Show more posts"
-                                        secondary="Shows additional columns of posts on wider screens"
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <Switch
-                                            checked={this.state.masonryLayout}
-                                            onChange={this.toggleMasonryLayout}
-                                        />
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <InfiniteIcon color="action" />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary="Enable infinite scroll"
-                                        secondary="Automatically load more posts when scrolling"
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <Switch
-                                            checked={this.state.infiniteScroll}
-                                            onChange={this.toggleInfiniteScroll}
-                                        />
-                                    </ListItemSecondaryAction>
-                                </ListItem>
                             </List>
                         </Paper>
                         <br />
@@ -721,25 +620,6 @@ class SettingsPage extends Component<any, ISettingsState> {
                                         >
                                             Change
                                         </Button>
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <AlphabeticalVariantOffIcon color="action" />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary="Impose character limit"
-                                        secondary="Impose a character limit when creating posts"
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <Switch
-                                            checked={
-                                                this.state.imposeCharacterLimit
-                                            }
-                                            onChange={() =>
-                                                this.toggleCharacterLimit()
-                                            }
-                                        />
                                     </ListItemSecondaryAction>
                                 </ListItem>
                             </List>

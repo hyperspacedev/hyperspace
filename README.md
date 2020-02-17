@@ -9,7 +9,7 @@
 
 [![Matrix room](https://img.shields.io/matrix/hypermasto:matrix.org.svg)](https://matrix.to/#/#hypermasto:matrix.org)
 [![Discord server](https://img.shields.io/discord/554108687434907660.svg?color=blueviolet&label=discord)](https://discord.gg/c69AXwk)
-![Build Status](https://github.com/hyperspacedev/hyperspace/workflows/Node%20CI/badge.svg) [![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/hyperspacedev/hyperspace?include_prereleases)](https://github.com/hyperspacedev/hyperspace/releases) [![License: NPLv4+](https://img.shields.io/badge/license-NPLv4%2B-blue.svg)](LICENSE.txt) [![Hyperspace](https://snapcraft.io/hyperspace/badge.svg)](https://snapcraft.io/hyperspace)
+![Build Status](https://github.com/hyperspacedev/hyperspace/workflows/Node%20CI/badge.svg) [![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/hyperspacedev/hyperspace?include_prereleases)](https://github.com/hyperspacedev/hyperspace/releases) <!-- [![iTunes App Store](https://img.shields.io/itunes/v/1454139710?label=Mac%20App%20Store&logo=apple&logoColor=white)](https://apps.apple.com/us/app/hyperspace/id1454139710?mt=12)--> [![Hyperspace](https://snapcraft.io/hyperspace/badge.svg)](https://snapcraft.io/hyperspace)
 
 Hyperspace is the fluffiest client for Mastodon and other fediverse networks written in TypeScript and React. Hyperspace offers a fun, clean, fast, and responsive design that scales beautifully across devices and enhances the fediverse experience.
 
@@ -127,12 +127,12 @@ You'll also want to modify the `notarize.js` file to change the details from the
 
 ## Licensing and Credits
 
-Hyperspace is licensed under the [Non-violent Public License v4+](LICENSE.txt), a permissive license under the conditions that you do not use this for any unethical purposes and to file patent claims. Please read what your rights are as a Hyperspace user/developer in the license for more information.
+Hyperspace is licensed under the [Non-violent Public License](LICENSE), a permissive license under the conditions that you do not use this for any unethical purposes and to file patent claims. Please read what your rights are as a Hyperspace user/developer in the license for more information.
 
 Hyperspace has been made possible by the React, TypeScript, Megalodon, and Material-UI projects as well our [Patrons](patreon.md) and our contributors on GitHub.
 
 ## Contribute
 
-Contribution guidelines are available in the [contributing file](.github/contributing.md) and when you make an issue/pull request. Additionally, you can access our [Code of Conduct](.github/code_of_conduct.md).
+Contrubition guidelines are available in the [contributing file](.github/contributing.md) and when you make an issue/pull request. Additionally, you can access our [Code of Conduct](.github/code_of_conduct.md).
 
 If you want to aid the project in other ways, consider supporting the project on [Patreon](https://patreon.com/hyperspacedev).

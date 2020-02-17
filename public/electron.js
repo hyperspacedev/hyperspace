@@ -312,14 +312,6 @@ function createMenubar() {
                     click() {
                         safelyGoTo("hyperspace://hyperspace/app/#/messages")
                     }
-                },
-                { type: 'separator' },
-                {
-                    label: 'Activity',
-                    accelerator: 'Alt+CmdOrCtrl+A',
-                    click() {
-                        safelyGoTo("hyperspace://hyperspace/app/#/activity")
-                    }
                 }
             ]
         },
@@ -334,7 +326,7 @@ function createMenubar() {
                     }
                 },
                 {
-                    label: 'Recommendations',
+                    label: 'Recommendations...',
                     accelerator: "Alt+CmdOrCtrl+R",
                     click() {
                         safelyGoTo("hyperspace://hyperspace/app/#/recommended")
@@ -346,13 +338,6 @@ function createMenubar() {
                     accelerator: "Shift+CmdOrCtrl+P",
                     click() {
                         safelyGoTo("hyperspace://hyperspace/app/#/you")
-                    }
-                },
-                {
-                    label: 'Follow Requests',
-                    accelerator: "Alt+CmdOrCtrl+E",
-                    click() {
-                        safelyGoTo("hyperspace://hyperspace/app/#/requests")
                     }
                 },
                 {

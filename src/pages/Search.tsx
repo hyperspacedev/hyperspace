@@ -26,8 +26,6 @@ import { withSnackbar } from "notistack";
 import Post from "../components/Post";
 import { Status } from "../types/Status";
 import { Account } from "../types/Account";
-import Masonry from "react-masonry-css";
-import { getUserDefaultBool } from "../utilities/settings";
 
 interface ISearchPageState {
     query: string[] | string;
@@ -38,7 +36,6 @@ interface ISearchPageState {
     viewDidLoad?: boolean;
     viewDidError?: boolean;
     viewDidErrorCode?: string;
-    isMasonryLayout: boolean;
 }
 
 class SearchPage extends Component<any, ISearchPageState> {
@@ -57,8 +54,7 @@ class SearchPage extends Component<any, ISearchPageState> {
         this.state = {
             viewIsLoading: true,
             query: searchParams.query,
-            type: searchParams.type,
-            isMasonryLayout: getUserDefaultBool("isMasonryLayout")
+            type: searchParams.type
         };
 
         if (searchParams.type === "tag") {
@@ -199,7 +195,7 @@ class SearchPage extends Component<any, ISearchPageState> {
     showAllAccountsFromQuery() {
         const { classes } = this.props;
         return (
-            <div className={classes.pageLayoutConstraints}>
+            <div>
                 <ListSubheader>Accounts</ListSubheader>
 
                 {this.state.results &&
@@ -264,44 +260,22 @@ class SearchPage extends Component<any, ISearchPageState> {
         );
     }
 
-    renderPosts(posts: Status[]) {
-        const { classes } = this.props;
-        const postComponents = posts.map((post: Status) => {
-            return <Post key={post.id} post={post} client={this.client} />;
-        });
-        if (this.state.isMasonryLayout) {
-            return (
-                <Masonry
-                    className={classes.masonryGrid}
-                    columnClassName={classes["my-masonry-grid_column"]}
-                    breakpointCols={{
-                        default: 4,
-                        2000: 3,
-                        1400: 2,
-                        1050: 1
-                    }}
-                >
-                    {postComponents}
-                </Masonry>
-            );
-        } else {
-            return <div>{postComponents}</div>;
-        }
-    }
-
     showAllPostsFromQuery() {
         const { classes } = this.props;
-        const containerClasses = `${classes.pageLayoutConstraints} ${
-            this.state.isMasonryLayout
-                ? classes.pageLayoutMasonry + " " + classes.noTopPaddingMargin
-                : ""
-        }`;
         return (
-            <div className={containerClasses}>
+            <div>
                 <ListSubheader>Posts</ListSubheader>
                 {this.state.results ? (
                     this.state.results.statuses.length > 0 ? (
-                        this.renderPosts(this.state.results.statuses)
+                        this.state.results.statuses.map((post: Status) => {
+                            return (
+                                <Post
+                                    key={post.id}
+                                    post={post}
+                                    client={this.client}
+                                />
+                            );
+                        })
                     ) : (
                         <Typography
                             variant="caption"
@@ -317,15 +291,20 @@ class SearchPage extends Component<any, ISearchPageState> {
 
     showAllPostsWithTag() {
         const { classes } = this.props;
-        const containerClasses = `${classes.pageLayoutMaxConstraints} ${
-            this.state.isMasonryLayout ? classes.pageLayoutMasonry : ""
-        }`;
         return (
-            <div className={containerClasses}>
+            <div>
                 <ListSubheader>Tagged posts</ListSubheader>
                 {this.state.tagResults ? (
                     this.state.tagResults.length > 0 ? (
-                        this.renderPosts(this.state.tagResults)
+                        this.state.tagResults.map((post: Status) => {
+                            return (
+                                <Post
+                                    key={post.id}
+                                    post={post}
+                                    client={this.client}
+                                />
+                            );
+                        })
                     ) : (
                         <Typography
                             variant="caption"
@@ -342,7 +321,7 @@ class SearchPage extends Component<any, ISearchPageState> {
     render() {
         const { classes } = this.props;
         return (
-            <div>
+            <div className={classes.pageLayoutConstraints}>
                 {this.state.type && this.state.type === "tag" ? (
                     this.showAllPostsWithTag()
                 ) : (

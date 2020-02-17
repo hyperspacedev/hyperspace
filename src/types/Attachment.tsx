@@ -3,7 +3,7 @@
  */
 export type Attachment = {
     id: string;
-    type: "unknown" | "image" | "gifv" | "audio" | "video";
+    type: "unknown" | "image" | "gifv" | "video";
     url: string;
     remote_url: string | null;
     preview_url: string;
