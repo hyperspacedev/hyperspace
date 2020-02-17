@@ -115,7 +115,7 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
             viewIsLoading: true,
             backlogPosts: null,
             isMasonryLayout: getUserDefaultBool("isMasonryLayout"),
-            isInfiniteScroll: getUserDefaultBool("isInfiniteScroll"),
+            isInfiniteScroll: getUserDefaultBool("isInfiniteScroll")
         };
 
         // Generate the client.
@@ -212,15 +212,15 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
      * @param fn The function to call
      */
     debounced(delay: number, fn: Function) {
-        let lastCall = 0
+        let lastCall = 0;
         return function(...args: any) {
-            const now = (new Date).getTime();
+            const now = new Date().getTime();
             if (now - lastCall < delay) {
-                return
+                return;
             }
             lastCall = now;
-            return fn(...args)
-        }
+            return fn(...args);
+        };
     }
 
     /**
@@ -229,8 +229,8 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
     componentDidMount() {
         if (this.state.isInfiniteScroll) {
             window.addEventListener(
-                "scroll", 
-                this.debounced(200, this.shouldLoadMorePosts),
+                "scroll",
+                this.debounced(200, this.shouldLoadMorePosts)
             );
         }
     }
@@ -241,10 +241,7 @@ class TimelinePage extends Component<ITimelinePageProps, ITimelinePageState> {
     componentWillUnmount() {
         this.streamListener.stop();
         if (this.state.isInfiniteScroll) {
-            window.removeEventListener(
-                "scroll", 
-                this.shouldLoadMorePosts,
-            );
+            window.removeEventListener("scroll", this.shouldLoadMorePosts);
         }
     }
 
