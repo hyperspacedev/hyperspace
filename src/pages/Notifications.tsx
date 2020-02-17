@@ -25,6 +25,7 @@ import {
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import PersonIcon from "@material-ui/icons/Person";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import PersonRemoveIcon from "mdi-material-ui/AccountMinus";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { styles } from "./PageLayout.styles";
 import {
@@ -54,9 +55,9 @@ interface INotificationsPageState {
     notifications?: [Notification];
 
     /**
-     * The ids of accounts you follow associated with a notification
+     * The relationships with all notification accounts
      */
-    followingAccounts?: string[];
+    relationships: { [id: string]: Relationship };
 
     /**
      * Whether the view is still loading.
@@ -120,66 +121,46 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
         this.state = {
             viewIsLoading: true,
             deleteDialogOpen: false,
-            mobileMenuOpen: {}
+            mobileMenuOpen: {},
+            relationships: {}
         };
     }
 
     /**
-     * Perform pre-mount tasks.
+     * Perform pre-mount tasks
      */
-    /*componentWillMount() {
-        // Get the list of notifications and update the state.
-        this.client
-            .get("/notifications")
-            .then((resp: any) => {
-                let notifications: [Notification] = resp.data;
-                let notifMenus: Dictionary<boolean> = {};
-
-                notifications.forEach((notif: Notification) => {
-                    notifMenus[notif.id] = false;
-                });
-
-                this.setState({
-                    notifications,
-                    viewIsLoading: false,
-                    viewDidLoad: true,
-                    mobileMenuOpen: notifMenus
-                });
-            })
-            .catch((err: Error) => {
-                this.setState({
-                    viewDidLoad: true,
-                    viewIsLoading: false,
-                    viewDidError: true,
-                    viewDidErrorCode: err.message
-                });
-            });
-    }*/
-
     async componentWillMount() {
         try {
+            // Get the list of notifications
             let resp: any = await this.client.get("/notifications");
             let notifications: [Notification] = resp.data;
+
+            // initialize all menus as closed
             let notifMenus: Dictionary<boolean> = {};
             notifications.forEach(
                 (n: Notification) => (notifMenus[n.id] = false)
             );
-            resp = await this.client.get(
-                `/accounts/${sessionStorage.getItem("id")}/following`
-            );
-            let followingAcctIds: string[] = resp.data.map(
-                (acct: Account) => acct.id
-            );
-            let notifAcctIds: string[] = notifications.map(
-                (n: Notification) => n.account.id
-            );
-            let followingNotifAcctIds = followingAcctIds.filter((id: string) =>
-                notifAcctIds.includes(id)
-            );
-            console.log(followingNotifAcctIds);
+
+            // compile list of all notification account ids
+            let accountIds: string[] = [];
+            notifications.forEach(notif => {
+                if (!accountIds.includes(notif.account.id)) {
+                    accountIds.push(notif.account.id);
+                }
+            });
+
+            // store relationships in id-relationship pairs
+            resp = await this.client.get(`/accounts/relationships`, {
+                id: accountIds
+            });
+            let relationships: Dictionary<Relationship> = {};
+            resp.data.forEach((relation: Relationship) => {
+                relationships[relation.id] = relation;
+            });
+
             this.setState({
                 notifications,
-                followingAccounts: followingNotifAcctIds,
+                relationships,
                 viewIsLoading: false,
                 viewDidLoad: true,
                 mobileMenuOpen: notifMenus
@@ -383,54 +364,44 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
     }
 
     /**
-     * Follow an account from a notification if already not followed.
-     * @param acct The account to follow, if possible
+     * Un/follow an account and update relationships state.
+     * @param acct The account to un/follow, if possible
      */
-    followMember(acct: Account) {
-        // Get the relationships for this account.
-        this.client
-            .get(`/accounts/relationships`, { id: acct.id })
-            .then((resp: any) => {
-                // Returns a list, so grab only the first item.
-                let relationship: Relationship = resp.data[0];
-
-                // Follow if not following already.
-                if (relationship.following == false) {
-                    this.client
-                        .post(`/accounts/${acct.id}/follow`)
-                        .then((resp: any) => {
-                            this.props.enqueueSnackbar(
-                                "You are now following this account."
-                            );
-                            let followingAccounts: string[]
-                            if (this.state.followingAccounts) {
-                                followingAccounts = this.state.followingAccounts.concat(acct.id)
-                            } else {
-                                followingAccounts = [acct.id]
-                            }
-                            this.setState({followingAccounts})
-                        })
-                        .catch((err: Error) => {
-                            this.props.enqueueSnackbar(
-                                "Couldn't follow account: " + err.name,
-                                { variant: "error" }
-                            );
-                            console.error(err.message);
-                        });
-                }
-
-                // Otherwise notify the user.
-                else {
-                    this.props.enqueueSnackbar(
-                        "You already follow this account."
-                    );
-                }
-            })
-            .catch((err: Error) => {
-                this.props.enqueueSnackbar("Couldn't find relationship.", {
-                    variant: "error"
-                });
-            });
+    async toggleFollow(acct: Account) {
+        let relationships = this.state.relationships;
+        if (!relationships[acct.id].following) {
+            try {
+                let resp: any = await this.client.post(
+                    `/accounts/${acct.id}/follow`
+                );
+                relationships[acct.id] = resp.data;
+                this.setState({ relationships });
+                this.props.enqueueSnackbar(
+                    "You are now following this account."
+                );
+            } catch (e) {
+                this.props.enqueueSnackbar(
+                    "Couldn't follow acccount: " + e.name
+                );
+                console.error(e.message);
+            }
+        } else {
+            try {
+                let resp: any = await this.client.post(
+                    `/accounts/${acct.id}/unfollow`
+                );
+                relationships[acct.id] = resp.data;
+                this.setState({ relationships });
+                this.props.enqueueSnackbar(
+                    "You are no longer following this account."
+                );
+            } catch (e) {
+                this.props.enqueueSnackbar(
+                    "Couldn't unfollow acccount: " + e.name
+                );
+                console.error(e.message);
+            }
+        }
     }
 
     getActions = (notif: Notification) => {
@@ -459,7 +430,7 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                                 View Profile
                             </LinkableMenuItem>
                             <MenuItem
-                                onClick={() => this.followMember(notif.account)}
+                                onClick={() => this.toggleFollow(notif.account)}
                             >
                                 Follow
                             </MenuItem>
@@ -494,20 +465,28 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                                     <AssignmentIndIcon />
                                 </LinkableIconButton>
                             </Tooltip>
-                            {this.state.followingAccounts &&
-                            !this.state.followingAccounts.includes(
-                                notif.account.id
-                            ) ? (
+                            {!this.state.relationships[notif.account.id]
+                                .following ? (
                                 <Tooltip title="Follow account">
                                     <IconButton
                                         onClick={() =>
-                                            this.followMember(notif.account)
+                                            this.toggleFollow(notif.account)
                                         }
                                     >
                                         <PersonAddIcon />
                                     </IconButton>
                                 </Tooltip>
-                            ) : null}
+                            ) : (
+                                <Tooltip title="Unfollow account">
+                                    <IconButton
+                                        onClick={() =>
+                                            this.toggleFollow(notif.account)
+                                        }
+                                    >
+                                        <PersonRemoveIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
                         </span>
                     ) : notif.status ? (
                         <span>
