@@ -81,6 +81,9 @@ export const styles = (theme: Theme) =>
             paddingTop: theme.spacing.unit,
             paddingBottom: theme.spacing.unit
         },
+        postAuthorName: {
+            whiteSpace: 'nowrap',
+        },
         postAuthorAccount: {
             color: theme.palette.grey[500],
             marginLeft: theme.spacing.unit * 0.5,
