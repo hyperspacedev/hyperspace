@@ -432,7 +432,10 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                             <MenuItem
                                 onClick={() => this.toggleFollow(notif.account)}
                             >
-                                Follow
+                                {this.state.relationships[notif.account.id]
+                                    .following
+                                    ? "Unfollow"
+                                    : "Follow"}
                             </MenuItem>
                         </>
                     ) : null}
