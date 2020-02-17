@@ -78,14 +78,14 @@ export const ProfileRoute = (rest: any, component: Component) => (
 
 export const PrivateRoute = (props: IPrivateRouteProps) => {
     const { component, render, ...rest } = props;
+    const redir = (comp: any) =>
+        userLoggedIn() ? comp : <Redirect to="/welcome" />;
     return (
         <Route
             {...rest}
             render={(compProps: any) =>
-                userLoggedIn() ? (
-                    React.createElement(component, compProps)
-                ) : (
-                    <Redirect to="/welcome" />
+                redir(
+                    React.createElement(render ? render : component, compProps)
                 )
             }
         />
@@ -93,5 +93,6 @@ export const PrivateRoute = (props: IPrivateRouteProps) => {
 };
 
 interface IPrivateRouteProps extends RouteProps {
-    component: any;
+    component?: any;
+    render?: any;
 }

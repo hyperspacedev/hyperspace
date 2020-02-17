@@ -28,6 +28,7 @@ import {
     ListItem,
     Tooltip
 } from "@material-ui/core";
+
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import NotificationsIcon from "@material-ui/icons/Notifications";
@@ -41,6 +42,10 @@ import InfoIcon from "@material-ui/icons/Info";
 import CreateIcon from "@material-ui/icons/Create";
 import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import TrendingUpIcon from "@material-ui/icons/TrendingUp";
+import BuildIcon from "@material-ui/icons/Build";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+
 import { styles } from "./AppLayout.styles";
 import { MultiAccount, UAccount } from "../../types/Account";
 import {
@@ -63,30 +68,81 @@ import {
     getAccountRegistry,
     removeAccountFromRegistry
 } from "../../utilities/accounts";
+import { isChildView } from "../../utilities/appbar";
 
+/**
+ * The pre-define state interface for the app layout.
+ */
 interface IAppLayoutState {
+    /**
+     * Whether the account menu is open or not.
+     */
     acctMenuOpen: boolean;
+
+    /**
+     * Whether the drawer is open (mobile-only).
+     */
     drawerOpenOnMobile: boolean;
+
+    /**
+     * The current user signed in.
+     */
     currentUser?: UAccount;
+
+    /**
+     * The number of notifications received.
+     */
     notificationCount: number;
+
+    /**
+     * Whether the log out dialog is open.
+     */
     logOutOpen: boolean;
+
+    /**
+     * Whether federation has been enabled in the config.
+     */
     enableFederation?: boolean;
+
+    /**
+     * The brand name of the app, if not "Hyperspace".
+     */
     brandName?: string;
+
+    /**
+     * Whether the app is in development mode.
+     */
     developerMode?: boolean;
 }
 
+/**
+ * The base app layout class. Responsible for the search bar, navigation menus, etc.
+ */
 export class AppLayout extends Component<any, IAppLayoutState> {
+    /**
+     * The Mastodon client to operate with.
+     */
     client: Mastodon;
+
+    /**
+     * A stream listener to listen for new streaming events from Mastodon.
+     */
     streamListener: any;
 
+    /**
+     * Construct the app layout.
+     * @param props The properties to pass in.
+     */
     constructor(props: any) {
         super(props);
 
+        // Create the Mastodon client
         this.client = new Mastodon(
             localStorage.getItem("access_token") as string,
             (localStorage.getItem("baseurl") as string) + "/api/v1"
         );
 
+        // Initialize the state
         this.state = {
             drawerOpenOnMobile: false,
             acctMenuOpen: false,
@@ -94,14 +150,20 @@ export class AppLayout extends Component<any, IAppLayoutState> {
             logOutOpen: false
         };
 
+        // Bind functions as properties to this class for reference
         this.toggleDrawerOnMobile = this.toggleDrawerOnMobile.bind(this);
         this.toggleAcctMenu = this.toggleAcctMenu.bind(this);
         this.clearBadge = this.clearBadge.bind(this);
     }
 
+    /**
+     * Run post-mount tasks such as getting account data and refreshing the config file.
+     */
     componentDidMount() {
+        // Get the account data.
         this.getAccountData();
 
+        // Read the config file and then update the state.
         getConfig().then((result: any) => {
             if (result !== undefined) {
                 let config: Config = result;
@@ -115,18 +177,25 @@ export class AppLayout extends Component<any, IAppLayoutState> {
             }
         });
 
+        // Listen for notifications.
         this.streamNotifications();
     }
 
+    /**
+     * Get updated credentials from Mastodon or pull information from local storage.
+     */
     getAccountData() {
+        // Try to get updated credentials from Mastodon.
         this.client
             .get("/accounts/verify_credentials")
             .then((resp: any) => {
+                // Update the account if possible.
                 let data: UAccount = resp.data;
                 this.setState({ currentUser: data });
                 sessionStorage.setItem("id", data.id);
             })
             .catch((err: Error) => {
+                // Otherwise, pull from local storage.
                 this.props.enqueueSnackbar(
                     "Couldn't find profile info: " + err.name
                 );
@@ -136,9 +205,14 @@ export class AppLayout extends Component<any, IAppLayoutState> {
             });
     }
 
+    /**
+     * Set up a stream listener and listen for notifications.
+     */
     streamNotifications() {
+        // Set up the stream listener.
         this.streamListener = this.client.stream("/streaming/user");
 
+        // Set the count if the user asked to display the total count.
         if (getUserDefaultBool("displayAllOnNotificationBadge")) {
             this.client.get("/notifications").then((resp: any) => {
                 let notifArray = resp.data;
@@ -146,14 +220,17 @@ export class AppLayout extends Component<any, IAppLayoutState> {
             });
         }
 
+        // Listen for notifications.
         this.streamListener.on("notification", (notif: Notification) => {
             const notificationCount = this.state.notificationCount + 1;
             this.setState({ notificationCount });
 
+            // Update the badge on the desktop.
             if (isDesktopApp()) {
                 getElectronApp().setBadgeCount(notificationCount);
             }
 
+            // Set up a push notification if the window isn't in focus.
             if (!document.hasFocus()) {
                 let primaryMessage = "";
                 let secondaryMessage = "";
@@ -212,34 +289,54 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                         break;
                 }
 
+                // Respectfully send the notification request.
                 sendNotificationRequest(primaryMessage, secondaryMessage);
             }
         });
     }
 
+    /**
+     * Toggle the account menu.
+     */
     toggleAcctMenu() {
         this.setState({ acctMenuOpen: !this.state.acctMenuOpen });
     }
 
+    /**
+     * Toggle the app drawer, if on mobile.
+     */
     toggleDrawerOnMobile() {
         this.setState({
             drawerOpenOnMobile: !this.state.drawerOpenOnMobile
         });
     }
 
+    /**
+     * Toggle the logout dialog.
+     */
     toggleLogOutDialog() {
         this.setState({ logOutOpen: !this.state.logOutOpen });
     }
 
+    /**
+     * Perform a search and redirect to the search page.
+     * @param what The query input from the search box
+     */
     searchForQuery(what: string) {
+        what = what.replace(/^#/g, "tag:");
+        console.log(what);
         window.location.href = isDesktopApp()
             ? "hyperspace://hyperspace/app/index.html#/search?query=" + what
             : "/#/search?query=" + what;
     }
 
+    /**
+     * Clear login information, remove the account from the registry, and reload the web page.
+     */
     logOutAndRestart() {
         let loginData = localStorage.getItem("login");
         if (loginData) {
+            // Remove account from the registry.
             let registry = getAccountRegistry();
 
             registry.forEach((registryItem: MultiAccount, index: number) => {
@@ -251,15 +348,20 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                 }
             });
 
+            // Clear some of the local storage fields.
             let items = ["login", "account", "baseurl", "access_token"];
             items.forEach(entry => {
                 localStorage.removeItem(entry);
             });
 
+            // Finally, reload.
             window.location.reload();
         }
     }
 
+    /**
+     * Clear the notifications badge.
+     */
     clearBadge() {
         if (!getUserDefaultBool("displayAllOnNotificationBadge")) {
             this.setState({ notificationCount: 0 });
@@ -270,6 +372,9 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         }
     }
 
+    /**
+     * Render the title bar.
+     */
     titlebar() {
         const { classes } = this.props;
         if (isDarwinApp()) {
@@ -290,13 +395,20 @@ export class AppLayout extends Component<any, IAppLayoutState> {
             return (
                 <div className={classes.titleBarRoot}>
                     <Typography className={classes.titleBarText}>
-                        🛠 Careful: you're running in developer mode.
+                        <BuildIcon
+                            color="inherit"
+                            style={{ fontSize: "1em", verticalAlign: "middle" }}
+                        />{" "}
+                        Careful: you're running in developer mode.
                     </Typography>
                 </div>
             );
         }
     }
 
+    /**
+     * Render the app drawer. On the desktop, this appears as a sidebar in larger layouts.
+     */
     appDrawer() {
         const { classes } = this.props;
         return (
@@ -430,7 +542,13 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                         </LinkableListItem>
                         <Divider />
                     </div>
-                    <ListSubheader>More</ListSubheader>
+                    <ListSubheader>Community</ListSubheader>
+                    <LinkableListItem button key="activity" to="/activity">
+                        <ListItemIcon>
+                            <TrendingUpIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Activity" />
+                    </LinkableListItem>
                     <LinkableListItem
                         button
                         key="recommended"
@@ -439,8 +557,10 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                         <ListItemIcon>
                             <GroupIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Who to follow" />
+                        <ListItemText primary="Recommended" />
                     </LinkableListItem>
+                    <Divider />
+                    <ListSubheader>More</ListSubheader>
                     <LinkableListItem button key="settings" to="/settings">
                         <ListItemIcon>
                             <SettingsIcon />
@@ -458,6 +578,9 @@ export class AppLayout extends Component<any, IAppLayoutState> {
         );
     }
 
+    /**
+     * Render the entire layout.
+     */
     render() {
         const { classes } = this.props;
         return (
@@ -466,6 +589,18 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                     {this.titlebar()}
                     <AppBar className={classes.appBar} position="static">
                         <Toolbar>
+                            {isDesktopApp() &&
+                            isChildView(window.location.hash) ? (
+                                <IconButton
+                                    className={classes.appBarBackButton}
+                                    color="inherit"
+                                    aria-label="Go back"
+                                    onClick={() => window.history.back()}
+                                >
+                                    <ArrowBackIcon />
+                                </IconButton>
+                            ) : null}
+
                             <IconButton
                                 className={classes.appBarMenuButton}
                                 color="inherit"
@@ -618,6 +753,15 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                                 </ListItemText>
                                             </LinkableListItem>
                                             <LinkableListItem
+                                                button={true}
+                                                to={"/requests"}
+                                            >
+                                                <ListItemText>
+                                                    Manage follow requests
+                                                </ListItemText>
+                                            </LinkableListItem>
+                                            <Divider />
+                                            <LinkableListItem
                                                 to={"/welcome"}
                                                 button={true}
                                             >
@@ -648,7 +792,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                 variant="temporary"
                                 anchor={"left"}
                                 open={this.state.drawerOpenOnMobile}
-                                onClose={this.toggleDrawerOnMobile}
+                                onClick={this.toggleDrawerOnMobile}
                                 classes={{ paper: classes.drawerPaper }}
                             >
                                 {this.appDrawer()}

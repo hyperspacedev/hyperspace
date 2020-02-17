@@ -1,10 +1,24 @@
-Hyperspace
-Copyright Hyperspace developers 2019
+Hyperspace Desktop
+Copyright Hyperspace Developers 2020
 
-NON-VIOLENT PUBLIC LICENSE v1
+NON-VIOLENT PUBLIC LICENSE v4
+
+Preamble
+
+The Non-Violent Public license is a freedom-respecting sharealike license
+for both the author of a work as well as those subject to a work. It aims
+to protect the basic rights of human beings from exploitation and the earth
+from plunder. It aims to ensure a copyrighted work is forever available
+for public use, modification, and redistribution under the same terms so
+long as the work is not used for harm. For more information about the NPL
+refer to the official webpage
+
+Official Webpage: https://thufie.lain.haus/NPL.html
+
+Terms and Conditions
 
 THE WORK (AS DEFINED BELOW) IS PROVIDED UNDER THE TERMS OF THIS
-NON-VIOLENT PUBLIC LICENSE v1 ("LICENSE"). THE WORK IS PROTECTED BY
+NON-VIOLENT PUBLIC LICENSE v4 ("LICENSE"). THE WORK IS PROTECTED BY
 COPYRIGHT AND ALL OTHER APPLICABLE LAWS. ANY USE OF THE WORK OTHER THAN
 AS AUTHORIZED UNDER THIS LICENSE OR COPYRIGHT LAW IS PROHIBITED. BY
 EXERCISING ANY RIGHTS TO THE WORK PROVIDED IN THIS LICENSE, YOU AGREE
@@ -38,8 +52,9 @@ AND CONDITIONS OF THIS LICENSE.
           timed-relation with a moving image ("synching") will be
           considered an Adaptation for the purpose of this License.
 
-          c. "Bodily Harm" means any action of one person towards another
-          in an intentional manner.
+          c. "Bodily Harm" means any physical hurt or injury to a person that
+          interferes with the health or comfort of the person and that is more
+          more than merely transient or trifling in nature.
 
           d. "Collection" means a collection of literary or artistic
           works, such as encyclopedias and anthologies, or performances,
@@ -61,8 +76,7 @@ AND CONDITIONS OF THIS LICENSE.
 
           f. "Incarceration" means confinement in a jail, prison, or any
           other place where individuals of any kind are held against
-          either their will or the will of their legal guardians by physical
-          means.
+          either their will or the will of their legal guardians.
 
           g. "Licensor" means the individual, individuals, entity or
           entities that offer(s) the Work under the terms of this License.
@@ -134,12 +148,22 @@ AND CONDITIONS OF THIS LICENSE.
           through which the Original Author and/or Distributor originally
           created, derived, and/or modified it.
 
-          o. "Surveilling" means the use of the Work to
-          overtly or covertly observe persons or their activities.
+          o. "Surveilling" means the use of the Work to either
+          overtly or covertly observe and record persons and or their
+          activities.
 
           p. "Web Service" means the use of a piece of Software to
           interpret or modify information that is subsequently and directly
           served to users over the Internet.
+
+          q. "Discriminate" means the use of a work to differentiate between
+          humans in a such a way which prioritizes some above others on the
+          basis of percieved membership within certain groups.
+
+          r. "Hate Speech" means communication or any form
+          of expression which is solely for the purpose of expressing hatred
+          for some group or advocating a form of Discrimination
+          (to Discriminate per definition in (q)) between humans.
 
 2. FAIR DEALING RIGHTS
 
@@ -177,7 +201,6 @@ AND CONDITIONS OF THIS LICENSE.
           exercise the rights in other media and formats. Subject to
           Section 8(g), all rights not expressly granted by Licensor are
           hereby reserved.
-					
 
 4. RESTRICTIONS
 
@@ -232,15 +255,15 @@ AND CONDITIONS OF THIS LICENSE.
               or tracking individuals for financial gain.
               iii. You do not use the Work in an Act of War.
               iv. You do not use the Work for the purpose of supporting
-              an Act of War.
+              or profiting from an Act of War.
               v. You do not use the Work for the purpose of Incarceration.
               vi. You do not use the Work for the purpose of extracting
               oil, gas, or coal.
               vii. You do not use the Work for the purpose of
               expediting, coordinating, or facilitating paid work
               undertaken by individuals under the age of 12 years.
-              viii. You do not use the Work to either discriminate or
-              spread hate speech on the basis of sex, sexual orientation,
+              viii. You do not use the Work to either Discriminate or
+              spread Hate Speech on the basis of sex, sexual orientation,
               gender identity, race, age, disability, color, national origin,
               religion, or lower economic status.
 
