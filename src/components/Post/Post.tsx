@@ -124,7 +124,7 @@ export class Post extends React.Component<any, IPostState> {
             })
             .catch((err: Error) => {
                 this.props.enqueueSnackbar("Couldn't delete post: " + err.name);
-                console.log(err.message);
+                console.error(err.message);
             });
     }
 
@@ -410,6 +410,8 @@ export class Post extends React.Component<any, IPostState> {
             emojis.concat(reblogger.emojis);
         }
 
+        // console.log(post);
+
         return (
             <>
                 <span
@@ -539,86 +541,63 @@ export class Post extends React.Component<any, IPostState> {
         }
     }
 
+    /**
+     * Get the post's URL
+     * @param post The post to get the URL from
+     * @returns A string containing the post's URI
+     */
     getMastodonUrl(post: Status) {
-        let url = "";
-        if (post.reblog) {
-            url = post.reblog.uri;
-        } else {
-            url = post.uri;
-        }
-        return url;
+        return post.reblog ? post.reblog.uri : post.uri;
     }
 
-    toggleFavorited(post: Status) {
-        let _this = this;
-        if (post.favourited) {
-            this.client
-                .post(`/statuses/${post.id}/unfavourite`)
-                .then((resp: any) => {
-                    let post: Status = resp.data;
-                    this.setState({ post });
-                })
-                .catch((err: Error) => {
-                    _this.props.enqueueSnackbar(
-                        `Couldn't unfavorite post: ${err.name}`,
-                        {
-                            variant: "error"
-                        }
-                    );
-                    console.log(err.message);
-                });
-        } else {
-            this.client
-                .post(`/statuses/${post.id}/favourite`)
-                .then((resp: any) => {
-                    let post: Status = resp.data;
-                    this.setState({ post });
-                })
-                .catch((err: Error) => {
-                    _this.props.enqueueSnackbar(
-                        `Couldn't favorite post: ${err.name}`,
-                        {
-                            variant: "error"
-                        }
-                    );
-                    console.log(err.message);
-                });
+    /**
+     * Tell server a post has been un/favorited and update post state
+     * @param post The post to un/favorite
+     */
+    async toggleFavorited(post: Status) {
+        let action: string = post.favourited ? "unfavourite" : "favourite";
+        try {
+            // favorite the original post, not the reblog
+            let resp: any = await this.client.post(
+                `/statuses/${post.reblog ? post.reblog.id : post.id}/${action}`
+            );
+            // compensate for slow server update
+            if (action === "unfavourite") {
+                resp.data.favourites_count -= 1;
+                // if you unlike both original and reblog before refresh
+                // and the post has only one favorite:
+                if (resp.data.favourites_count < 0) {
+                    resp.data.favourites_count = 0;
+                }
+            }
+            this.setState({ post: resp.data as Status });
+        } catch (e) {
+            this.props.enqueueSnackbar(`Could not ${action} post: ${e.name}`);
+            console.error(e.message);
         }
     }
 
-    toggleReblogged(post: Status) {
-        if (post.reblogged) {
-            this.client
-                .post(`/statuses/${post.id}/unreblog`)
-                .then((resp: any) => {
-                    let post: Status = resp.data;
-                    this.setState({ post });
-                })
-                .catch((err: Error) => {
-                    this.props.enqueueSnackbar(
-                        `Couldn't unboost post: ${err.name}`,
-                        {
-                            variant: "error"
-                        }
-                    );
-                    console.log(err.message);
-                });
-        } else {
-            this.client
-                .post(`/statuses/${post.id}/reblog`)
-                .then((resp: any) => {
-                    let post: Status = resp.data;
-                    this.setState({ post });
-                })
-                .catch((err: Error) => {
-                    this.props.enqueueSnackbar(
-                        `Couldn't boost post: ${err.name}`,
-                        {
-                            variant: "error"
-                        }
-                    );
-                    console.log(err.message);
-                });
+    /**
+     * Tell server a post has been un/reblogged and update post state
+     * @param post The post to un/reblog
+     */
+    async toggleReblogged(post: Status) {
+        let action: string =
+            post.reblogged || post.reblog ? "unreblog" : "reblog";
+        try {
+            // modify the original post, not the reblog
+            let resp: any = await this.client.post(
+                `/statuses/${post.reblog ? post.reblog.id : post.id}/${action}`
+            );
+            // compensate for slow server update
+            if (action === "unreblog") {
+                resp.data.reblogs_count -= 1;
+            }
+            if (resp.data.reblog) resp.data = resp.data.reblog;
+            this.setState({ post: resp.data as Status });
+        } catch (e) {
+            this.props.enqueueSnackbar(`Could not ${action} post: ${e.name}`);
+            console.error(e.message);
         }
     }
 

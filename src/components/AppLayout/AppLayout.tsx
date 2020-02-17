@@ -324,7 +324,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
      */
     searchForQuery(what: string) {
         what = what.replace(/^#/g, "tag:");
-        console.log(what);
+        // console.log(what);
         window.location.href = isDesktopApp()
             ? "hyperspace://hyperspace/app/index.html#/search?query=" + what
             : "/#/search?query=" + what;

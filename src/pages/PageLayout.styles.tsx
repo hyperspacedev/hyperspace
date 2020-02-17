@@ -335,5 +335,9 @@ export const styles = (theme: Theme) =>
         "my-masonry-grid_column": {
             // non-standard name fixes react-masonry-css bug :shrug:
             padding: 5
+        },
+        noTopPaddingMargin: {
+            marginTop: 0,
+            paddingTop: 0
         }
     });

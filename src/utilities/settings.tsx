@@ -136,6 +136,15 @@ export function createUserDefaults() {
 export async function getConfig(): Promise<Config | undefined> {
     try {
         const resp = await axios.get("config.json");
+
+        let { location } = resp.data;
+
+        if (!location.endsWith("/")) {
+            console.warn(
+                "Location does not have a backslash, so Hyperspace has added it automatically."
+            );
+            resp.data.location = location + "/";
+        }
         return resp.data as Config;
     } catch (err) {
         console.error(
