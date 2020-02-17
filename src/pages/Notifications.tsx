@@ -54,6 +54,11 @@ interface INotificationsPageState {
     notifications?: [Notification];
 
     /**
+     * The ids of accounts you follow associated with a notification
+     */
+    followingAccounts?: string[];
+
+    /**
      * Whether the view is still loading.
      */
     viewIsLoading: boolean;
@@ -122,7 +127,7 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
     /**
      * Perform pre-mount tasks.
      */
-    componentWillMount() {
+    /*componentWillMount() {
         // Get the list of notifications and update the state.
         this.client
             .get("/notifications")
@@ -149,6 +154,44 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                     viewDidErrorCode: err.message
                 });
             });
+    }*/
+
+    async componentWillMount() {
+        try {
+            let resp: any = await this.client.get("/notifications");
+            let notifications: [Notification] = resp.data;
+            let notifMenus: Dictionary<boolean> = {};
+            notifications.forEach(
+                (n: Notification) => (notifMenus[n.id] = false)
+            );
+            resp = await this.client.get(
+                `/accounts/${sessionStorage.getItem("id")}/following`
+            );
+            let followingAcctIds: string[] = resp.data.map(
+                (acct: Account) => acct.id
+            );
+            let notifAcctIds: string[] = notifications.map(
+                (n: Notification) => n.account.id
+            );
+            let followingNotifAcctIds = followingAcctIds.filter((id: string) =>
+                notifAcctIds.includes(id)
+            );
+            console.log(followingNotifAcctIds);
+            this.setState({
+                notifications,
+                followingAccounts: followingNotifAcctIds,
+                viewIsLoading: false,
+                viewDidLoad: true,
+                mobileMenuOpen: notifMenus
+            });
+        } catch (e) {
+            this.setState({
+                viewDidLoad: true,
+                viewIsLoading: false,
+                viewDidError: true,
+                viewDidErrorCode: e.message
+            });
+        }
     }
 
     /**
@@ -359,6 +402,13 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                             this.props.enqueueSnackbar(
                                 "You are now following this account."
                             );
+                            let followingAccounts: string[]
+                            if (this.state.followingAccounts) {
+                                followingAccounts = this.state.followingAccounts.concat(acct.id)
+                            } else {
+                                followingAccounts = [acct.id]
+                            }
+                            this.setState({followingAccounts})
                         })
                         .catch((err: Error) => {
                             this.props.enqueueSnackbar(
@@ -444,15 +494,20 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                                     <AssignmentIndIcon />
                                 </LinkableIconButton>
                             </Tooltip>
-                            <Tooltip title="Follow account">
-                                <IconButton
-                                    onClick={() =>
-                                        this.followMember(notif.account)
-                                    }
-                                >
-                                    <PersonAddIcon />
-                                </IconButton>
-                            </Tooltip>
+                            {this.state.followingAccounts &&
+                            !this.state.followingAccounts.includes(
+                                notif.account.id
+                            ) ? (
+                                <Tooltip title="Follow account">
+                                    <IconButton
+                                        onClick={() =>
+                                            this.followMember(notif.account)
+                                        }
+                                    >
+                                        <PersonAddIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            ) : null}
                         </span>
                     ) : notif.status ? (
                         <span>
