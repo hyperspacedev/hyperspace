@@ -649,7 +649,7 @@ export class Post extends React.Component<any, IPostState> {
                 <CardHeader
                     classes={{
                         content: classes.postHeaderContent,
-                        title: classes.postHeaderTitle,
+                        title: classes.postHeaderTitle
                     }}
                     avatar={
                         <LinkableAvatar
@@ -676,9 +676,7 @@ export class Post extends React.Component<any, IPostState> {
                             </IconButton>
                         </Tooltip>
                     }
-                    title={
-                        this.getReblogAuthors(post)
-                    }
+                    title={this.getReblogAuthors(post)}
                     subheader={moment(post.created_at).format(
                         "MMMM Do YYYY [at] h:mm A"
                     )}

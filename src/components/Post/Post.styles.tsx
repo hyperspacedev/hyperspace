@@ -7,20 +7,20 @@ export const styles = (theme: Theme) =>
             marginBottom: theme.spacing.unit
         },
         postHeaderContent: {
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
+            overflow: "hidden",
+            whiteSpace: "nowrap"
         },
         postHeaderTitle: {
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            color: theme.palette.text.secondary,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            color: theme.palette.text.secondary
         },
         postAuthorName: {
-            whiteSpace: 'nowrap',
-            color: theme.palette.text.primary,
+            whiteSpace: "nowrap",
+            color: theme.palette.text.primary
         },
         postAuthorAccount: {
-            marginLeft: theme.spacing.unit * 0.5,
+            marginLeft: theme.spacing.unit * 0.5
         },
         postReblogChip: {
             color: theme.palette.common.white,
@@ -101,7 +101,7 @@ export const styles = (theme: Theme) =>
             marginBottom: theme.spacing.unit * -0.5,
             marginLeft: theme.spacing.unit * 0.5,
             marginRight: theme.spacing.unit * 0.5,
-            color: theme.palette.text.primary,
+            color: theme.palette.text.primary
         },
         postAuthorEmoji: {
             height: theme.typography.fontSize,
