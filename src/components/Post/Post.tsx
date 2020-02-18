@@ -405,8 +405,6 @@ export class Post extends React.Component<any, IPostState> {
             emojis.concat(reblogger.emojis);
         }
 
-        // console.log(post);
-
         return (
             <>
                 <span
@@ -645,6 +643,10 @@ export class Post extends React.Component<any, IPostState> {
                     elevation={this.props.threadHeader ? 0 : 1}
                 >
                     <CardHeader
+                        classes={{
+                            content: classes.postHeaderContent,
+                            title: classes.postHeaderTitle
+                        }}
                         avatar={
                             <LinkableAvatar
                                 to={`/profile/${
@@ -670,11 +672,7 @@ export class Post extends React.Component<any, IPostState> {
                                 </IconButton>
                             </Tooltip>
                         }
-                        title={
-                            <Typography>
-                                {this.getReblogAuthors(post)}
-                            </Typography>
-                        }
+                        title={this.getReblogAuthors(post)}
                         subheader={moment(post.created_at).format(
                             "MMMM Do YYYY [at] h:mm A"
                         )}

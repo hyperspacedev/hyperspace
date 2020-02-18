@@ -17,6 +17,15 @@ export const styles = (theme: Theme) =>
         postReblogMenu: {
             outline: "none"
         },
+        postHeaderContent: {
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+        },
+        postHeaderTitle: {
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            color: theme.palette.text.secondary,
+        },
         postContent: {
             paddingTop: 0,
             paddingBottom: 0,
@@ -83,9 +92,9 @@ export const styles = (theme: Theme) =>
         },
         postAuthorName: {
             whiteSpace: 'nowrap',
+            color: theme.palette.text.primary,
         },
         postAuthorAccount: {
-            color: theme.palette.grey[500],
             marginLeft: theme.spacing.unit * 0.5,
         },
         postReblogIcon: {
