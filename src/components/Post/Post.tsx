@@ -410,11 +410,10 @@ export class Post extends React.Component<any, IPostState> {
             emojis.concat(reblogger.emojis);
         }
 
-        // console.log(post);
-
         return (
             <>
                 <span
+                    className={classes.postAuthorName}
                     dangerouslySetInnerHTML={{
                         __html: emojifyString(
                             author.display_name || author.username,
@@ -436,7 +435,7 @@ export class Post extends React.Component<any, IPostState> {
                     }}
                 ></span>
                 {reblogger ? (
-                    <>
+                    <div>
                         <AutorenewIcon
                             fontSize="small"
                             className={classes.postReblogIcon}
@@ -451,7 +450,7 @@ export class Post extends React.Component<any, IPostState> {
                                 )
                             }}
                         ></span>
-                    </>
+                    </div>
                 ) : null}
             </>
         );

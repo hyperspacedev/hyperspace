@@ -6,6 +6,9 @@ export const styles = (theme: Theme) =>
             marginTop: theme.spacing.unit,
             marginBottom: theme.spacing.unit
         },
+        postAuthorName: {
+            whiteSpace: 'nowrap',
+        },
         postReblogChip: {
             color: theme.palette.common.white,
             "&:hover": {
