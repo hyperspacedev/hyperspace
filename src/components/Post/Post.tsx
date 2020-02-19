@@ -412,28 +412,30 @@ export class Post extends React.Component<any, IPostState> {
 
         return (
             <>
-                <span
-                    className={classes.postAuthorName}
-                    dangerouslySetInnerHTML={{
-                        __html: emojifyString(
-                            author.display_name || author.username,
-                            emojis,
-                            classes.postAuthorEmoji
-                        )
-                    }}
-                ></span>
-                <span
-                    className={classes.postAuthorAccount}
-                    dangerouslySetInnerHTML={{
-                        __html:
-                            "@" +
-                            emojifyString(
-                                author.acct || author.username,
+                <span className={classes.postAuthorNameAndAccount}>
+                    <span
+                        className={classes.postAuthorName}
+                        dangerouslySetInnerHTML={{
+                            __html: emojifyString(
+                                author.display_name || author.username,
                                 emojis,
                                 classes.postAuthorEmoji
                             )
-                    }}
-                ></span>
+                        }}
+                    ></span>
+                    <span
+                        className={classes.postAuthorAccount}
+                        dangerouslySetInnerHTML={{
+                            __html:
+                                "@" +
+                                emojifyString(
+                                    author.acct || author.username,
+                                    emojis,
+                                    classes.postAuthorEmoji
+                                )
+                        }}
+                    ></span>
+                </span>
                 {reblogger ? (
                     <div>
                         <AutorenewIcon

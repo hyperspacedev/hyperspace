@@ -11,15 +11,21 @@ export const styles = (theme: Theme) =>
             whiteSpace: "nowrap"
         },
         postHeaderTitle: {
-            overflow: "hidden",
-            textOverflow: "ellipsis",
+            display: 'flex',
+            flexWrap: 'wrap',
             color: theme.palette.text.secondary
+        },
+        postAuthorNameAndAccount: {
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
         },
         postAuthorName: {
             whiteSpace: "nowrap",
             color: theme.palette.text.primary
         },
         postAuthorAccount: {
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
             marginLeft: theme.spacing.unit * 0.5
         },
         postReblogChip: {
