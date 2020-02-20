@@ -6,6 +6,28 @@ export const styles = (theme: Theme) =>
             marginTop: theme.spacing.unit,
             marginBottom: theme.spacing.unit
         },
+        postHeaderContent: {
+            overflow: "hidden",
+            whiteSpace: "nowrap"
+        },
+        postHeaderTitle: {
+            display: "flex",
+            flexWrap: "wrap",
+            color: theme.palette.text.secondary
+        },
+        postAuthorNameAndAccount: {
+            overflow: "hidden",
+            textOverflow: "ellipsis"
+        },
+        postAuthorName: {
+            whiteSpace: "nowrap",
+            color: theme.palette.text.primary
+        },
+        postAuthorAccount: {
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            marginLeft: theme.spacing.unit * 0.5
+        },
         postReblogChip: {
             color: theme.palette.common.white,
             "&:hover": {
@@ -81,14 +103,11 @@ export const styles = (theme: Theme) =>
             paddingTop: theme.spacing.unit,
             paddingBottom: theme.spacing.unit
         },
-        postAuthorAccount: {
-            color: theme.palette.grey[500],
-            marginLeft: theme.spacing.unit * 0.5,
-        },
         postReblogIcon: {
             marginBottom: theme.spacing.unit * -0.5,
             marginLeft: theme.spacing.unit * 0.5,
             marginRight: theme.spacing.unit * 0.5,
+            color: theme.palette.text.primary
         },
         postAuthorEmoji: {
             height: theme.typography.fontSize,

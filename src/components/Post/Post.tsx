@@ -410,33 +410,34 @@ export class Post extends React.Component<any, IPostState> {
             emojis.concat(reblogger.emojis);
         }
 
-        // console.log(post);
-
         return (
             <>
-                <span
-                    dangerouslySetInnerHTML={{
-                        __html: emojifyString(
-                            author.display_name || author.username,
-                            emojis,
-                            classes.postAuthorEmoji
-                        )
-                    }}
-                ></span>
-                <span
-                    className={classes.postAuthorAccount}
-                    dangerouslySetInnerHTML={{
-                        __html:
-                            "@" +
-                            emojifyString(
-                                author.acct || author.username,
+                <span className={classes.postAuthorNameAndAccount}>
+                    <span
+                        className={classes.postAuthorName}
+                        dangerouslySetInnerHTML={{
+                            __html: emojifyString(
+                                author.display_name || author.username,
                                 emojis,
                                 classes.postAuthorEmoji
                             )
-                    }}
-                ></span>
+                        }}
+                    ></span>
+                    <span
+                        className={classes.postAuthorAccount}
+                        dangerouslySetInnerHTML={{
+                            __html:
+                                "@" +
+                                emojifyString(
+                                    author.acct || author.username,
+                                    emojis,
+                                    classes.postAuthorEmoji
+                                )
+                        }}
+                    ></span>
+                </span>
                 {reblogger ? (
-                    <>
+                    <div>
                         <AutorenewIcon
                             fontSize="small"
                             className={classes.postReblogIcon}
@@ -451,7 +452,7 @@ export class Post extends React.Component<any, IPostState> {
                                 )
                             }}
                         ></span>
-                    </>
+                    </div>
                 ) : null}
             </>
         );
@@ -648,6 +649,10 @@ export class Post extends React.Component<any, IPostState> {
                 elevation={this.props.threadHeader ? 0 : 1}
             >
                 <CardHeader
+                    classes={{
+                        content: classes.postHeaderContent,
+                        title: classes.postHeaderTitle
+                    }}
                     avatar={
                         <LinkableAvatar
                             to={`/profile/${
@@ -673,9 +678,7 @@ export class Post extends React.Component<any, IPostState> {
                             </IconButton>
                         </Tooltip>
                     }
-                    title={
-                        <Typography>{this.getReblogAuthors(post)}</Typography>
-                    }
+                    title={this.getReblogAuthors(post)}
                     subheader={moment(post.created_at).format(
                         "MMMM Do YYYY [at] h:mm A"
                     )}
