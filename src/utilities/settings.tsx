@@ -140,11 +140,17 @@ export async function getConfig(): Promise<Config | undefined> {
         let { location } = resp.data;
 
         if (!location.endsWith("/")) {
-            console.warn(
+            console.info(
                 "Location does not have a backslash, so Hyperspace has added it automatically."
             );
             resp.data.location = location + "/";
         }
+
+        if (process.env.NODE_ENV === "development") {
+            resp.data.location = "http://localhost:3000/";
+            console.info("Location field has been updated to localhost:3000.");
+        }
+
         return resp.data as Config;
     } catch (err) {
         console.error(
