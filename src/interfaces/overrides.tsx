@@ -79,7 +79,7 @@ export const ProfileRoute = (rest: any, component: Component) => (
 export const PrivateRoute = (props: IPrivateRouteProps) => {
     const { component, render, ...rest } = props;
     const redir = (comp: any) =>
-        userLoggedIn ? comp : <Redirect to="/welcome" />;
+        userLoggedIn() ? comp : <Redirect to="/welcome" />;
     return (
         <Route
             {...rest}

@@ -83,7 +83,7 @@ class ActivityPage extends Component<any, IActivityPageState> {
                     viewLoading: false,
                     viewErrored: true
                 });
-                console.log(err.message);
+                console.error(err.message);
             });
 
         this.client
@@ -101,7 +101,7 @@ class ActivityPage extends Component<any, IActivityPageState> {
                     viewLoading: false,
                     viewErrored: true
                 });
-                console.log(err.message);
+                console.error(err.message);
             });
     }
 

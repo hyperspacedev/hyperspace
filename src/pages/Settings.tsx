@@ -65,6 +65,7 @@ import DomainDisabledIcon from "@material-ui/icons/DomainDisabled";
 import AccountSettingsIcon from "mdi-material-ui/AccountSettings";
 import AlphabeticalVariantOffIcon from "mdi-material-ui/AlphabeticalVariantOff";
 import DashboardIcon from "@material-ui/icons/Dashboard";
+import InfiniteIcon from "@material-ui/icons/AllInclusive";
 
 import { Config } from "../types/Config";
 import { Account } from "../types/Account";
@@ -88,6 +89,7 @@ interface ISettingsState {
     currentUser?: Account;
     imposeCharacterLimit: boolean;
     masonryLayout?: boolean;
+    infiniteScroll?: boolean;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -120,7 +122,8 @@ class SettingsPage extends Component<any, ISettingsState> {
             brandName: "Hyperspace",
             federated: true,
             imposeCharacterLimit: getUserDefaultBool("imposeCharacterLimit"),
-            masonryLayout: getUserDefaultBool("isMasonryLayout")
+            masonryLayout: getUserDefaultBool("isMasonryLayout"),
+            infiniteScroll: getUserDefaultBool("isInfiniteScroll")
         };
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -130,6 +133,7 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.toggleThemeDialog = this.toggleThemeDialog.bind(this);
         this.toggleVisibilityDialog = this.toggleVisibilityDialog.bind(this);
         this.toggleMasonryLayout = this.toggleMasonryLayout.bind(this);
+        this.toggleInfiniteScroll = this.toggleInfiniteScroll.bind(this);
         this.changeThemeName = this.changeThemeName.bind(this);
         this.changeTheme = this.changeTheme.bind(this);
         this.setVisibility = this.setVisibility.bind(this);
@@ -170,7 +174,7 @@ class SettingsPage extends Component<any, ISettingsState> {
         getConfig().then((result: any) => {
             if (result !== undefined) {
                 let config: Config = result;
-                console.log(!config.federation.allowPublicPosts);
+                // console.log(!config.federation.allowPublicPosts);
                 this.setState({
                     federated: config.federation.allowPublicPosts
                 });
@@ -248,6 +252,11 @@ class SettingsPage extends Component<any, ISettingsState> {
     toggleMasonryLayout() {
         this.setState({ masonryLayout: !this.state.masonryLayout });
         setUserDefaultBool("isMasonryLayout", !this.state.masonryLayout);
+    }
+
+    toggleInfiniteScroll() {
+        this.setState({ infiniteScroll: !this.state.infiniteScroll });
+        setUserDefaultBool("isInfiniteScroll", !this.state.infiniteScroll);
     }
 
     changeTheme() {
@@ -672,6 +681,22 @@ class SettingsPage extends Component<any, ISettingsState> {
                                         <Switch
                                             checked={this.state.masonryLayout}
                                             onChange={this.toggleMasonryLayout}
+                                        />
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <InfiniteIcon color="action" />
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                        primary="Enable infinite scroll"
+                                        secondary="Automatically load more posts when scrolling"
+                                    />
+                                    <ListItemSecondaryAction>
+                                        <Switch
+                                            checked={this.state.infiniteScroll}
+                                            onChange={this.toggleInfiniteScroll}
                                         />
                                     </ListItemSecondaryAction>
                                 </ListItem>
