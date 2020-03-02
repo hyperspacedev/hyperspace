@@ -63,6 +63,8 @@ Before testing Hyperspace, you'll need to modify the `location` key in `public/c
     "location": "https://localhost:3000"
 ```
 
+> Note: Since v1.1.0-beta4, this is no longer necessary since Hyperspace will automatically do this for you when running it through `npm start`.
+
 The `location` key can take the following values during testing:
 
 -   **https://localhost:3000**: Most suitable for running `npm start` or running via `react-scripts`.
