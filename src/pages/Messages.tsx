@@ -8,7 +8,6 @@ import {
     ListItemText,
     CircularProgress,
     ListItemAvatar,
-    Avatar,
     ListItemSecondaryAction,
     Tooltip,
     Typography

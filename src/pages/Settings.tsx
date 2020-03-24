@@ -66,7 +66,6 @@ import InfiniteIcon from "@material-ui/icons/AllInclusive";
 import { Config } from "../types/Config";
 import { Account } from "../types/Account";
 import Mastodon from "megalodon";
-import { isDarwinApp } from "../utilities/desktop";
 import { withSnackbar } from "notistack";
 
 interface ISettingsState {

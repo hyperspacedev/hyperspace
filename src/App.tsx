@@ -16,7 +16,6 @@ import Composer from "./pages/Compose";
 import WelcomePage from "./pages/Welcome";
 import MessagesPage from "./pages/Messages";
 import RecommendationsPage from "./pages/Recommendations";
-import Missingno from "./pages/Missingno";
 import Blocked from "./pages/Blocked";
 import You from "./pages/You";
 import RequestsPage from "./pages/Requests";
@@ -86,8 +85,6 @@ class App extends Component<any, IAppState> {
     }
 
     render() {
-        const { classes } = this.props;
-
         this.removeBodyBackground();
 
         return (
