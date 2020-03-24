@@ -128,6 +128,8 @@ export function createUserDefaults() {
             }
         }
     });
+
+    setUserDefaultBool("userDeniedNotications", false);
 }
 
 /**
