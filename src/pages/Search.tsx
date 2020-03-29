@@ -90,7 +90,7 @@ class SearchPage extends Component<any, ISearchPageState> {
         if (newLocation !== undefined && typeof newLocation === "string") {
             searchParams = newLocation.replace("#/search", "");
         } else {
-            searchParams = location.hash.replace("#/search", "");
+            searchParams = this.props.location.hash.replace("#/search", "");
         }
         return parseParams(searchParams);
     }

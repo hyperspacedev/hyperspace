@@ -39,7 +39,7 @@ Looking for the Mac App Store version? [Read more &rsaquo;](https://hyperspace.m
 
 To develop Hyperspace, you'll need the following tools and packages:
 
--   Node.js 8 or later
+-   Node.js v10 or later
 
 ### Installing dependencies
 
@@ -57,24 +57,18 @@ npm install
 
 ### Testing changes
 
-Before testing Hyperspace, you'll need to modify the `location` key in `public/config.json`. For example:
-
-```json
-    "location": "https://localhost:3000"
-```
-
-> Note: Since v1.1.0-beta4, this is no longer necessary since Hyperspace will automatically do this for you when running it through `npm start`.
-
-The `location` key can take the following values during testing:
-
--   **https://localhost:3000**: Most suitable for running `npm start` or running via `react-scripts`.
--   **desktop**: Most suitable for when testing the desktop application.
-
-After changing this setting, run any of the following scripts to test:
+Run any of the following scripts to test:
 
 -   `npm start` - Starts a local server hosted at https://localhost:3000.
 -   `npm run electrify` - Builds a copy of the source code and then runs the app through Electron. Ensure that the `location` key in `config.json` points to `"desktop"` before running this.
 -   `npm run electrify-nobuild` - Similar to `electrify` but doesn't build the project before running.
+
+The `location` key in `config.json` can take the following values during testing:
+
+-   **https://localhost:3000**: Most suitable for running `npm start` or running via `react-scripts`.
+-   **desktop**: Most suitable for when testing the desktop application.
+
+> Note: Hyperspace v1.1.0-beta3 and older versions require the location field to be changed to `"https://localhost:3000"` before running.
 
 ### Building a release
 
