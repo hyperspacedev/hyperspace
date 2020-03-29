@@ -822,7 +822,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         </b>
                         ? Sign in with your{" "}
                         <Link
-                            href="https://docs.joinmastodon.org/usage/decentralization/#addressing-people"
+                            href="https://docs.joinmastodon.org/user/signup/#address"
                             target="_blank"
                             rel="noopener noreferrer"
                             color="secondary"
