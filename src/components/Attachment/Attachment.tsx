@@ -91,7 +91,11 @@ class AttachmentComponent extends Component<
                 );
             case "unknown":
                 return (
-                    <object data={slide.url} className={classes.mediaObject} />
+                    <object
+                        data={slide.url}
+                        className={classes.mediaObject}
+                        aria-label={`Slide: ${slide.id}`}
+                    />
                 );
         }
     }

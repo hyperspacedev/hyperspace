@@ -11,12 +11,12 @@ import ProfilePage from "./pages/ProfilePage";
 import TimelinePage from "./pages/Timeline";
 import Conversation from "./pages/Conversation";
 import NotificationsPage from "./pages/Notifications";
+import AnnouncementsPage from "./pages/Announcements";
 import SearchPage from "./pages/Search";
 import Composer from "./pages/Compose";
 import WelcomePage from "./pages/Welcome";
 import MessagesPage from "./pages/Messages";
 import RecommendationsPage from "./pages/Recommendations";
-import Missingno from "./pages/Missingno";
 import Blocked from "./pages/Blocked";
 import You from "./pages/You";
 import RequestsPage from "./pages/Requests";
@@ -86,8 +86,6 @@ class App extends Component<any, IAppState> {
     }
 
     render() {
-        const { classes } = this.props;
-
         this.removeBodyBackground();
 
         return (
@@ -138,6 +136,10 @@ class App extends Component<any, IAppState> {
                         )}
                     />
                     <PrivateRoute path="/messages" component={MessagesPage} />
+                    <PrivateRoute
+                        path="/announcements"
+                        component={AnnouncementsPage}
+                    />
                     <PrivateRoute
                         path="/notifications"
                         component={NotificationsPage}

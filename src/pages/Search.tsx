@@ -6,7 +6,6 @@ import {
     ListSubheader,
     ListItemSecondaryAction,
     ListItemAvatar,
-    Avatar,
     Paper,
     withStyles,
     Typography,
@@ -14,7 +13,7 @@ import {
     Tooltip,
     IconButton
 } from "@material-ui/core";
-import PersonIcon from "@material-ui/icons/Person";
+
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import { styles } from "./PageLayout.styles";
@@ -90,7 +89,7 @@ class SearchPage extends Component<any, ISearchPageState> {
         if (newLocation !== undefined && typeof newLocation === "string") {
             searchParams = newLocation.replace("#/search", "");
         } else {
-            searchParams = location.hash.replace("#/search", "");
+            searchParams = this.props.location.hash.replace("#/search", "");
         }
         return parseParams(searchParams);
     }

@@ -6,7 +6,6 @@ import {
     LinearProgress,
     Tooltip
 } from "@material-ui/core";
-import { LinkableIconButton } from "../../interfaces/overrides";
 
 import FastRewindIcon from "@material-ui/icons/FastRewind";
 import FastForwardIcon from "@material-ui/icons/FastForward";

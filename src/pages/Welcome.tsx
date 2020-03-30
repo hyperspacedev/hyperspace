@@ -36,12 +36,11 @@ import axios from "axios";
 import { withSnackbar, withSnackbarProps } from "notistack";
 import { Config } from "../types/Config";
 import {
-    addAccountToRegistry,
     getAccountRegistry,
     loginWithAccount,
     removeAccountFromRegistry
 } from "../utilities/accounts";
-import { Account, MultiAccount } from "../types/Account";
+import { MultiAccount } from "../types/Account";
 
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import CloseIcon from "@material-ui/icons/Close";
@@ -255,10 +254,10 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         license: config.license.url,
                         repo: config.repository,
                         defaultRedirectAddress:
-                            config.location != "dynamic"
+                            config.location !== "dynamic"
                                 ? config.location
                                 : `https://${window.location.host}`,
-                        redirectAddressIsDynamic: config.location == "dynamic",
+                        redirectAddressIsDynamic: config.location === "dynamic",
                         version: config.version
                     });
                 }
@@ -651,7 +650,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 );
 
                 getConfig().then((resp: any) => {
-                    if (resp == undefined) {
+                    if (resp === undefined) {
                         return;
                     }
 
@@ -822,7 +821,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         </b>
                         ? Sign in with your{" "}
                         <Link
-                            href="https://docs.joinmastodon.org/usage/decentralization/#addressing-people"
+                            href="https://docs.joinmastodon.org/user/signup/#address"
                             target="_blank"
                             rel="noopener noreferrer"
                             color="secondary"
@@ -920,7 +919,6 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
      * Show the emergency login panel
      */
     showAuthDialog() {
-        const { classes } = this.props;
         return (
             <Dialog
                 open={this.state.openAuthDialog}
