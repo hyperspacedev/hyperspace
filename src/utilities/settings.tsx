@@ -1,5 +1,4 @@
 import { defaultTheme, themes } from "../types/HyperspaceTheme";
-import { getNotificationRequestPermission } from "./notifications";
 import axios from "axios";
 import { Config } from "../types/Config";
 import { Visibility } from "../types/Visibility";
@@ -13,6 +12,7 @@ type SettingsTemplate = {
     displayAllOnNotificationBadge: boolean;
     defaultVisibility: string;
     imposeCharacterLimit: boolean;
+    canSendNotifications: boolean;
 };
 
 /**
@@ -102,7 +102,8 @@ export function createUserDefaults() {
         displayAllOnNotificationBadge: false,
         defaultVisibility: "public",
         imposeCharacterLimit: true,
-        isMasonryLayout: false
+        isMasonryLayout: false,
+        canSendNotifications: false
     };
 
     let settings = [
@@ -112,7 +113,8 @@ export function createUserDefaults() {
         "displayAllOnNotificationBadge",
         "defaultVisibility",
         "imposeCharacterLimit",
-        "isMasonryLayout"
+        "isMasonryLayout",
+        "canSendNotifications"
     ];
 
     migrateExistingSettings();
@@ -126,7 +128,8 @@ export function createUserDefaults() {
             }
         }
     });
-    getNotificationRequestPermission();
+
+    setUserDefaultBool("userDeniedNotications", false);
 }
 
 /**

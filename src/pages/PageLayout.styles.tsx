@@ -1,4 +1,4 @@
-import { Theme, createStyles, FormHelperText } from "@material-ui/core";
+import { Theme, createStyles } from "@material-ui/core";
 import { isDarwinApp } from "../utilities/desktop";
 import { isAppbarExpanded } from "../utilities/appbar";
 

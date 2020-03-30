@@ -2,23 +2,28 @@ import { getUserDefaultBool, setUserDefaultBool } from "./settings";
 
 /**
  * Get the person's permission to send notification requests.
+ *
+ * @returns Promise containing the notification permission, or a rejection if
+ * either the browser doesn't support notifications.
  */
 export function getNotificationRequestPermission() {
     if ("Notification" in window) {
-        Notification.requestPermission();
-        let request = Notification.permission;
-        if (request === "granted") {
-            setUserDefaultBool("enablePushNotifications", true);
-            setUserDefaultBool("userDeniedNotification", false);
-        } else {
-            setUserDefaultBool("enablePushNotifications", false);
-            setUserDefaultBool("userDeniedNotification", true);
-        }
+        Notification.requestPermission().then(request => {
+            setUserDefaultBool(
+                "enablePushNotifications",
+                request === "granted"
+            );
+            setUserDefaultBool("userDeniedNotification", request === "denied");
+        });
+        return Promise.resolve(Notification.permission);
     } else {
         console.warn(
             "Notifications aren't supported in this browser. The setting will be disabled."
         );
         setUserDefaultBool("enablePushNotifications", false);
+        return Promise.reject(
+            "Notifications are not supported in this browser."
+        );
     }
 }
 
@@ -35,7 +40,10 @@ export function browserSupportsNotificationRequests(): boolean {
  * @returns Boolean value of `enablePushNotifications`
  */
 export function canSendNotifications() {
-    return getUserDefaultBool("enablePushNotifications");
+    return (
+        getUserDefaultBool("enablePushNotifications") &&
+        Notification.permission === "granted"
+    );
 }
 
 /**

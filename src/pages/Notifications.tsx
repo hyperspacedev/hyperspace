@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+    Link,
     List,
     ListItem,
     ListItemText,
@@ -422,7 +423,7 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                     )}
                     onClose={() => this.toggleMobileMenu(notif.id)}
                 >
-                    {notif.type == "follow" ? (
+                    {notif.type === "follow" ? (
                         <>
                             <LinkableMenuItem
                                 to={`profile/${notif.account.id}`}
@@ -439,7 +440,7 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                             </MenuItem>
                         </>
                     ) : null}
-                    {notif.type == "mention" && notif.status ? (
+                    {notif.type === "mention" && notif.status ? (
                         <LinkableMenuItem
                             to={`/compose?reply=${
                                 notif.status.reblog
@@ -609,6 +610,17 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                 ) : (
                     <span />
                 )}
+
+                <div
+                    className={classes.pageLayoutEmptyTextConstraints}
+                    style={{ textAlign: "center" }}
+                >
+                    <Typography>
+                        <Link href="/#/settings#sp-notifications">
+                            Manage notification settings
+                        </Link>
+                    </Typography>
+                </div>
 
                 <Dialog
                     open={this.state.deleteDialogOpen}

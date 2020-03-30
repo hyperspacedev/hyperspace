@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Picker, PickerProps, CustomEmoji } from "emoji-mart";
+import { Picker, PickerProps } from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
 
 interface IEmojiPickerProps extends PickerProps {

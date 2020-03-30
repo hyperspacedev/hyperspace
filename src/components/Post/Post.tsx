@@ -25,8 +25,7 @@ import {
     RadioGroup,
     Tooltip,
     Typography,
-    withStyles,
-    Zoom
+    withStyles
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ReplyIcon from "@material-ui/icons/Reply";
@@ -102,7 +101,7 @@ export class Post extends React.Component<any, IPostState> {
     }
 
     shouldComponentUpdate(nextProps: any, nextState: any) {
-        if (nextState == this.state) return false;
+        if (nextState === this.state) return false;
         return true;
     }
 
@@ -406,7 +405,7 @@ export class Post extends React.Component<any, IPostState> {
         let emojis = author.emojis;
         let reblogger = post.reblog ? post.account : undefined;
 
-        if (reblogger != undefined) {
+        if (reblogger !== undefined) {
             emojis.concat(reblogger.emojis);
         }
 
@@ -801,7 +800,7 @@ export class Post extends React.Component<any, IPostState> {
                                     variant: "success"
                                 }),
                             onShareError: (error: Error) => {
-                                if (error.name != "AbortError")
+                                if (error.name !== "AbortError")
                                     this.props.enqueueSnackbar(
                                         `Couldn't share post: ${error.name}`,
                                         { variant: "error" }
