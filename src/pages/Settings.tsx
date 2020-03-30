@@ -137,8 +137,9 @@ class SettingsPage extends Component<any, ISettingsState> {
 
     componentWillReceiveProps() {
         const path = window.location.hash.split("#");
-        if (document.getElementById(path[path.length - 1]) !== null) {
-            document.getElementById(path[path.length - 1])?.scrollIntoView();
+        const lastPath = document.getElementById(path[path.length - 1]);
+        if (lastPath !== null) {
+            lastPath.scrollIntoView();
             window.scrollBy(0, -64);
         }
     }
@@ -174,8 +175,9 @@ class SettingsPage extends Component<any, ISettingsState> {
             });
 
         const path = window.location.hash.split("#");
-        if (document.getElementById(path[path.length - 1]) !== null) {
-            document.getElementById(path[path.length - 1])?.scrollIntoView();
+        const lastPath = document.getElementById(path[path.length - 1]);
+        if (lastPath !== null) {
+            lastPath.scrollIntoView();
             window.scrollBy(0, -64);
         }
     }
