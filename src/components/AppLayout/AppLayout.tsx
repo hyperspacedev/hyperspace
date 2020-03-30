@@ -32,6 +32,7 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import NotificationsIcon from "@material-ui/icons/Notifications";
+import AnnouncementIcon from "@material-ui/icons/Announcement";
 import MailIcon from "@material-ui/icons/Mail";
 import HomeIcon from "@material-ui/icons/Home";
 import DomainIcon from "@material-ui/icons/Domain";
@@ -513,6 +514,16 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                         <ListSubheader>Account</ListSubheader>
                         <LinkableListItem
                             button
+                            key="announcements-mobile"
+                            to="/announcements"
+                        >
+                            <ListItemIcon>
+                                <AnnouncementIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Announcements" />
+                        </LinkableListItem>
+                        <LinkableListItem
+                            button
                             key="notifications-mobile"
                             to="/notifications"
                         >
@@ -641,6 +652,14 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                             </div>
                             <div className={classes.appBarFlexGrow} />
                             <div className={classes.appBarActionButtons}>
+                                <Tooltip title="Announcements">
+                                    <LinkableIconButton
+                                        to="/announcements"
+                                        color="inherit"
+                                    >
+                                        <AnnouncementIcon />
+                                    </LinkableIconButton>
+                                </Tooltip>
                                 <Tooltip title="Notifications">
                                     <LinkableIconButton
                                         color="inherit"
