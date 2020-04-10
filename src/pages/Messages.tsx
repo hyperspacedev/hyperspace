@@ -8,7 +8,6 @@ import {
     ListItemText,
     CircularProgress,
     ListItemAvatar,
-    Avatar,
     ListItemSecondaryAction,
     Tooltip
 } from "@material-ui/core";

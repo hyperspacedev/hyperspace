@@ -68,7 +68,10 @@ class ComposeMediaAttachment extends Component<
                 ) : attachment.type === "video" ? (
                     <video autoPlay={false} src={attachment.url} />
                 ) : (
-                    <object data={attachment.url} />
+                    <object
+                        data={attachment.url}
+                        aria-label={`Attachment: ${attachment.id}`}
+                    />
                 )}
                 <GridListTileBar
                     classes={{ title: classes.attachmentBar }}

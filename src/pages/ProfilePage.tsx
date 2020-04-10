@@ -3,7 +3,6 @@ import {
     withStyles,
     Typography,
     Avatar,
-    Divider,
     Button,
     CircularProgress,
     Paper,

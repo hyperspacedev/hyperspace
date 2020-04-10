@@ -38,19 +38,15 @@ import {
 } from "../utilities/settings";
 import {
     canSendNotifications,
-    browserSupportsNotificationRequests
+    browserSupportsNotificationRequests,
+    getNotificationRequestPermission
 } from "../utilities/notifications";
 import { themes, defaultTheme } from "../types/HyperspaceTheme";
 import ThemePreview from "../components/ThemePreview";
-import {
-    setHyperspaceTheme,
-    getHyperspaceTheme,
-    getDarkModeFromSystem
-} from "../utilities/themes";
+import { setHyperspaceTheme, getHyperspaceTheme } from "../utilities/themes";
 import { Visibility } from "../types/Visibility";
-import { LinkableButton, LinkableIconButton } from "../interfaces/overrides";
+import { LinkableIconButton } from "../interfaces/overrides";
 
-import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import DevicesIcon from "@material-ui/icons/Devices";
 import Brightness3Icon from "@material-ui/icons/Brightness3";
 import PaletteIcon from "@material-ui/icons/Palette";
@@ -62,10 +58,15 @@ import BellAlertIcon from "mdi-material-ui/BellAlert";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import UndoIcon from "@material-ui/icons/Undo";
 import DomainDisabledIcon from "@material-ui/icons/DomainDisabled";
+import AccountSettingsIcon from "mdi-material-ui/AccountSettings";
+import AlphabeticalVariantOffIcon from "mdi-material-ui/AlphabeticalVariantOff";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import InfiniteIcon from "@material-ui/icons/AllInclusive";
+
 import { Config } from "../types/Config";
 import { Account } from "../types/Account";
 import Mastodon from "megalodon";
-import { isDarwinApp } from "../utilities/desktop";
+import { withSnackbar } from "notistack";
 
 interface ISettingsState {
     darkModeEnabled: boolean;
@@ -82,6 +83,9 @@ interface ISettingsState {
     brandName: string;
     federated: boolean;
     currentUser?: Account;
+    imposeCharacterLimit: boolean;
+    masonryLayout?: boolean;
+    infiniteScroll?: boolean;
 }
 
 class SettingsPage extends Component<any, ISettingsState> {
@@ -112,7 +116,10 @@ class SettingsPage extends Component<any, ISettingsState> {
                 setHyperspaceTheme(defaultTheme),
             defaultVisibility: getUserDefaultVisibility() || "public",
             brandName: "Hyperspace",
-            federated: true
+            federated: true,
+            imposeCharacterLimit: getUserDefaultBool("imposeCharacterLimit"),
+            masonryLayout: getUserDefaultBool("isMasonryLayout"),
+            infiniteScroll: getUserDefaultBool("isInfiniteScroll")
         };
 
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -121,9 +128,20 @@ class SettingsPage extends Component<any, ISettingsState> {
         this.toggleBadgeCount = this.toggleBadgeCount.bind(this);
         this.toggleThemeDialog = this.toggleThemeDialog.bind(this);
         this.toggleVisibilityDialog = this.toggleVisibilityDialog.bind(this);
+        this.toggleMasonryLayout = this.toggleMasonryLayout.bind(this);
+        this.toggleInfiniteScroll = this.toggleInfiniteScroll.bind(this);
         this.changeThemeName = this.changeThemeName.bind(this);
         this.changeTheme = this.changeTheme.bind(this);
         this.setVisibility = this.setVisibility.bind(this);
+    }
+
+    componentWillReceiveProps() {
+        const path = window.location.hash.split("#");
+        const lastPath = document.getElementById(path[path.length - 1]);
+        if (lastPath !== null) {
+            lastPath.scrollIntoView();
+            window.scrollBy(0, -64);
+        }
     }
 
     componentDidMount() {
@@ -155,13 +173,20 @@ class SettingsPage extends Component<any, ISettingsState> {
                     console.error(err.message);
                 }
             });
+
+        const path = window.location.hash.split("#");
+        const lastPath = document.getElementById(path[path.length - 1]);
+        if (lastPath !== null) {
+            lastPath.scrollIntoView();
+            window.scrollBy(0, -64);
+        }
     }
 
     getFederatedStatus() {
         getConfig().then((result: any) => {
             if (result !== undefined) {
                 let config: Config = result;
-                console.log(!config.federation.allowPublicPosts);
+                // console.log(!config.federation.allowPublicPosts);
                 this.setState({
                     federated: config.federation.allowPublicPosts
                 });
@@ -186,14 +211,44 @@ class SettingsPage extends Component<any, ISettingsState> {
         window.location.reload();
     }
 
+    /**
+     * Toggle the setting for enabling/disabling push notifications.
+     *
+     * If the notification permission wasn't set yet (i.e., `Notification.permission`)
+     * is in `"default"` state, get the permission request first.
+     */
     togglePushNotifications() {
-        this.setState({
-            pushNotificationsEnabled: !this.state.pushNotificationsEnabled
-        });
-        setUserDefaultBool(
-            "enablePushNotifications",
-            !this.state.pushNotificationsEnabled
-        );
+        if (Notification.permission === "default") {
+            getNotificationRequestPermission()
+                .then(permission => {
+                    if (permission === "granted") {
+                        setUserDefaultBool(
+                            "enablePushNotifications",
+                            !this.state.pushNotificationsEnabled
+                        );
+                        this.setState({
+                            pushNotificationsEnabled: !this.state
+                                .pushNotificationsEnabled
+                        });
+                    } else if (permission === "denied") {
+                        this.props.enqueueSnackbar(
+                            "Permission request was denied.",
+                            { variant: "error" }
+                        );
+                    }
+                })
+                .catch(reason =>
+                    this.props.enqueueSnackbar(reason, { variant: "error" })
+                );
+        } else {
+            setUserDefaultBool(
+                "enablePushNotifications",
+                !this.state.pushNotificationsEnabled
+            );
+            this.setState({
+                pushNotificationsEnabled: !this.state.pushNotificationsEnabled
+            });
+        }
     }
 
     toggleBadgeCount() {
@@ -216,6 +271,16 @@ class SettingsPage extends Component<any, ISettingsState> {
         });
     }
 
+    toggleCharacterLimit() {
+        this.setState({
+            imposeCharacterLimit: !this.state.imposeCharacterLimit
+        });
+        setUserDefaultBool(
+            "imposeCharacterLimit",
+            !this.state.imposeCharacterLimit
+        );
+    }
+
     toggleResetDialog() {
         this.setState({
             resetHyperspaceDialog: !this.state.resetHyperspaceDialog
@@ -224,6 +289,16 @@ class SettingsPage extends Component<any, ISettingsState> {
 
     toggleResetSettingsDialog() {
         this.setState({ resetSettingsDialog: !this.state.resetSettingsDialog });
+    }
+
+    toggleMasonryLayout() {
+        this.setState({ masonryLayout: !this.state.masonryLayout });
+        setUserDefaultBool("isMasonryLayout", !this.state.masonryLayout);
+    }
+
+    toggleInfiniteScroll() {
+        this.setState({ infiniteScroll: !this.state.infiniteScroll });
+        setUserDefaultBool("isInfiniteScroll", !this.state.infiniteScroll);
     }
 
     changeTheme() {
@@ -264,6 +339,227 @@ class SettingsPage extends Component<any, ISettingsState> {
         });
         window.location.reload();
     }
+
+    settingsList = () => {
+        const { classes } = this.props;
+        return (
+            <>
+                <ListSubheader id="sp-appearance">Appearance</ListSubheader>
+                <Paper className={classes.pageListConstraints}>
+                    <List>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <DevicesIcon color="action" />
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Match system appearance"
+                                secondary="Follows your device's preferences to toggle dark mode"
+                            />
+                            <ListItemSecondaryAction>
+                                <Switch
+                                    checked={this.state.systemDecidesDarkMode}
+                                    onChange={this.toggleSystemDarkMode}
+                                />
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        {!this.state.systemDecidesDarkMode ? (
+                            <ListItem>
+                                <ListItemAvatar>
+                                    <Brightness3Icon color="action" />
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary="Dark mode"
+                                    secondary="Toggles light or dark theme"
+                                />
+                                <ListItemSecondaryAction>
+                                    <Switch
+                                        disabled={
+                                            this.state.systemDecidesDarkMode
+                                        }
+                                        checked={this.state.darkModeEnabled}
+                                        onChange={this.toggleDarkMode}
+                                    />
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        ) : null}
+
+                        <ListItem>
+                            <ListItemAvatar>
+                                <PaletteIcon color="action" />
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Interface theme"
+                                secondary="Defines the color palette used for the interface"
+                            />
+                            <ListItemSecondaryAction>
+                                <Button onClick={this.toggleThemeDialog}>
+                                    Set theme
+                                </Button>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+
+                        <ListItem>
+                            <ListItemAvatar>
+                                <DashboardIcon color="action" />
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Show more posts"
+                                secondary="Shows additional columns of posts on wider screens"
+                            />
+                            <ListItemSecondaryAction>
+                                <Switch
+                                    checked={this.state.masonryLayout}
+                                    onChange={this.toggleMasonryLayout}
+                                />
+                            </ListItemSecondaryAction>
+                        </ListItem>
+
+                        <ListItem>
+                            <ListItemAvatar>
+                                <InfiniteIcon color="action" />
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Enable infinite scroll"
+                                secondary="Automatically load more posts when scrolling"
+                            />
+                            <ListItemSecondaryAction>
+                                <Switch
+                                    checked={this.state.infiniteScroll}
+                                    onChange={this.toggleInfiniteScroll}
+                                />
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                    </List>
+                </Paper>
+                <br />
+                <ListSubheader id="sp-composer">Composer</ListSubheader>
+                <Paper className={classes.pageListConstraints}>
+                    <List>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <VisibilityIcon color="action" />
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Default post visibility"
+                                secondary="Creating posts in the composer will use this visiblity"
+                            />
+                            <ListItemSecondaryAction>
+                                <Button onClick={this.toggleVisibilityDialog}>
+                                    Change
+                                </Button>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <AlphabeticalVariantOffIcon color="action" />
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Impose character limit"
+                                secondary="Impose a character limit when creating posts"
+                            />
+                            <ListItemSecondaryAction>
+                                <Switch
+                                    checked={this.state.imposeCharacterLimit}
+                                    onChange={() => this.toggleCharacterLimit()}
+                                />
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                    </List>
+                </Paper>
+                <br />
+                <ListSubheader id="sp-notifications">
+                    Notifications
+                </ListSubheader>
+                <Paper className={classes.pageListConstraints}>
+                    <List>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <NotificationsIcon color="action" />
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Enable push notifications"
+                                secondary={
+                                    getUserDefaultBool("userDeniedNotification")
+                                        ? "Check your browser's notification permissions."
+                                        : browserSupportsNotificationRequests()
+                                        ? "Sends a push notification when not focused."
+                                        : "Notifications aren't supported."
+                                }
+                            />
+                            <ListItemSecondaryAction>
+                                <Switch
+                                    checked={
+                                        this.state.pushNotificationsEnabled
+                                    }
+                                    onChange={this.togglePushNotifications}
+                                    disabled={
+                                        !browserSupportsNotificationRequests()
+                                    }
+                                />
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <BellAlertIcon color="action" />
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Notification badge counts all notifications"
+                                secondary={
+                                    "Counts all notifications, read or unread."
+                                }
+                            />
+                            <ListItemSecondaryAction>
+                                <Switch
+                                    checked={this.state.badgeDisplaysAllNotifs}
+                                    onChange={this.toggleBadgeCount}
+                                />
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                    </List>
+                </Paper>
+                <br />
+                <ListSubheader id="sp-advanced">Advanced</ListSubheader>
+                <Paper className={classes.pageListConstraints}>
+                    <List>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <RefreshIcon color="action" />
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Refresh settings"
+                                secondary="Resets the settings to defaults."
+                            />
+                            <ListItemSecondaryAction>
+                                <Button
+                                    onClick={() =>
+                                        this.toggleResetSettingsDialog()
+                                    }
+                                >
+                                    Refresh
+                                </Button>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <UndoIcon color="action" />
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={`Reset ${this.state.brandName}`}
+                                secondary="Deletes all data and resets the app"
+                            />
+                            <ListItemSecondaryAction>
+                                <Button
+                                    onClick={() => this.toggleResetDialog()}
+                                >
+                                    Reset
+                                </Button>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                    </List>
+                </Paper>
+            </>
+        );
+    };
 
     showThemeDialog() {
         const { classes } = this.props;
@@ -502,7 +798,7 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 </div>
                                 <div className={classes.pageGrow} />
                                 <Toolbar>
-                                    <Tooltip title="Edit Profile">
+                                    <Tooltip title="Edit profile">
                                         <LinkableIconButton
                                             to={"/you"}
                                             color="inherit"
@@ -516,6 +812,14 @@ class SettingsPage extends Component<any, ISettingsState> {
                                             color="inherit"
                                         >
                                             <DomainDisabledIcon />
+                                        </LinkableIconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Manage follow requests">
+                                        <LinkableIconButton
+                                            to={"/requests"}
+                                            color="inherit"
+                                        >
+                                            <AccountSettingsIcon />
                                         </LinkableIconButton>
                                     </Tooltip>
                                     <Tooltip title="Configure on Mastodon">
@@ -536,196 +840,38 @@ class SettingsPage extends Component<any, ISettingsState> {
                                 </Toolbar>
                             </div>
                         </div>
-                    ) : null}
+                    ) : (
+                        <div className={classes.pageHeroBackground}>
+                            <div className={classes.pageHeroBackgroundImage} />
+                            <div className={classes.profileContent}>
+                                <br />
+                                <Avatar className={classes.settingsAvatar} />
+                                <div
+                                    className={classes.profileUserBox}
+                                    style={{ margin: "auto" }}
+                                >
+                                    <Typography
+                                        className={classes.settingsHeaderText}
+                                        color="inherit"
+                                        component="h1"
+                                    >
+                                        {"Loading..."}
+                                    </Typography>
+                                    <Typography
+                                        color="inherit"
+                                        className={classes.settingsDetailText}
+                                        component="p"
+                                    >
+                                        @{"..."}
+                                    </Typography>
+                                </div>
+                                <div className={classes.pageGrow} />
+                                <Toolbar />
+                            </div>
+                        </div>
+                    )}
                     <div className={classes.pageContentLayoutConstraints}>
-                        <ListSubheader>Appearance</ListSubheader>
-                        <Paper className={classes.pageListConstraints}>
-                            <List>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <DevicesIcon color="action" />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary="Match system appearance"
-                                        secondary="Follows your device's preferences to toggle dark mode"
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <Switch
-                                            checked={
-                                                this.state.systemDecidesDarkMode
-                                            }
-                                            onChange={this.toggleSystemDarkMode}
-                                        />
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                                {!this.state.systemDecidesDarkMode ? (
-                                    <ListItem>
-                                        <ListItemAvatar>
-                                            <Brightness3Icon color="action" />
-                                        </ListItemAvatar>
-                                        <ListItemText
-                                            primary="Dark mode"
-                                            secondary="Toggles light or dark theme"
-                                        />
-                                        <ListItemSecondaryAction>
-                                            <Switch
-                                                disabled={
-                                                    this.state
-                                                        .systemDecidesDarkMode
-                                                }
-                                                checked={
-                                                    this.state.darkModeEnabled
-                                                }
-                                                onChange={this.toggleDarkMode}
-                                            />
-                                        </ListItemSecondaryAction>
-                                    </ListItem>
-                                ) : null}
-
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <PaletteIcon color="action" />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary="Interface theme"
-                                        secondary="Defines the color palette used for the interface"
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <Button
-                                            onClick={this.toggleThemeDialog}
-                                        >
-                                            Set theme
-                                        </Button>
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                            </List>
-                        </Paper>
-                        <br />
-                        <ListSubheader>Composer</ListSubheader>
-                        <Paper className={classes.pageListConstraints}>
-                            <List>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <VisibilityIcon color="action" />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary="Default post visibility"
-                                        secondary="Creating posts in the composer will use this visiblity"
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <Button
-                                            onClick={
-                                                this.toggleVisibilityDialog
-                                            }
-                                        >
-                                            Change
-                                        </Button>
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                            </List>
-                        </Paper>
-                        <br />
-                        <ListSubheader>Notifications</ListSubheader>
-                        <Paper className={classes.pageListConstraints}>
-                            <List>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <NotificationsIcon color="action" />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary="Enable push notifications"
-                                        secondary={
-                                            getUserDefaultBool(
-                                                "userDeniedNotification"
-                                            )
-                                                ? "Check your browser's notification permissions."
-                                                : browserSupportsNotificationRequests()
-                                                ? "Sends a push notification when not focused."
-                                                : "Notifications aren't supported."
-                                        }
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <Switch
-                                            checked={
-                                                this.state
-                                                    .pushNotificationsEnabled
-                                            }
-                                            onChange={
-                                                this.togglePushNotifications
-                                            }
-                                            disabled={
-                                                !browserSupportsNotificationRequests() ||
-                                                getUserDefaultBool(
-                                                    "userDeniedNotification"
-                                                )
-                                            }
-                                        />
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <BellAlertIcon color="action" />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary="Notification badge counts all notifications"
-                                        secondary={
-                                            "Counts all notifications, read or unread."
-                                        }
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <Switch
-                                            checked={
-                                                this.state
-                                                    .badgeDisplaysAllNotifs
-                                            }
-                                            onChange={this.toggleBadgeCount}
-                                        />
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                            </List>
-                        </Paper>
-                        <br />
-                        <ListSubheader>Advanced</ListSubheader>
-                        <Paper className={classes.pageListConstraints}>
-                            <List>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <RefreshIcon color="action" />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary="Refresh settings"
-                                        secondary="Resets the settings to defaults."
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <Button
-                                            onClick={() =>
-                                                this.toggleResetSettingsDialog()
-                                            }
-                                        >
-                                            Refresh
-                                        </Button>
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <UndoIcon color="action" />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary={`Reset ${this.state.brandName}`}
-                                        secondary="Deletes all data and resets the app"
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <Button
-                                            onClick={() =>
-                                                this.toggleResetDialog()
-                                            }
-                                        >
-                                            Reset
-                                        </Button>
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                            </List>
-                        </Paper>
+                        {this.settingsList()}
                         {this.showThemeDialog()}
                         {this.showVisibilityDialog()}
                         {this.showResetDialog()}
@@ -737,4 +883,4 @@ class SettingsPage extends Component<any, ISettingsState> {
     }
 }
 
-export default withStyles(styles)(SettingsPage);
+export default withStyles(styles)(withSnackbar(SettingsPage));

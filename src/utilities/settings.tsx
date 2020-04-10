@@ -1,5 +1,4 @@
 import { defaultTheme, themes } from "../types/HyperspaceTheme";
-import { getNotificationRequestPermission } from "./notifications";
 import axios from "axios";
 import { Config } from "../types/Config";
 import { Visibility } from "../types/Visibility";
@@ -12,6 +11,8 @@ type SettingsTemplate = {
     clearNotificationsOnRead: boolean;
     displayAllOnNotificationBadge: boolean;
     defaultVisibility: string;
+    imposeCharacterLimit: boolean;
+    canSendNotifications: boolean;
 };
 
 /**
@@ -99,7 +100,10 @@ export function createUserDefaults() {
         enablePushNotifications: true,
         clearNotificationsOnRead: false,
         displayAllOnNotificationBadge: false,
-        defaultVisibility: "public"
+        defaultVisibility: "public",
+        imposeCharacterLimit: true,
+        isMasonryLayout: false,
+        canSendNotifications: false
     };
 
     let settings = [
@@ -107,7 +111,10 @@ export function createUserDefaults() {
         "systemDecidesDarkMode",
         "clearNotificationsOnRead",
         "displayAllOnNotificationBadge",
-        "defaultVisibility"
+        "defaultVisibility",
+        "imposeCharacterLimit",
+        "isMasonryLayout",
+        "canSendNotifications"
     ];
 
     migrateExistingSettings();
@@ -121,7 +128,8 @@ export function createUserDefaults() {
             }
         }
     });
-    getNotificationRequestPermission();
+
+    setUserDefaultBool("userDeniedNotications", false);
 }
 
 /**
@@ -131,6 +139,21 @@ export function createUserDefaults() {
 export async function getConfig(): Promise<Config | undefined> {
     try {
         const resp = await axios.get("config.json");
+
+        let { location } = resp.data;
+
+        if (!location.endsWith("/")) {
+            console.info(
+                "Location does not have a backslash, so Hyperspace has added it automatically."
+            );
+            resp.data.location = location + "/";
+        }
+
+        if (process.env.NODE_ENV === "development") {
+            resp.data.location = "http://localhost:3000/";
+            console.info("Location field has been updated to localhost:3000.");
+        }
+
         return resp.data as Config;
     } catch (err) {
         console.error(
