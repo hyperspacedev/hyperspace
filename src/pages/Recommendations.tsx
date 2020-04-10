@@ -6,7 +6,7 @@ import {
     ListItem,
     Paper,
     ListItemText,
-    Avatar,
+    // Avatar,
     ListItemSecondaryAction,
     ListItemAvatar,
     ListSubheader,
