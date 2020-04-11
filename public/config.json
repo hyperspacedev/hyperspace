@@ -6,7 +6,7 @@
         "logo": "logo.svg",
         "background": "background.png"
     },
-    "developer": true,
+    "developer": false,
     "federation": {
         "universalLogin": true,
         "allowPublicPosts": true,
