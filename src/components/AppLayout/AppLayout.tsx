@@ -721,6 +721,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                         <div>
                                             <LinkableListItem
                                                 button={true}
+                                                onClick={this.toggleAcctMenu}
                                                 to={`/profile/${
                                                     this.state.currentUser
                                                         ? this.state.currentUser
@@ -765,6 +766,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                             <Divider />
                                             <LinkableListItem
                                                 button={true}
+                                                onClick={this.toggleAcctMenu}
                                                 to={"/you"}
                                             >
                                                 <ListItemText>
@@ -773,6 +775,7 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                             </LinkableListItem>
                                             <LinkableListItem
                                                 button={true}
+                                                onClick={this.toggleAcctMenu}
                                                 to={"/requests"}
                                             >
                                                 <ListItemText>
