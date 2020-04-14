@@ -133,18 +133,25 @@ export function createUserDefaults() {
 }
 
 /**
- * Gets the configuration data from `config.json`
+ * Gets the configuration data from `config.json`.
+ *
+ * In scenarios where the app is being run from the desktop or from a local React server
+ * started by react-scripts, the location field is adjusted accordingly.
+ *
  * @returns The Promise data from getting the config.
  */
 export async function getConfig(): Promise<Config | undefined> {
     try {
         const resp = await axios.get("config.json");
 
-        let { location } = resp.data;
+        let { location }: { location: string } = resp.data;
 
-        if (!location.endsWith("/")) {
+        if (
+            !location.endsWith("/") &&
+            (location !== "desktop" && location !== "dynamic")
+        ) {
             console.info(
-                "Location does not have a backslash, so Hyperspace has added it automatically."
+                "Location does not have a forward slash, so Hyperspace has added it automatically."
             );
             resp.data.location = location + "/";
         }
