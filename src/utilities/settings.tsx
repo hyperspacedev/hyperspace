@@ -146,9 +146,12 @@ export async function getConfig(): Promise<Config | undefined> {
 
         let { location }: { location: string } = resp.data;
 
-        if (!location.endsWith("/") && (location !== "desktop" && location !== "dynamic")) {
+        if (
+            !location.endsWith("/") &&
+            (location !== "desktop" && location !== "dynamic")
+        ) {
             console.info(
-                "Location does not have a backslash, so Hyperspace has added it automatically."
+                "Location does not have a forward slash, so Hyperspace has added it automatically."
             );
             resp.data.location = location + "/";
         }
