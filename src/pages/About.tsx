@@ -98,11 +98,9 @@ class AboutPage extends Component<any, IAboutPageState> {
                 .finally(() => {
                     this.setState({
                         federation: config.federation,
-                        developer: config.developer ? config.developer : false,
+                        developer: config.developer ?? false,
                         versionNumber: config.version,
-                        brandName: config.branding
-                            ? config.branding.name
-                            : "Hyperspace",
+                        brandName: config.branding.name ?? "Hyperspace",
                         brandBg: config.branding.background,
                         license: {
                             name: config.license.name,
@@ -115,11 +113,7 @@ class AboutPage extends Component<any, IAboutPageState> {
     }
 
     shouldRenderInstanceContact(): boolean {
-        if (this.state.instance != null) {
-            return this.state.instance.version.match(/Pleroma/) == null;
-        } else {
-            return false;
-        }
+        return this.state.instance?.version?.match(/Pleroma/) == null ?? false;
     }
 
     render() {
@@ -131,7 +125,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                         className={classes.instanceHeaderPaper}
                         style={{
                             backgroundImage: `url("${
-                                this.state.brandBg ? this.state.brandBg : ""
+                                this.state.brandBg ?? ""
                             }")`
                         }}
                     >
@@ -158,9 +152,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                             <Typography>
                                 Version{" "}
                                 {`${
-                                    this.state
-                                        ? this.state.versionNumber
-                                        : "1.0.x"
+                                    this.state.versionNumber ?? "1.1.x"
                                 } ${
                                     this.state &&
                                     this.state.brandName !== "Hyperspace"
@@ -177,15 +169,10 @@ class AboutPage extends Component<any, IAboutPageState> {
                                     this.state.hyperspaceAdmin ?
                                     <LinkableAvatar
                                     to={`/profile/${
-                                        this.state.hyperspaceAdmin
-                                            ? this.state.hyperspaceAdmin.id
-                                            : 0
+                                        this.state.hyperspaceAdmin?.id ?? 0
                                     }`}
                                     src={
-                                        this.state.hyperspaceAdmin
-                                            ? this.state.hyperspaceAdmin
-                                                  .avatar_static
-                                            : ""
+                                        this.state.hyperspaceAdmin?.avatar_static ?? ""
                                     }
                                 >
                                     <PersonIcon />
@@ -222,10 +209,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                                                 ? "public"
                                                 : "private"
                                         }&acct=${
-                                            this.state.hyperspaceAdmin
-                                                ? this.state.hyperspaceAdmin
-                                                      .acct
-                                                : ""
+                                            this.state.hyperspaceAdmin?.acct ?? ""
                                         }`}
                                     >
                                         <ChatIcon />
@@ -234,9 +218,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                                 <Tooltip title="View profile">
                                     <LinkableIconButton
                                         to={`/profile/${
-                                            this.state.hyperspaceAdmin
-                                                ? this.state.hyperspaceAdmin.id
-                                                : 0
+                                           this.state.hyperspaceAdmin?.id ?? 0
                                         }`}
                                     >
                                         <AssignmentIndIcon />
@@ -295,10 +277,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                         className={classes.instanceHeaderPaper}
                         style={{
                             backgroundImage: `url("${
-                                this.state.instance &&
-                                this.state.instance.thumbnail
-                                    ? this.state.instance.thumbnail
-                                    : ""
+                                this.state.instance?.thumbnail ?? ""
                             }")`
                         }}
                     >
@@ -313,15 +292,11 @@ class AboutPage extends Component<any, IAboutPageState> {
                         </IconButton>
                         <div className={classes.instanceHeaderText}>
                             <Typography variant="h4" component="p">
-                                {this.state.instance
-                                    ? this.state.instance.uri
-                                    : "Loading..."}
+                                {this.state.instance?.uri ?? "Loading..."}
                             </Typography>
                             <Typography>
                                 Server version{" "}
-                                {this.state.instance
-                                    ? this.state.instance.version
-                                    : "x.x.x"}
+                                {this.state.instance?.version ?? "x.x.x"}
                             </Typography>
                         </div>
                     </div>
@@ -370,10 +345,7 @@ class AboutPage extends Component<any, IAboutPageState> {
                                     <Tooltip title="View profile">
                                         <LinkableIconButton
                                             to={`/profile/${
-                                                this.state.instance
-                                                    ? this.state.instance
-                                                          .contact_account.id
-                                                    : 0
+                                                this.state.instance?.contact_account.id ?? 0
                                             }`}
                                         >
                                             <AssignmentIndIcon />
@@ -452,8 +424,8 @@ class AboutPage extends Component<any, IAboutPageState> {
                                 secondary={
                                     this.state.federation &&
                                     this.state.federation.enablePublicTimeline
-                                        ? "This instance is federated."
-                                        : "This instance is not federated."
+                                        ? "This copy of Hyperspace is federated."
+                                        : "This copy of Hyperspace is not federated."
                                 }
                             />
                         </ListItem>
@@ -468,8 +440,8 @@ class AboutPage extends Component<any, IAboutPageState> {
                                 secondary={
                                     this.state.federation &&
                                     this.state.federation.universalLogin
-                                        ? "This instance supports universal login."
-                                        : "This instance does not support universal login."
+                                        ? "This copy of Hyperspace supports universal login."
+                                        : "This copy of Hyperspace does not support universal login."
                                 }
                             />
                         </ListItem>
@@ -484,8 +456,8 @@ class AboutPage extends Component<any, IAboutPageState> {
                                 secondary={
                                     this.state.federation &&
                                     this.state.federation.allowPublicPosts
-                                        ? "This instance allows posting publicly."
-                                        : "This instance does not allow posting publicly."
+                                        ? "This copy of Hyperspace allows posting publicly."
+                                        : "This copy of Hyperspace does not allow posting publicly."
                                 }
                             />
                         </ListItem>
@@ -495,11 +467,11 @@ class AboutPage extends Component<any, IAboutPageState> {
                 <div className={classes.pageLayoutFooter}>
                     <Typography variant="caption">
                         (C) {new Date().getFullYear()}{" "}
-                        {this.state ? this.state.brandName : "Hyperspace"}{" "}
+                        {this.state.brandName ?? "Hyperspace"}{" "}
                         developers. All rights reserved.
                     </Typography>
                     <Typography variant="caption" paragraph>
-                        {this.state ? this.state.brandName : "Hyperspace"}{" "}
+                        {this.state.brandName ?? "Hyperspace"}{" "}
                         Desktop is made possible by the{" "}
                         <Link
                             href={"https://material-ui.com"}
