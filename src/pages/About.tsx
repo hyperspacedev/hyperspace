@@ -85,6 +85,18 @@ class AboutPage extends Component<any, IAboutPageState> {
                     this.setState({
                         hyperspaceAdmin: account,
                         hyperspaceAdminName: config.admin.name,
+                    });
+                })
+                .catch((err: Error) => {
+                    console.error(err.message);
+                    if (true) {
+                        this.setState({
+                            hyperspaceAdminName: `Could not find ${config.admin.name} on ${config.registration.defaultInstance}`
+                        });
+                    }
+                })
+                .finally(() => {
+                    this.setState({
                         federation: config.federation,
                         developer: config.developer ? config.developer : false,
                         versionNumber: config.version,
@@ -98,9 +110,6 @@ class AboutPage extends Component<any, IAboutPageState> {
                         },
                         repository: config.repository
                     });
-                })
-                .catch((err: Error) => {
-                    console.error(err.message);
                 });
         });
     }
@@ -164,7 +173,9 @@ class AboutPage extends Component<any, IAboutPageState> {
                     <List className={classes.pageListConstraints}>
                         <ListItem>
                             <ListItemAvatar>
-                                <LinkableAvatar
+                                {
+                                    this.state.hyperspaceAdmin ?
+                                    <LinkableAvatar
                                     to={`/profile/${
                                         this.state.hyperspaceAdmin
                                             ? this.state.hyperspaceAdmin.id
@@ -179,6 +190,13 @@ class AboutPage extends Component<any, IAboutPageState> {
                                 >
                                     <PersonIcon />
                                 </LinkableAvatar>
+                                : <ListItemAvatar>
+                                    <Avatar>
+                                        <PersonIcon />
+                                    </Avatar>
+                                    </ListItemAvatar>
+                                }
+
                             </ListItemAvatar>
                             <ListItemText
                                 primary="App provider"
@@ -189,10 +207,14 @@ class AboutPage extends Component<any, IAboutPageState> {
                                           this.state.hyperspaceAdmin
                                               .display_name ||
                                           "@" + this.state.hyperspaceAdmin.acct
-                                        : "No provider set in config"
+                                        :
+                                            this.state.hyperspaceAdminName
+                                            ?? "No provider set in config"
                                 }
                             />
-                            <ListItemSecondaryAction>
+                            {
+                                this.state.hyperspaceAdmin?
+                                <ListItemSecondaryAction>
                                 <Tooltip title="Send a post or message">
                                     <LinkableIconButton
                                         to={`/compose?visibility=${
@@ -221,6 +243,8 @@ class AboutPage extends Component<any, IAboutPageState> {
                                     </LinkableIconButton>
                                 </Tooltip>
                             </ListItemSecondaryAction>
+                            : null
+                            }
                         </ListItem>
                         <ListItem>
                             <ListItemAvatar>
