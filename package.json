@@ -28,7 +28,7 @@
         "megalodon": "^0.6.4",
         "moment": "^2.24.0",
         "notistack": "^0.5.1",
-        "prettier": "1.18.2",
+        "prettier": "^1.19.1",
         "query-string": "^6.11.1",
         "react": "^16.13.0",
         "react-dom": "^16.13.0",
