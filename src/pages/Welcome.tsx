@@ -18,7 +18,8 @@ import {
     ListItemText,
     ListItemAvatar,
     ListItemSecondaryAction,
-    IconButton
+    IconButton,
+    InputAdornment
 } from "@material-ui/core";
 import { styles } from "./WelcomePage.styles";
 import Mastodon from "megalodon";
@@ -219,7 +220,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     let config: Config = result;
 
                     // Warn if the location is dynamic (unexpected behavior)
-                    if (result.location === "dynamic") {
+                    if (config.location === "dynamic") {
                         console.warn(
                             "Redirect URI is set to dynamic, which may affect how sign-in works for some users. Careful!"
                         );
@@ -238,18 +239,12 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
 
                     // Update the state as per the configuration
                     this.setState({
-                        logoUrl: config.branding
-                            ? result.branding.logo
-                            : "logo.png",
-                        backgroundUrl: config.branding
-                            ? result.branding.background
-                            : "background.png",
-                        brandName: config.branding
-                            ? result.branding.name
-                            : "Hyperspace",
-                        registerBase: config.registration
-                            ? result.registration.defaultInstance
-                            : "",
+                        logoUrl: config.branding?.logo ?? "logo.png",
+                        backgroundUrl:
+                            config.branding?.background ?? "background.png",
+                        brandName: config.branding?.name ?? "Hyperspace",
+                        registerBase:
+                            result.registration?.defaultInstance ?? "",
                         federates: config.federation.universalLogin,
                         license: config.license.url,
                         repo: config.repository,
@@ -313,11 +308,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
      * process.
      */
     readyForAuth() {
-        if (localStorage.getItem("baseurl")) {
-            return true;
-        } else {
-            return false;
-        }
+        return localStorage.getItem("baseurl") !== null;
     }
 
     /**
@@ -333,16 +324,17 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
      * attempt and update the state
      */
     getSavedSession() {
-        let loginData = localStorage.getItem("login");
-        if (loginData) {
-            let session: SaveClientSession = JSON.parse(loginData);
-            this.setState({
-                clientId: session.clientId,
-                clientSecret: session.clientSecret,
-                authUrl: session.authUrl,
-                emergencyMode: session.emergency
-            });
+        if (localStorage.getItem("login") === null) {
+            return;
         }
+        let loginData = localStorage.getItem("login") as string;
+        let session: SaveClientSession = JSON.parse(loginData);
+        this.setState({
+            clientId: session.clientId,
+            clientSecret: session.clientSecret,
+            authUrl: session.authUrl,
+            emergencyMode: session.emergency
+        });
     }
 
     /**
@@ -361,11 +353,9 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
      * in the config's `registerBase` field
      */
     startRegistration() {
-        if (this.state.registerBase) {
-            return "https://" + this.state.registerBase + "/auth/sign_up";
-        } else {
-            return "https://joinmastodon.org/#getting-started";
-        }
+        return this.state.registerBase
+            ? "https://" + this.state.registerBase + "/auth/sign_up"
+            : "https://joinmastodon.org/#getting-started";
     }
 
     /**
@@ -401,35 +391,21 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 this.setState({ user: newUser });
                 return "https://" + newUser.split("@")[1];
             } else {
-                let newUser = `${user}@${
-                    this.state.registerBase
-                        ? this.state.registerBase
-                        : "mastodon.social"
-                }`;
+                let newUser = `${user}@${this.state.registerBase ??
+                    "mastodon.social"}`;
                 this.setState({ user: newUser });
                 return (
-                    "https://" +
-                    (this.state.registerBase
-                        ? this.state.registerBase
-                        : "mastodon.social")
+                    "https://" + (this.state.registerBase ?? "mastodon.social")
                 );
             }
         }
 
         // Otherwise, treat them as if they're from the server
         else {
-            let newUser = `${user}@${
-                this.state.registerBase
-                    ? this.state.registerBase
-                    : "mastodon.social"
-            }`;
+            let newUser = `${user}@${this.state.registerBase ??
+                "mastodon.social"}`;
             this.setState({ user: newUser });
-            return (
-                "https://" +
-                (this.state.registerBase
-                    ? this.state.registerBase
-                    : "mastodon.social")
-            );
+            return "https://" + (this.state.registerBase ?? "mastodon.social");
         }
     }
 
@@ -451,7 +427,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
 
             // Create the Hyperspace app
             createHyperspaceApp(
-                this.state.brandName ? this.state.brandName : "Hyperspace",
+                this.state.brandName ?? "Hyperspace",
                 scopes,
                 baseurl,
                 getRedirectAddress(this.state.defaultRedirectAddress)
@@ -496,7 +472,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
 
         // Register the Mastodon app with the Mastodon server
         Mastodon.registerApp(
-            this.state.brandName ? this.state.brandName : "Hyperspace",
+            this.state.brandName ?? "Hyperspace",
             {
                 scopes: scopes
             },
@@ -606,9 +582,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     }
                 } else if (
                     this.state.user.includes(
-                        this.state.registerBase
-                            ? this.state.registerBase
-                            : "mastodon.social"
+                        this.state.registerBase ?? "mastodon.social"
                     )
                 ) {
                     this.setState({ userInputError, userInputErrorMessage });
@@ -683,11 +657,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         })
                         .catch((err: Error) => {
                             this.props.enqueueSnackbar(
-                                `Couldn't authorize ${
-                                    this.state.brandName
-                                        ? this.state.brandName
-                                        : "Hyperspace"
-                                }: ${err.name}`,
+                                `Couldn't authorize ${this.state.brandName ??
+                                    "Hyperspace"}: ${err.name}`,
                                 { variant: "error" }
                             );
                             console.error(err.message);
@@ -718,9 +689,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             return (
                 <div className={classes.titleBarRoot}>
                     <Typography className={classes.titleBarText}>
-                        {this.state.brandName
-                            ? this.state.brandName
-                            : "Hyperspace"}
+                        {this.state.brandName ?? "Hyperspace"}
                     </Typography>
                 </div>
             );
@@ -793,7 +762,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         return (
             <div>
                 <Typography variant="h5">Sign in</Typography>
-                <Typography>with your Mastodon account</Typography>
+                <Typography>with your fediverse account</Typography>
                 <div className={classes.middlePadding} />
                 <TextField
                     variant="outlined"
@@ -804,6 +773,11 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     onKeyDown={event => this.watchUsernameField(event)}
                     error={this.state.userInputError}
                     onBlur={() => this.checkForErrors()}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">@</InputAdornment>
+                        )
+                    }}
                 />
                 {this.state.userInputError ? (
                     <Typography color="error">
@@ -814,12 +788,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 {this.state.registerBase && this.state.federates ? (
                     <Typography variant="caption">
                         Not from{" "}
-                        <b>
-                            {this.state.registerBase
-                                ? this.state.registerBase
-                                : "noinstance"}
-                        </b>
-                        ? Sign in with your{" "}
+                        <b>{this.state.registerBase ?? "noinstance"}</b>? Sign
+                        in with your{" "}
                         <Link
                             href="https://docs.joinmastodon.org/user/signup/#address"
                             target="_blank"
@@ -879,14 +849,11 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         return (
             <div>
                 <Typography variant="h5">
-                    Howdy,{" "}
-                    {this.state.user ? this.state.user.split("@")[0] : "user"}
+                    Howdy, {this.state.user?.split("@")[0] ?? "user"}
                 </Typography>
                 <Typography>
                     To continue, finish signing in on your instance's website
-                    and authorize{" "}
-                    {this.state.brandName ? this.state.brandName : "Hyperspace"}
-                    .
+                    and authorize {this.state.brandName ?? "Hyperspace"}.
                 </Typography>
                 <div className={classes.middlePadding} />
                 <div style={{ display: "flex" }}>
@@ -895,7 +862,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         color="primary"
                         variant="contained"
                         size="large"
-                        href={this.state.authUrl ? this.state.authUrl : ""}
+                        href={this.state.authUrl ?? ""}
                     >
                         Authorize
                     </Button>
@@ -938,7 +905,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     <Button
                         color="primary"
                         variant="contained"
-                        href={this.state.authUrl ? this.state.authUrl : ""}
+                        href={this.state.authUrl ?? ""}
                         target="_blank"
                         rel="noopener noreferrer"
                     >
@@ -980,8 +947,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             <div>
                 <Typography variant="h5">Authorizing</Typography>
                 <Typography>
-                    Please wait while Hyperspace authorizes with Mastodon. This
-                    shouldn't take long...
+                    Please wait while Hyperspace authorizes with your instance.
+                    This shouldn't take long...
                 </Typography>
                 <div className={classes.middlePadding} />
                 <div style={{ display: "flex" }}>
@@ -1005,20 +972,15 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 <div
                     className={classes.root}
                     style={{
-                        backgroundImage: `url(${
-                            this.state !== null
-                                ? this.state.backgroundUrl
-                                : "background.png"
-                        })`
+                        backgroundImage: `url(${this.state.backgroundUrl ??
+                            "background.png"})`
                     }}
                 >
                     <Paper className={classes.paper}>
                         <img
                             className={classes.logo}
-                            alt={
-                                this.state ? this.state.brandName : "Hyperspace"
-                            }
-                            src={this.state ? this.state.logoUrl : "logo.png"}
+                            alt={this.state.brandName ?? "Hyperspace"}
+                            src={this.state.logoUrl ?? "logo.png"}
                         />
                         <br />
                         <Fade in={true}>
@@ -1054,9 +1016,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                                     <Link
                                         className={classes.welcomeLink}
                                         href={
-                                            this.state.repo
-                                                ? this.state.repo
-                                                : "https://github.com/hyperspacedev"
+                                            this.state.repo ??
+                                            "https://github.com/hyperspacedev"
                                         }
                                         target="_blank"
                                         rel="noreferrer"
@@ -1069,9 +1030,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             <Link
                                 className={classes.welcomeLink}
                                 href={
-                                    this.state.license
-                                        ? this.state.license
-                                        : "https://www.apache.org/licenses/LICENSE-2.0"
+                                    this.state.license ??
+                                    "https://thufie.lain.haus/NPL.html"
                                 }
                                 target="_blank"
                                 rel="noreferrer"
@@ -1089,10 +1049,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             </Link>
                         </Typography>
                         <Typography variant="caption" color="textSecondary">
-                            {this.state.brandName
-                                ? this.state.brandName
-                                : "Hypersapce"}{" "}
-                            v.
+                            {this.state.brandName ?? "Hypersapce"} v.
                             {this.state.version}{" "}
                             {this.state.brandName &&
                             this.state.brandName !== "Hyperspace"

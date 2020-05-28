@@ -148,7 +148,8 @@ export async function getConfig(): Promise<Config | undefined> {
 
         if (
             !location.endsWith("/") &&
-            (location !== "desktop" && location !== "dynamic")
+            location !== "desktop" &&
+            location !== "dynamic"
         ) {
             console.info(
                 "Location does not have a forward slash, so Hyperspace has added it automatically."
