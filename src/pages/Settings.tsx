@@ -218,6 +218,9 @@ class SettingsPage extends Component<any, ISettingsState> {
      * is in `"default"` state, get the permission request first.
      */
     togglePushNotifications() {
+        if (!browserSupportsNotificationRequests()) {
+            return;
+        }
         if (Notification.permission === "default") {
             getNotificationRequestPermission()
                 .then(permission => {
