@@ -27,7 +27,7 @@ export function isDarkMode() {
     // Lift window to an ElectronWindow and add use require()
     const eWin = window as ElectronWindow;
     const { remote } = eWin.require("electron");
-    return remote.systemPreferences.isDarkMode();
+    return remote.nativeTheme.shouldUseDarkColors;
 }
 
 /**
