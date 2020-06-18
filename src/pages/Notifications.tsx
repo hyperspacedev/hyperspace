@@ -45,6 +45,7 @@ import { Account } from "../types/Account";
 import { Relationship } from "../types/Relationship";
 import { withSnackbar } from "notistack";
 import { Dictionary } from "../interfaces/utils";
+import { linkablePath } from "../utilities/desktop";
 
 /**
  * The state interface for the notifications page.
@@ -616,7 +617,9 @@ class NotificationsPage extends Component<any, INotificationsPageState> {
                     style={{ textAlign: "center" }}
                 >
                     <Typography>
-                        <Link href="/#/settings#sp-notifications">
+                        <Link
+                            href={linkablePath("/#/settings#sp-notifications")}
+                        >
                             Manage notification settings
                         </Link>
                     </Typography>

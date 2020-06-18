@@ -597,7 +597,6 @@ class SettingsPage extends Component<any, ISettingsState> {
                                         label={theme.name}
                                     />
                                 ))}
-                                ))}
                             </RadioGroup>
                         </Grid>
                         <Grid
