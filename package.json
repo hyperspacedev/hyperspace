@@ -20,7 +20,7 @@
         "@types/react-swipeable-views": "latest",
         "axios": "^0.19.2",
         "electron": "^9.0.4",
-        "electron-builder": "^21.2.0",
+        "electron-builder": "^22.7.0",
         "emoji-mart": "^2.11.2",
         "file-dialog": "^0.0.7",
         "material-ui-pickers": "^2.2.4",
