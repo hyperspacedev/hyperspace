@@ -698,7 +698,9 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                             }
                                             alt="You"
                                             src={
-                                                this.state.currentUser
+                                                this.props.avatarURL
+                                                    ? this.props.avatarURL
+                                                    : this.state.currentUser
                                                     ? this.state.currentUser
                                                           .avatar_static
                                                     : ""
@@ -733,8 +735,11 @@ export class AppLayout extends Component<any, IAppLayoutState> {
                                                     <Avatar
                                                         alt="You"
                                                         src={
-                                                            this.state
-                                                                .currentUser
+                                                            this.props.avatarURL
+                                                                ? this.props
+                                                                      .avatarURL
+                                                                : this.state
+                                                                      .currentUser
                                                                 ? this.state
                                                                       .currentUser
                                                                       .avatar_static

@@ -30,6 +30,7 @@ let theme = setHyperspaceTheme(getUserDefaultTheme());
 interface IAppState {
     theme: any;
     showLayout: boolean;
+    avatarURL?: string;
 }
 
 class App extends Component<any, IAppState> {
@@ -44,6 +45,7 @@ class App extends Component<any, IAppState> {
             showLayout:
                 userLoggedIn() && !window.location.hash.includes("#/welcome")
         };
+        this.setAvatarURL = this.setAvatarURL.bind(this);
     }
 
     componentWillMount() {
@@ -85,6 +87,12 @@ class App extends Component<any, IAppState> {
         }
     }
 
+    setAvatarURL(avatarURL: string) {
+        this.setState({
+            avatarURL
+        });
+    }
+
     render() {
         this.removeBodyBackground();
 
@@ -93,7 +101,9 @@ class App extends Component<any, IAppState> {
                 <CssBaseline />
                 <Route path="/welcome" component={WelcomePage} />
                 <div>
-                    {this.state.showLayout ? <AppLayout /> : null}
+                    {this.state.showLayout ? (
+                        <AppLayout avatarURL={this.state.avatarURL} />
+                    ) : null}
                     <PrivateRoute
                         exact
                         path="/"
@@ -155,7 +165,9 @@ class App extends Component<any, IAppState> {
                     <PrivateRoute path="/search" component={SearchPage} />
                     <PrivateRoute path="/settings" component={Settings} />
                     <PrivateRoute path="/blocked" component={Blocked} />
-                    <PrivateRoute path="/you" component={You} />
+                    <PrivateRoute path="/you">
+                        <You onAvatarUpdate={this.setAvatarURL} />
+                    </PrivateRoute>
                     <PrivateRoute path="/about" component={AboutPage} />
                     <PrivateRoute path="/compose" component={Composer} />
                     <PrivateRoute
