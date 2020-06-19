@@ -19,7 +19,7 @@ import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import { styles } from "./PageLayout.styles";
 import { LinkableIconButton, LinkableAvatar } from "../interfaces/overrides";
 import Mastodon from "megalodon";
-import { parse as parseParams, ParsedQuery } from "query-string";
+import { parse as parseParams } from "query-string";
 import { Results } from "../types/Search";
 import { withSnackbar } from "notistack";
 import Post from "../components/Post";
