@@ -62,7 +62,8 @@ import { getConfig, getUserDefaultBool } from "../../utilities/settings";
 import {
     isDesktopApp,
     isDarwinApp,
-    getElectronApp
+    getElectronApp,
+    linkablePath
 } from "../../utilities/desktop";
 import { Config } from "../../types/Config";
 import {
@@ -326,9 +327,10 @@ export class AppLayout extends Component<any, IAppLayoutState> {
     searchForQuery(what: string) {
         what = what.replace(/^#/g, "tag:");
         // console.log(what);
-        window.location.href = isDesktopApp()
-            ? "hyperspace://hyperspace/app/index.html#/search?query=" + what
-            : "/#/search?query=" + what;
+        window.location.href = linkablePath("/#/search?query=" + what);
+        // window.location.href = isDesktopApp()
+        //     ? "hyperspace://hyperspace/app/index.html#/search?query=" + what
+        //     : "/#/search?query=" + what;
     }
 
     /**
