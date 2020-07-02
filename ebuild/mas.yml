@@ -1,0 +1,31 @@
+#
+# Hyperspace Desktop MAS Build Config
+# (C) 2020 Hyperspace Developers. Licensed under NPLv4.
+#
+# The following configuration file is used to configure the Mac App Store
+# builds of Hyperspace Desktop since Electron Builder runs into previous
+# issues.
+#
+
+appId: net.marquiskurt.hyperspace
+afterSign: desktop/notarize.js
+directories:
+    buildResources: desktop
+
+mac:
+    bundleVersion: "1.1.5"
+    bundleShortVersion: "1.1.3"
+    category: public.app-category.social-networking
+    icon: desktop/app.icns
+    target: [dmg]
+    darkModeSupport: true
+    hardenedRuntime: false
+    gatekeeperAssess: false
+
+mas:
+    entitlements: desktop/entitlements.mas.plist
+    entitlementsInherit: desktop/entitlements.mas.inherit.plist
+    provisioningProfile: desktop/embedded.provisionprofile
+
+dmg:
+    sign: false
