@@ -18,12 +18,12 @@ jobs:
 
                   json_dict = {}
                   with open('public/config.json', 'r') as file:
-                    json_dict = load(file)
+                      json_dict = load(file)
 
                   json_dict["location"] = "desktop"
 
                   with open('public/config.json', 'w+') as out:
-                    dump(json_dict, out)
+                      dump(json_dict, out)
               shell: python
             - name: Install dependencies and build
               run: |
