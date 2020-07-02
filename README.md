@@ -60,8 +60,8 @@ npm install
 Run any of the following scripts to test:
 
 -   `npm start` - Starts a local server hosted at https://localhost:3000.
--   `npm run electrify` - Builds a copy of the source code and then runs the app through Electron. Ensure that the `location` key in `config.json` points to `"desktop"` before running this.
--   `npm run electrify-nobuild` - Similar to `electrify` but doesn't build the project before running.
+-   `npm run electron:build` - Builds a copy of the source code and then runs the app through Electron. Ensure that the `location` key in `config.json` points to `"desktop"` before running this.
+-   `npm run electron:prebuilt` - Similar to `electron:build` but doesn't build the project before running.
 
 The `location` key in `config.json` can take the following values during testing:
 
@@ -84,17 +84,18 @@ The built files will be available under `build` as static files that can be host
 
 You can run any of the following commands to build a release for the desktop:
 
--   `npm run build-desktop`: Builds the desktop apps for all platforms (eg. Windows, macOS, Linux). Will run `npm run build` before building.
--   `npm run build-desktop-win`: Builds the desktop app for Windows without running `npm run build`.
--   `npm run build-desktop-darwin`: Builds the desktop apps for macOS (eg. disk image, Mac App Store) without running `npm run build`. See the details below for more information on building for macOS.
--   `npm run build-desktop-linux`: Builds the desktop apps for Linux (eg. Debian package, AppImage, and Snap) without running `npm run build`.
--   `npm run build-desktop-linux-select`: Builds the desktop app for Linux without running `npm run build`. _Target is required as a parameter._
+-   `npm run build:desktop-all`: Builds the desktop apps for all platforms (eg. Windows, macOS, Linux). Will run `npm run build` before building.
+-   `npm run build:win`: Builds the desktop app for Windows without running `npm run build`.
+-   `npm run build:mac`: Builds the desktop apps for macOS without running `npm run build`. See the details below for more information on building for macOS.
+-   `npm run build:mas`: Builds the desktop apps for the Mac App Store without running `npm run build`. See the details below for more information on building for macOS.
+-   `npm run build:linux`: Builds the desktop apps for Linux (eg. Debian package, AppImage, and Snap) without running `npm run build`.
+-   `npm run build:linux-select-targets`: Builds the desktop app for Linux without running `npm run build`. _Targets are required as parameters._
 
 The built files will be available under `dist` that can be uploaded to your app distributor or website.
 
 #### Building for macOS
 
-More recent version of macOS require that the Hyperspace desktop app be both digitally code-signed and notarized (uploaded to Apple to check for malware). Hyperspace includes the tools necessary to automate this process when building the macOS version either by `npm run build-desktop` or by `npm run build-desktop-darwin`.
+More recent version of macOS require that the Hyperspace desktop app be both digitally code-signed and notarized (uploaded to Apple to check for malware). Hyperspace includes the tools necessary to automate this process when building the macOS version either by `npm run build:desktop-all` or by `npm run build:mac`.
 
 Make sure you have your provisioning profiles for the Mac App Store (`embedded.provisionprofile`) and standard distribution (`nonmas.provisionprofile`) in the `desktop` directory. These provision profiles can be obtained through Apple Developer. You'll also need to create entitlements files in the `desktop` directory that list the following entitlements for your app:
 
@@ -119,7 +120,7 @@ It is also recommended to add the `com.apple.security.applications-groups` entry
 
 You'll also want to modify the `notarize.js` file to change the details from the default to your App Store Connect account details and app identifier.
 
-> ⚠️ **Warning**: The package.json file also includes the `build-desktop-darwin-nosign` script. This script is specifically intended for automated systems that cannot run notarization (Azure Pipelines, GitHub Actions, etc.). _Do not use this command to build production-ready versions of Hyperspace_.
+> ⚠️ **Warning**: The package.json file also includes the `build:mac-unsigned` script. This script is specifically intended for automated systems that cannot run notarization (Azure Pipelines, GitHub Actions, etc.). _Do not use this command to build production-ready versions of Hyperspace_.
 
 ## Licensing and Credits
 

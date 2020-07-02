@@ -47,20 +47,20 @@
     "main": "public/electron.js",
     "scripts": {
         "start": "react-scripts start",
-        "electrify": "npm run build; electron .",
-        "electrify-nobuild": "electron .",
-        "build": "react-scripts build",
-        "create-mac-icon": "cd desktop; iconutil -c icns app.iconset; cd ..",
-        "build-desktop": "npm run build; npm run create-mac-icon; electron-builder -p 'never' -mwl deb AppImage snap -c ebuild/standard.yml",
-        "build-desktop-win": "electron-builder -p 'never' -w -c ebuild/standard.yml",
-        "build-desktop-darwin": "npm run create-mac-icon; electron-builder -p 'never' -m -c ebuild/standard.yml",
-        "build-desktop-mas": "npm run create-mac-icon; electron-builder -p 'never' -m mas -c ebuild/mas.yml",
-        "build-desktop-darwin-nosign": "npm run create-mac-icon; electron-builder -p 'never' -m dmg -c.mac.identity=null -c.afterSign=\"desktop/donothing.js\" -c ebuild/standard.yml",
-        "build-desktop-linux": "electron-builder -p 'never' -l deb AppImage snap -c ebuild/standard.yml",
-        "build-desktop-linux-select": "electron-builder -p 'never' -c ebuild/standard.yml -l ",
-        "check-prettier": "prettier --check src/**/**.tsx",
         "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "test:prettier": "prettier --check src/**/**.tsx",
+        "eject": "react-scripts eject",
+        "electron:build": "npm run build; electron .",
+        "electron:prebuilt": "electron .",
+        "build": "react-scripts build",
+        "build:icns": "iconutil -c icns desktop/app.iconset -o desktop/app.icns",
+        "build:desktop-all": "npm run build; npm run build:icns; electron-builder -p 'never' -mwl deb AppImage snap -c ebuild/standard.yml",
+        "build:win": "electron-builder -p 'never' -w -c ebuild/standard.yml",
+        "build:mac": "npm run build:icns; electron-builder -p 'never' -m -c ebuild/standard.yml",
+        "build:mac-unsigned": "npm run build:icns; electron-builder -p 'never' -m dmg -c.mac.identity=null -c.afterSign=\"desktop/donothing.js\" -c ebuild/standard.yml",
+        "build:mas": "npm run build:icns; electron-builder -p 'never' -m mas -c ebuild/mas.yml",
+        "build:linux": "electron-builder -p 'never' -l deb AppImage snap -c ebuild/standard.yml",
+        "build:linux-select-targets": "electron-builder -p 'never' -c ebuild/standard.yml -l "
     },
     "eslintConfig": {
         "extends": "react-app"
