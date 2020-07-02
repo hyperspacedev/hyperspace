@@ -53,7 +53,7 @@ jobs:
 
                   with open('public/config.json', 'w+') as out:
                       dump(json_dict, out)
-                shell: python
+              shell: python
               - name: Install dependencies and build
                 run: |
                     npm install
