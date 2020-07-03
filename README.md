@@ -32,19 +32,13 @@ Hyperspace Desktop is available for the major desktop platforms via our download
 
 ### Download from a store
 
-<!--[![Get on the Mac App Store](https://hyperspace.marquiskurt.net/images/mas.svg)](https://itunes.apple.com/us/app/hyperspace/id1454139710?mt=12)-->
-
-[![Get on the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/hyperspace)
-
-Looking for the Mac App Store version\*? [Read more &rsaquo;](https://hyperspace.marquiskurt.net/2019/11/08/post.html)
+[![Get on the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/hyperspace) [![Get on the Mac App Store](https://hyperspace.marquiskurt.net/assets/images/mas.svg)](https://apps.apple.com/us/app/hyperspace-desktop/id1454139710?mt=12)
 
 **via [WinGet](https://github.com/microsoft/winget-cli)**:
 
 ```
 winget install HyperspaceDesktop
 ```
-
-<small>\*We're working to bring Hyperspace Desktop back to the Mac App Store soon (see [#213](https://github.com/hyperspacedev/hyperspace/issues/213)).</small>
 
 ## Build from source
 
