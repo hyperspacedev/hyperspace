@@ -1,57 +1,63 @@
-<p align="center">
-    <img src="desktop/app.iconset/icon_512@2x.png" width="128" max-width="25%" alt=“Hyperspace” />
-</p>
-<h1 align="center">Hyperspace</h1>
+<div align="center">
 
-<p align="center">The new beautiful, fluffy client for the fediverse written in TypeScript and React</p>
+<img src="desktop/app.iconset/icon_512@2x.png" width="128" max-width="25%" alt="Hyperspace Desktop icon" />
 
-![Hyperspace 1.0 on a MacBook Pro](screenshot.png)
+# Hyperspace Desktop
+
+The new beautiful, fluffy client for the fediverse written in TypeScript and React
+
+</div>
+
+![Hyperspace Desktop on a MacBook Pro](screenshot.png)
 
 [![Matrix room](https://img.shields.io/matrix/hypermasto:matrix.org.svg)](https://matrix.to/#/#hypermasto:matrix.org)
 [![Discord server](https://img.shields.io/discord/554108687434907660.svg?color=blueviolet&label=discord)](https://discord.gg/c69AXwk)
 ![Build Status](https://github.com/hyperspacedev/hyperspace/workflows/Node%20CI/badge.svg) [![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/hyperspacedev/hyperspace?include_prereleases)](https://github.com/hyperspacedev/hyperspace/releases) [![License: NPLv4+](https://img.shields.io/badge/license-NPLv4%2B-blue.svg)](LICENSE.txt) [![Hyperspace](https://snapcraft.io/hyperspace/badge.svg)](https://snapcraft.io/hyperspace)
 
-Hyperspace is the fluffiest client for Mastodon and other fediverse networks written in TypeScript and React. Hyperspace offers a fun, clean, fast, and responsive design that scales beautifully across devices and enhances the fediverse experience.
+Socialize and communicate with your friends in the fediverse (ActivityPub-powered social networks like Mastodon and Pleroma) with Hyperspace Desktop. Browse your timelines, check in with friends, and share your experiences across the fediverse in a beautiful, clean, and customizable way.
 
-## Features
+What Hyperspace Desktop offers:
 
--   **Responsive by design**: Hyperspace is beautifully designed to put your content front and center and bring a familiar experience to Mastodon. View threads and profiles with ease and compose anywhere with the compose button. And, of course, Hyperspace scales across devices beautifully, providing the same experience anywhere.
--   **Customizable**: Hyperspace allows customization and configuration at every level, from the server level with branding and instance setup, down to the user level with dark mode, custom themes, and multi-user account support. And, if the default configuration settings aren't enough, anyone can make their own version of Hyperspace with custom additions.
--   **Open-source**: Hyperspace is free (libre) and open-source software. Licensed under the Non-Violent Public License, anyone can modify, redistribute, or contribute to the Hyperspace project without restriction. Hyperspace is written in TypeScript and takes advantage of multiple open-source libraries and projects such as React, Megalodon, and Material-UI, so web and Node.js developers will feel right at home.
+-   A clean, responsive, and streamlined design that fits in with your Mac
+-   Support for switching between accounts to access the accounts you use the most
+-   Customization support, ranging from several beautiful themes to masonry layout and infinite scrolling
+-   Powerful toot composer with media uploads, emojis, and polls
+-   Activity and recommended views that give you insight on the community/instance you reside in
 
-> If you've used Hyperspace 0.x, you'll note many changes with the 1.x and later series. You can learn more about these changes in the [migration article](MIGRATING.md).
+## Get started
 
-## Downloads
+Hyperspace Desktop is available for the major desktop platforms via our downloads page, GitHub, and other store platforms where applicable.
 
-Hyperspace is available for download on GitHub as well as other platforms.
+[**Download from our website &rsaquo;**](https://hyperspace.marquiskurt.net/download)
 
-[**Get latest release &rsaquo;**](https://github.com/hyperspacedev/hyperspace/releases/latest)
+### Download from a store
 
-<!--[![Get on the Mac App Store](https://hyperspace.marquiskurt.net/images/mas.svg)](https://itunes.apple.com/us/app/hyperspace/id1454139710?mt=12)-->
+[![Get on the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/hyperspace) [![Get on the Mac App Store](https://hyperspace.marquiskurt.net/assets/images/mas.svg)](https://apps.apple.com/us/app/hyperspace-desktop/id1454139710?mt=12)
 
-[![Get on the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/hyperspace)
+**via [WinGet](https://github.com/microsoft/winget-cli)**:
 
-Looking for the Mac App Store version? [Read more &rsaquo;](https://hyperspace.marquiskurt.net/2019/11/08/post.html)
+```
+winget install HyperspaceDesktop
+```
 
-## Build instructions
+## Build from source
 
-### Prerequisites
-
-To develop Hyperspace, you'll need the following tools and packages:
+To build Hyperspace Desktop, you'll need the following tools and packages:
 
 -   Node.js v10 or later
+-   (macOS-only) Xcode 10 or higher
 
 ### Installing dependencies
 
 First, clone the repository from GitHub:
 
-```bash
+```
 git clone https://github.com/hyperspacedev/hyperspace
 ```
 
 Then, in the app directory, run the following command to install all of the package dependencies:
 
-```npm
+```
 npm install
 ```
 
@@ -60,72 +66,207 @@ npm install
 Run any of the following scripts to test:
 
 -   `npm start` - Starts a local server hosted at https://localhost:3000.
--   `npm run electrify` - Builds a copy of the source code and then runs the app through Electron. Ensure that the `location` key in `config.json` points to `"desktop"` before running this.
--   `npm run electrify-nobuild` - Similar to `electrify` but doesn't build the project before running.
+-   `npm run electron:build` - Builds a copy of the source code and then runs the app through Electron. Ensure that the `location` key in `config.json` points to `"desktop"` before running this.
+-   `npm run electron:prebuilt` - Similar to `electron:build` but doesn't build the project before running.
 
 The `location` key in `config.json` can take the following values during testing:
 
 -   **https://localhost:3000**: Most suitable for running `npm start` or running via `react-scripts`.
 -   **desktop**: Most suitable for when testing the desktop application.
 
-> Note: Hyperspace v1.1.0-beta3 and older versions require the location field to be changed to `"https://localhost:3000"` before running.
+> Note: Hyperspace Desktop v1.1.0-beta3 and older versions require the location field to be changed to `"https://localhost:3000"` before running.
 
 ### Building a release
 
 To build a release, run the following command:
 
-```npm
+```
 npm run build
 ```
 
 The built files will be available under `build` as static files that can be hosted on a web server. If you plan to release these files alongside the desktop apps, compress these files in a ZIP.
 
-#### Building desktop releases
+#### Building desktop apps
 
 You can run any of the following commands to build a release for the desktop:
 
--   `npm run build-desktop`: Builds the desktop apps for all platforms (eg. Windows, macOS, Linux). Will run `npm run build` before building.
--   `npm run build-desktop-win`: Builds the desktop app for Windows without running `npm run build`.
--   `npm run build-desktop-darwin`: Builds the desktop apps for macOS (eg. disk image, Mac App Store) without running `npm run build`. See the details below for more information on building for macOS.
--   `npm run build-desktop-linux`: Builds the desktop apps for Linux (eg. Debian package, AppImage, and Snap) without running `npm run build`.
--   `npm run build-desktop-linux-select`: Builds the desktop app for Linux without running `npm run build`. _Target is required as a parameter._
+-   `npm run build:desktop-all`: Builds the desktop apps for all platforms (eg. Windows, macOS, Linux). Will run `npm run build` before building.
+-   `npm run build:win`: Builds the desktop app for Windows without running `npm run build`.
+-   `npm run build:mac`: Builds the desktop apps for macOS without running `npm run build`. See the details below for more information on building for macOS.
+-   `npm run build:mas`: Builds the desktop apps for the Mac App Store without running `npm run build`. See the details below for more information on building for macOS.
+-   `npm run build:linux`: Builds the desktop apps for Linux (eg. Debian package, AppImage, and Snap) without running `npm run build`.
+-   `npm run build:linux-select-targets`: Builds the desktop app for Linux without running `npm run build`. _Targets are required as parameters._
 
 The built files will be available under `dist` that can be uploaded to your app distributor or website.
 
-#### Building for macOS
+#### Extra steps for macOS
 
-More recent version of macOS require that the Hyperspace desktop app be both digitally code-signed and notarized (uploaded to Apple to check for malware). Hyperspace includes the tools necessary to automate this process when building the macOS version either by `npm run build-desktop` or by `npm run build-desktop-darwin`.
+The macOS builds of Hyperspace Desktop require a bit more effort and resources to build and distribute accordingly. The following is a quick guide to building Hyperspace Desktop for macOS and for the Mac App Store.
 
-Make sure you have your provisioning profiles for the Mac App Store (`embedded.provisionprofile`) and standard distribution (`nonmas.provisionprofile`) in the `desktop` directory. These provision profiles can be obtained through Apple Developer. You'll also need to create entitlements files in the `desktop` directory that list the following entitlements for your app:
+##### Gather your tools
 
--   `com.apple.security.app-sandbox`
--   `com.apple.security.files.downloads.read-write`
--   `com.apple.security.files.user-selected.read-write`
--   `com.apple.security.allow-unsigned-executable-memory`
--   `com.apple.security.network.client`
+To create a code-signed and notarized version of Hyperspace Desktop, you'll need to acquire some provisioning profiles and certificates from a valid Apple Developer account.
 
-For the child ones (inherited `entitlements.mas.inherit.plist`):
+For certificates, make sure your Mac has the following certificates installed:
 
--   `com.apple.security.app-sandbox`
--   `com.apple.security.inherit`
--   `com.apple.security.files.downloads.read-write`
--   `com.apple.security.files.user-selected.read-write`
--   `com.apple.security.allow-unsigned-executable-memory`
--   `com.apple.security.network.client`
+-   3rd Party Mac Developer Application
+-   3rd Party Mac Developer Installer
+-   Developer ID Application
+-   Developer ID Installer
+-   Mac Developer
 
-> ⚠️ Note that the inherited permissions are the same as that of the parent. This is due to an issue where the hardened runtime fails to pass down the inherited properties (see [electron/electron#20560](https://github.com/electron/electron/issues/20560#issuecomment-546110018)). This might change in future versions of macOS.
+The easiest way to handle this is by opening Xcode and going to **Preferences &rsaquo; Accounts** and create the certificates from "Manage Certificates".
 
-It is also recommended to add the `com.apple.security.applications-groups` entry with your bundle's identifier. You'll also need to create an `info.plist` in the `desktop` directory containing the team identifier and application identifier and install the developer certificates on the Mac you plan to build from.
+You'll also need to [create a provisioning profile for **Mac App Store** distribution](https://developer.apple.com/account/resources/profiles/add) and save it to the `desktop` folder as `embedded.provisonprofile`.
 
-You'll also want to modify the `notarize.js` file to change the details from the default to your App Store Connect account details and app identifier.
+##### Create your entitlements files
 
-> ⚠️ **Warning**: The package.json file also includes the `build-desktop-darwin-nosign` script. This script is specifically intended for automated systems that cannot run notarization (Azure Pipelines, GitHub Actions, etc.). _Do not use this command to build production-ready versions of Hyperspace_.
+You'll also need to create the entitlements files in the `desktop` directory that declares the permissions for Hyperspace Desktop. Replace `TEAM_ID` with the appropriate Apple Developer information and `BUNDLE_ID` with the bundle ID of your app.
+
+###### entitlements.mac.plist
+
+```plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+    <key>com.apple.security.network.client</key>
+    <true/>
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+  </dict>
+</plist>
+```
+
+###### entitlements.mas.plist
+
+```plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.security.cs.allow-jit</key>
+	<true/>
+	<key>com.apple.security.network.client</key>
+	<true/>
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+	<key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+	<true/>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>TEAM_ID.BUNDLE_ID</string>
+	</array>
+	<key>com.apple.security.files.user-selected.read-only</key>
+	<true/>
+	<key>com.apple.security.files.user-selected.read-write</key>
+	<true/>
+</dict>
+</plist>
+```
+
+###### entitlements.mas.inherit.plist
+
+```plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+	<key>com.apple.security.inherit</key>
+	<true/>
+	<key>com.apple.security.cs.allow-jit</key>
+	<true/>
+	<key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+	<true/>
+	</dict>
+</plist>
+```
+
+###### entitlements.mas.loginhelper.plist
+
+```plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+  </dict>
+</plist>
+```
+
+###### info.plist
+
+```plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ElectronTeamID</key>
+	<string>TEAM_ID</string>
+	<key>com.apple.developer.team-identifier</key>
+	<string>TEAM_ID</string>
+	<key>com.apple.application-identifier</key>
+	<string>TEAM_ID.BUNDLE_ID</string>
+</dict>
+</plist>
+```
+
+##### Edit `notarize.js`
+
+You'll also need to edit `notarize.js` in the `desktop` directory. Replace `<TEAM_ID>`, `<BUNDLE_ID>`, and `<APPLE_DEVELOPER_EMAIL>` with the appropriate information from the app and your account from Apple Developer.
+
+```js
+// notarize.js
+// Script to notarize Hyperspace for macOS
+// © 2019 Hyperspace developers. Licensed under Apache 2.0.
+
+const { notarize } = require("electron-notarize");
+
+// This is pulled from the Apple Keychain. To set this up,
+// follow the instructions provided here:
+// https://github.com/electron/electron-notarize#safety-when-using-appleidpassword
+const password = `@keychain:AC_PASSWORD`;
+
+exports.default = async function notarizing(context) {
+    const { electronPlatformName, appOutDir } = context;
+    if (electronPlatformName !== "darwin") {
+        return;
+    }
+
+    console.log("Notarizing Hyperspace...");
+
+    const appName = context.packager.appInfo.productFilename;
+
+    return await notarize({
+        appBundleId: "<BUNDLE_ID>",
+        appPath: `${appOutDir}/${appName}.app`,
+        appleId: "<APPLE_DEVELOPER_EMAIL>",
+        appleIdPassword: password,
+        ascProvider: "<TEAM_ID>"
+    });
+};
+```
+
+Note that the password is pulled from your keychain. You'll need to create an app password and store it in your keychain as `AC_PASSWORD`.
+
+##### Build the apps
+
+Run any of the following commands to build Hyperspace Desktop for the Mac:
+
+-   `npm run build:mac` - Builds the macOS app in a DMG container.
+-   `npm run build:mac-unsigned` - Similar to `build:mac`, but skips code signing and notarization. **Use only for CI or in situations where code signing and notarization is not available.**
+-   `npm run build:mas` - Builds the Mac App Store package.
 
 ## Licensing and Credits
 
-Hyperspace is licensed under the [Non-violent Public License v4+](LICENSE.txt), a permissive license under the conditions that you do not use this for any unethical purposes and to file patent claims. Please read what your rights are as a Hyperspace user/developer in the license for more information.
+Hyperspace Desktop is licensed under the [Non-violent Public License v4+](LICENSE.txt), a permissive license under the conditions that you do not use this for any unethical purposes and to file patent claims. Please read what your rights are as a Hyperspace Desktop user/developer in the license for more information.
 
-Hyperspace has been made possible by the React, TypeScript, Megalodon, and Material-UI projects as well our [Patrons](patreon.md) and our contributors on GitHub.
+Hyperspace Desktop has been made possible by the React, TypeScript, Megalodon, and Material-UI projects as well our [Patrons](patreon.md) and our contributors on GitHub.
 
 ## Contribute
 

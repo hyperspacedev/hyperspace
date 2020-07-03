@@ -3,18 +3,18 @@ name: Prettier
 on: [pull_request]
 
 jobs:
-  prettier:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clone source code
-        uses: actions/checkout@v1
-      - name: Install Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 10.x
-      - name: Install dependencies and run Prettier
-        run: |
-          npm install
-          npm run check-prettier
-        env:
-          CI: true
+    prettier:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Clone source code
+              uses: actions/checkout@v1
+            - name: Install Node
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 10.x
+            - name: Install dependencies and run Prettier
+              run: |
+                  npm install
+                  npm run test:prettier
+              env:
+                  CI: true

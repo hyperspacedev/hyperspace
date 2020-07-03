@@ -1,0 +1,43 @@
+#
+# Hyperspace Desktop MAS Build Config
+# (C) 2020 Hyperspace Developers. Licensed under NPLv4.
+#
+# The following configuration file is used to configure the Mac App Store builds of Hyperspace
+# Desktop. For building cross-platform apps without submitting to the Mac App Store, modify the
+# standard.yml config file.
+#
+
+appId: net.marquiskurt.hyperspace
+afterSign: desktop/notarize.js
+directories:
+    buildResources: desktop
+
+# The bundleVersion and bundleShortVersion keys in this config correspond to builds in the
+# Mac App Store. If you are attempting to upload a new build of the same app version to the
+# Mac App Store, change the bundle version. The bundle short version should be the same as
+# the app version seen in config.json and package.json.
+#
+# If you are submitting a new app version entirely, make sure the bundle version and short
+# version match accordingly, except in cases where the app version is the same version as an
+# older Mac App Store build.
+mac:
+    bundleVersion: "1.1.5"
+    bundleShortVersion: "1.1.3"
+    category: public.app-category.social-networking
+    icon: desktop/app.icns
+    target: [dmg]
+    darkModeSupport: true
+    hardenedRuntime: false
+    gatekeeperAssess: false
+
+# Note that you will need the proper entitlements files for the following keys below. Refer to
+# the Hyperspace Desktop documentation regarding what keys will need to be inserted into the
+# entitlements files:
+# https://hyperspace.marquiskurt.net/docs/desktop-build-desktop.html
+mas:
+    entitlements: desktop/entitlements.mas.plist
+    entitlementsInherit: desktop/entitlements.mas.inherit.plist
+    provisioningProfile: desktop/embedded.provisionprofile
+
+dmg:
+    sign: false

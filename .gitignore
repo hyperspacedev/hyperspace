@@ -73,3 +73,6 @@ desktop/*.provisionprofile
 
 # JetBrains IDEA directory
 .idea/
+
+# Pesky macOS files
+**/**.DS_Store
