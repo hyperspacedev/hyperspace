@@ -285,6 +285,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
      * @param user The string to update the state to
      */
     updateUserInfo(user: string) {
+        this.checkForErrors(user);
         this.setState({ user });
     }
 
@@ -415,7 +416,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
      */
     startLogin() {
         // Check if we have errored
-        let error = this.checkForErrors();
+        let error = this.checkForErrors(this.state.user);
 
         // If we didn't, create the Hyperspace app to register onto that Mastodon
         // server.
@@ -535,20 +536,20 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
     /**
      * Check the user input string for any possible errors
      */
-    checkForErrors(): boolean {
+    checkForErrors(username: string): boolean {
         let userInputError = false;
         let userInputErrorMessage = "";
 
         // Is the user string blank?
-        if (this.state.user === "") {
+        if (username === "") {
             userInputError = true;
             userInputErrorMessage = "Username cannot be blank.";
             this.setState({ userInputError, userInputErrorMessage });
             return true;
         } else {
-            if (this.state.user.includes("@")) {
+            if (username.includes("@")) {
                 if (this.state.federates && this.state.federates === true) {
-                    let baseUrl = this.state.user.split("@")[1];
+                    let baseUrl = username.split("@")[1];
 
                     // Is the user's domain in the disallowed list?
                     if (inDisallowedDomains(baseUrl)) {
@@ -581,7 +582,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             });
                     }
                 } else if (
-                    this.state.user.includes(
+                    username.includes(
                         this.state.registerBase ?? "mastodon.social"
                     )
                 ) {
@@ -772,7 +773,6 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     onChange={event => this.updateUserInfo(event.target.value)}
                     onKeyDown={event => this.watchUsernameField(event)}
                     error={this.state.userInputError}
-                    onBlur={() => this.checkForErrors()}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">@</InputAdornment>
