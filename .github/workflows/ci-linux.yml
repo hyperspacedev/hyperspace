@@ -3,17 +3,36 @@ name: Build Linux Client
 on: [push, pull_request]
 
 jobs:
-  build_linux:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clone source code
-        uses: actions/checkout@v1
-      - name: Use Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 10.x
-      - name: Install dependencies and build
-        run: |
-          npm install
-          npm run build --if-present
-          npm run build-desktop-linux
+    build_linux:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Clone source code
+              uses: actions/checkout@v1
+            - name: Use Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 10.x
+            - name: Change desktop field
+              run: |
+                  from json import load, dump
+
+                  json_dict = {}
+                  with open('public/config.json', 'r') as file:
+                      json_dict = load(file)
+
+                  json_dict["location"] = "desktop"
+
+                  with open('public/config.json', 'w+') as out:
+                      dump(json_dict, out)
+              shell: python
+            - name: Install dependencies and build
+              run: |
+                  npm install
+                  npm run build --if-present
+                  npm run build:linux
+            - name: Upload Linux executables
+              uses: actions/upload-artifact@v1
+              if: success()
+              with:
+                  name: "Linux executables (output dir)"
+                  path: dist

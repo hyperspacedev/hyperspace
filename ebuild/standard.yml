@@ -1,0 +1,35 @@
+#
+# Hyperspace Desktop Build Config
+# (C) 2020 Hyperspace Developers. Licensed under NPLv4.
+#
+# The following configuration file is used to configure and build the cross-platforms apps,
+# excluding the Mac App Store build. For the Mac App Store build, modify the mas.yml file.
+#
+
+appId: net.marquiskurt.hyperspace
+afterSign: desktop/notarize.js
+directories:
+    buildResources: desktop
+
+mac:
+    category: public.app-category.social-networking
+    icon: desktop/app.icns
+    target: [dmg]
+    darkModeSupport: true
+    hardenedRuntime: true
+
+dmg:
+    sign: false
+
+win:
+    target: [nsis]
+    icon: desktop/app.ico
+
+linux:
+    target: ["${@:1}"]
+    icon: linux
+    category: Network
+
+snap:
+    confinement: strict
+    summary: The fluffiest client for the fediverse

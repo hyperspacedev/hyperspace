@@ -27,7 +27,7 @@ export function isDarkMode() {
     // Lift window to an ElectronWindow and add use require()
     const eWin = window as ElectronWindow;
     const { remote } = eWin.require("electron");
-    return remote.systemPreferences.isDarkMode();
+    return remote.nativeTheme.shouldUseDarkColors;
 }
 
 /**
@@ -55,4 +55,12 @@ export function getElectronApp() {
     const eWin = window as ElectronWindow;
     const { remote } = eWin.require("electron");
     return remote.app;
+}
+
+/**
+ * Get the linkable version of a path for the web and desktop.
+ * @param path The path to make a linkable version of
+ */
+export function linkablePath(path: string): string {
+    return isDesktopApp() ? "/app" + path : path;
 }

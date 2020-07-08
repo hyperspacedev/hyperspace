@@ -19,47 +19,48 @@
         "@types/react-router-dom": "^4.3.5",
         "@types/react-swipeable-views": "latest",
         "axios": "^0.19.2",
-        "electron": "^6.1.9",
-        "electron-builder": "^21.2.0",
+        "electron": "^9.0.5",
+        "electron-builder": "^22.7.0",
         "emoji-mart": "^2.11.2",
         "file-dialog": "^0.0.7",
         "material-ui-pickers": "^2.2.4",
-        "mdi-material-ui": "^5.23.0",
+        "mdi-material-ui": "^5.27.0",
         "megalodon": "^0.6.4",
-        "moment": "^2.24.0",
+        "moment": "^2.27.0",
         "notistack": "^0.5.1",
         "prettier": "^1.19.1",
-        "query-string": "^6.11.1",
-        "react": "^16.13.0",
-        "react-dom": "^16.13.0",
-        "react-router-dom": "^5.1.2",
-        "react-scripts": "^3.4.0",
+        "query-string": "^6.13.1",
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1",
+        "react-router-dom": "^5.2.0",
+        "react-scripts": "^3.4.1",
         "react-swipeable-views": "^0.13.9",
         "react-web-share-api": "^0.0.2",
-        "typescript": "^3.8.3"
+        "typescript": "^3.9.5"
     },
     "dependencies": {
         "electron-notarize": "^0.1.1",
-        "electron-updater": "^4.2.5",
+        "electron-updater": "^4.3.1",
         "electron-window-state": "^5.0.3",
         "react-masonry-css": "^1.0.14"
     },
     "main": "public/electron.js",
     "scripts": {
         "start": "react-scripts start",
-        "electrify": "npm run build; electron .",
-        "electrify-nobuild": "electron .",
-        "build": "react-scripts build",
-        "create-mac-icon": "cd desktop; iconutil -c icns app.iconset; cd ..",
-        "build-desktop": "npm run build; npm run create-mac-icon; electron-builder -p 'never' -mwl deb AppImage snap",
-        "build-desktop-win": "electron-builder -p 'never' -w",
-        "build-desktop-darwin": "npm run create-mac-icon; electron-builder -p 'never' -m",
-        "build-desktop-darwin-nosign": "npm run create-mac-icon; electron-builder -p 'never' -m dmg -c.mac.identity=null -c.afterSign=\"desktop/donothing.js\"",
-        "build-desktop-linux": "electron-builder -p 'never' -l deb AppImage snap",
-        "build-desktop-linux-select": "electron-builder -p 'never' -l ",
-        "check-prettier": "prettier --check src/**/**.tsx",
         "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "test:prettier": "prettier --check src/**/**.tsx",
+        "eject": "react-scripts eject",
+        "electron:build": "npm run build; electron .",
+        "electron:prebuilt": "electron .",
+        "build": "react-scripts build",
+        "build:icns": "iconutil -c icns desktop/app.iconset -o desktop/app.icns",
+        "build:desktop-all": "npm run build; npm run build:icns; electron-builder -p 'never' -mwl deb AppImage snap -c ebuild/standard.yml",
+        "build:win": "electron-builder -p 'never' -w -c ebuild/standard.yml",
+        "build:mac": "npm run build:icns; electron-builder -p 'never' -m -c ebuild/standard.yml",
+        "build:mac-unsigned": "npm run build:icns; electron-builder -p 'never' -m dmg -c.mac.identity=null -c.afterSign=\"desktop/donothing.js\" -c ebuild/standard.yml",
+        "build:mas": "npm run build:icns; electron-builder -p 'never' -m mas -c ebuild/mas.yml",
+        "build:linux": "electron-builder -p 'never' -l deb AppImage snap -c ebuild/standard.yml",
+        "build:linux-select-targets": "electron-builder -p 'never' -c ebuild/standard.yml -l "
     },
     "eslintConfig": {
         "extends": "react-app"
@@ -69,47 +70,5 @@
         "not dead",
         "not ie <= 11",
         "not op_mini all"
-    ],
-    "build": {
-        "appId": "net.marquiskurt.hyperspace",
-        "afterSign": "desktop/notarize.js",
-        "directories": {
-            "buildResources": "desktop"
-        },
-        "mac": {
-            "category": "public.app-category.social-networking",
-            "icon": "desktop/app.icns",
-            "target": [
-                "dmg",
-                "mas"
-            ],
-            "darkModeSupport": true,
-            "hardenedRuntime": true
-        },
-        "mas": {
-            "entitlements": "desktop/entitlements.mas.plist",
-            "entitlementsInherit": "desktop/entitlements.mas.inherit.plist",
-            "provisioningProfile": "desktop/embedded.provisionprofile"
-        },
-        "dmg": {
-            "sign": false
-        },
-        "win": {
-            "target": [
-                "nsis"
-            ],
-            "icon": "desktop/app.ico"
-        },
-        "linux": {
-            "target": [
-                "${@:1}"
-            ],
-            "icon": "linux",
-            "category": "Network"
-        },
-        "snap": {
-            "confinement": "strict",
-            "summary": "A beautiful, fluffy client for the fediverse"
-        }
-    }
+    ]
 }
