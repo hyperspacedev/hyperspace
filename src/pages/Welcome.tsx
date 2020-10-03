@@ -226,15 +226,15 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         );
                     }
 
-                    // Reset to mastodon.social if the location is a disallowed
+                    // Reset to mastodon.online if the location is a disallowed
                     // domain.
                     if (
                         inDisallowedDomains(result.registration.defaultInstance)
                     ) {
                         console.warn(
-                            `The default instance field in config.json contains an unsupported domain (${result.registration.defaultInstance}), so it's been reset to mastodon.social.`
+                            `The default instance field in config.json contains an unsupported domain (${result.registration.defaultInstance}), so it's been reset to mastodon.online.`
                         );
-                        result.registration.defaultInstance = "mastodon.social";
+                        result.registration.defaultInstance = "mastodon.online";
                     }
 
                     // Update the state as per the configuration
@@ -285,6 +285,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
      * @param user The string to update the state to
      */
     updateUserInfo(user: string) {
+        this.checkForErrors(user);
         this.setState({ user });
     }
 
@@ -392,10 +393,10 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 return "https://" + newUser.split("@")[1];
             } else {
                 let newUser = `${user}@${this.state.registerBase ??
-                    "mastodon.social"}`;
+                    "mastodon.online"}`;
                 this.setState({ user: newUser });
                 return (
-                    "https://" + (this.state.registerBase ?? "mastodon.social")
+                    "https://" + (this.state.registerBase ?? "mastodon.online")
                 );
             }
         }
@@ -403,19 +404,20 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         // Otherwise, treat them as if they're from the server
         else {
             let newUser = `${user}@${this.state.registerBase ??
-                "mastodon.social"}`;
+                "mastodon.online"}`;
             this.setState({ user: newUser });
-            return "https://" + (this.state.registerBase ?? "mastodon.social");
+            return "https://" + (this.state.registerBase ?? "mastodon.online");
         }
     }
 
     /**
      * Check the user string for any errors and then create a client with an
      * ID and secret to start the authorization process.
+     * @param bypassChecks Whether to bypass the checks in place.
      */
-    startLogin() {
+    startLogin(bypassChecks: boolean = false) {
         // Check if we have errored
-        let error = this.checkForErrors();
+        let error = this.checkForErrors(this.state.user, bypassChecks);
 
         // If we didn't, create the Hyperspace app to register onto that Mastodon
         // server.
@@ -452,6 +454,15 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         authUrl: resp.url,
                         proceedToGetCode: true
                     });
+                })
+                .catch((err: Error) => {
+                    this.props.enqueueSnackbar(
+                        `Failed to register app at ${baseurl.replace(
+                            "https://",
+                            ""
+                        )}`
+                    );
+                    console.error(err);
                 });
         }
     }
@@ -510,7 +521,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
     authorizeEmergencyLogin() {
         let redirAddress =
             this.state.defaultRedirectAddress === "desktop"
-                ? "hyperspace://hyperspace/app"
+                ? "hyperspace://hyperspace/app/"
                 : this.state.defaultRedirectAddress;
         window.location.href = `${redirAddress}/?code=${this.state.authCode}#/`;
     }
@@ -534,21 +545,27 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
 
     /**
      * Check the user input string for any possible errors
+     * @param username The username to read and check for errors
+     * @param bypassesInstanceNameCheck Whether to bypass the instance name validation process. Defaults to false.
+     * @return Whether an error has occured in the validation.
      */
-    checkForErrors(): boolean {
+    checkForErrors(
+        username: string,
+        bypassesInstanceNameCheck: boolean = false
+    ): boolean {
         let userInputError = false;
         let userInputErrorMessage = "";
 
         // Is the user string blank?
-        if (this.state.user === "") {
+        if (username === "") {
             userInputError = true;
             userInputErrorMessage = "Username cannot be blank.";
             this.setState({ userInputError, userInputErrorMessage });
             return true;
         } else {
-            if (this.state.user.includes("@")) {
+            if (username.includes("@")) {
                 if (this.state.federates && this.state.federates === true) {
-                    let baseUrl = this.state.user.split("@")[1];
+                    let baseUrl = username.split("@")[1];
 
                     // Is the user's domain in the disallowed list?
                     if (inDisallowedDomains(baseUrl)) {
@@ -558,6 +575,9 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         });
                         return true;
                     } else {
+                        if (bypassesInstanceNameCheck) {
+                            return false;
+                        }
                         // Are we unable to ping the server?
                         axios
                             .get(
@@ -572,7 +592,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             .catch((err: Error) => {
                                 let userInputError = true;
                                 let userInputErrorMessage =
-                                    "Instance name is invalid.";
+                                    "We couldn't recognize this instance.";
                                 this.setState({
                                     userInputError,
                                     userInputErrorMessage
@@ -581,8 +601,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             });
                     }
                 } else if (
-                    this.state.user.includes(
-                        this.state.registerBase ?? "mastodon.social"
+                    username.includes(
+                        this.state.registerBase ?? "mastodon.online"
                     )
                 ) {
                     this.setState({ userInputError, userInputErrorMessage });
@@ -674,7 +694,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
     redirectToApp() {
         window.location.href =
             window.location.protocol === "hyperspace:"
-                ? "hyperspace://hyperspace/app"
+                ? "hyperspace://hyperspace/app/"
                 : this.state.redirectAddressIsDynamic
                 ? `https://${window.location.host}/#/`
                 : this.state.defaultRedirectAddress + "/#/";
@@ -772,7 +792,6 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     onChange={event => this.updateUserInfo(event.target.value)}
                     onKeyDown={event => this.watchUsernameField(event)}
                     error={this.state.userInputError}
-                    onBlur={() => this.checkForErrors()}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">@</InputAdornment>
@@ -782,6 +801,18 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 {this.state.userInputError ? (
                     <Typography color="error">
                         {this.state.userInputErrorMessage}
+                        {this.state.userInputErrorMessage ===
+                        "We couldn't recognize this instance." ? (
+                            <span>
+                                <br />
+                                <Link
+                                    // className={classes.welcomeLink}
+                                    onClick={() => this.startLogin(true)}
+                                >
+                                    Try anyway
+                                </Link>
+                            </span>
+                        ) : null}
                     </Typography>
                 ) : null}
                 <br />
@@ -1038,7 +1069,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             >
                                 License
                             </Link>{" "}
-                            |
+                            |{" "}
                             <Link
                                 className={classes.welcomeLink}
                                 href="https://github.com/hyperspacedev/hyperspace/issues/new"

@@ -139,7 +139,7 @@ class Blocked extends Component<any, IBlockedState> {
                         variant="outlined"
                         fullWidth
                         value={this.state.blockTextField}
-                        placeholder="mastodon.social"
+                        placeholder="mastodon.online"
                         onChange={e => this.updateTextField(e.target.value)}
                     ></TextField>
                 </DialogContent>
