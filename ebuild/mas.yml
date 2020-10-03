@@ -21,8 +21,8 @@ directories:
 # version match accordingly, except in cases where the app version is the same version as an
 # older Mac App Store build.
 mac:
-    bundleVersion: "1.1.5"
-    bundleShortVersion: "1.1.3"
+    bundleVersion: "1.1.6"
+    bundleShortVersion: "1.1.4"
     category: public.app-category.social-networking
     icon: desktop/app.icns
     target: [dmg]
