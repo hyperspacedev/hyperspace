@@ -42,7 +42,7 @@ export type UAccount = {
  */
 export type MultiAccount = {
     /**
-     * The host name of the account (ex.: mastodon.social)
+     * The host name of the account (ex.: mastodon.online)
      */
     host: string;
 

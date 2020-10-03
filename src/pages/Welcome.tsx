@@ -19,7 +19,7 @@ import {
     ListItemAvatar,
     ListItemSecondaryAction,
     IconButton,
-    InputAdornment
+    InputAdornment,
 } from "@material-ui/core";
 import { styles } from "./WelcomePage.styles";
 import Mastodon from "megalodon";
@@ -28,7 +28,7 @@ import {
     createHyperspaceApp,
     getRedirectAddress,
     inDisallowedDomains,
-    instancesBearerKey
+    instancesBearerKey,
 } from "../utilities/login";
 import { parseUrl } from "query-string";
 import { getConfig } from "../utilities/settings";
@@ -39,7 +39,7 @@ import { Config } from "../types/Config";
 import {
     getAccountRegistry,
     loginWithAccount,
-    removeAccountFromRegistry
+    removeAccountFromRegistry,
 } from "../utilities/accounts";
 import { MultiAccount } from "../types/Account";
 
@@ -210,7 +210,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             authCode: "",
             emergencyMode: false,
             version: "",
-            willAddAccount: false
+            willAddAccount: false,
         };
 
         // Read the configuration data and update the state
@@ -226,15 +226,15 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         );
                     }
 
-                    // Reset to mastodon.social if the location is a disallowed
+                    // Reset to mastodon.online if the location is a disallowed
                     // domain.
                     if (
                         inDisallowedDomains(result.registration.defaultInstance)
                     ) {
                         console.warn(
-                            `The default instance field in config.json contains an unsupported domain (${result.registration.defaultInstance}), so it's been reset to mastodon.social.`
+                            `The default instance field in config.json contains an unsupported domain (${result.registration.defaultInstance}), so it's been reset to mastodon.online.`
                         );
-                        result.registration.defaultInstance = "mastodon.social";
+                        result.registration.defaultInstance = "mastodon.online";
                     }
 
                     // Update the state as per the configuration
@@ -253,7 +253,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                                 ? config.location
                                 : `https://${window.location.host}`,
                         redirectAddressIsDynamic: config.location === "dynamic",
-                        version: config.version
+                        version: config.version,
                     });
                 }
             })
@@ -274,7 +274,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         if (localStorage.getItem("login")) {
             this.getSavedSession();
             this.setState({
-                foundSavedLogin: true
+                foundSavedLogin: true,
             });
             this.checkForToken();
         }
@@ -334,7 +334,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             clientId: session.clientId,
             clientSecret: session.clientSecret,
             authUrl: session.authUrl,
-            emergencyMode: session.emergency
+            emergencyMode: session.emergency,
         });
     }
 
@@ -392,21 +392,23 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 this.setState({ user: newUser });
                 return "https://" + newUser.split("@")[1];
             } else {
-                let newUser = `${user}@${this.state.registerBase ??
-                    "mastodon.social"}`;
+                let newUser = `${user}@${
+                    this.state.registerBase ?? "mastodon.online"
+                }`;
                 this.setState({ user: newUser });
                 return (
-                    "https://" + (this.state.registerBase ?? "mastodon.social")
+                    "https://" + (this.state.registerBase ?? "mastodon.online")
                 );
             }
         }
 
         // Otherwise, treat them as if they're from the server
         else {
-            let newUser = `${user}@${this.state.registerBase ??
-                "mastodon.social"}`;
+            let newUser = `${user}@${
+                this.state.registerBase ?? "mastodon.online"
+            }`;
             this.setState({ user: newUser });
-            return "https://" + (this.state.registerBase ?? "mastodon.social");
+            return "https://" + (this.state.registerBase ?? "mastodon.online");
         }
     }
 
@@ -439,7 +441,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         clientId: resp.clientId,
                         clientSecret: resp.clientSecret,
                         authUrl: resp.url,
-                        emergency: false
+                        emergency: false,
                     };
                     localStorage.setItem(
                         "login",
@@ -451,7 +453,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         clientId: resp.clientId,
                         clientSecret: resp.clientSecret,
                         authUrl: resp.url,
-                        proceedToGetCode: true
+                        proceedToGetCode: true,
                     });
                 });
         }
@@ -475,7 +477,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         Mastodon.registerApp(
             this.state.brandName ?? "Hyperspace",
             {
-                scopes: scopes
+                scopes: scopes,
             },
             baseurl
         )
@@ -485,7 +487,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     clientId: appData.clientId,
                     clientSecret: appData.clientSecret,
                     authUrl: appData.url,
-                    emergency: true
+                    emergency: true,
                 };
                 localStorage.setItem(
                     "login",
@@ -496,7 +498,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 this.setState({
                     clientId: appData.clientId,
                     clientSecret: appData.clientSecret,
-                    authUrl: appData.url
+                    authUrl: appData.url,
                 });
             });
     }
@@ -528,7 +530,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 clientSecret: session.clientSecret,
                 authUrl: session.authUrl,
                 emergencyMode: session.emergency,
-                proceedToGetCode: true
+                proceedToGetCode: true,
             });
         }
     }
@@ -555,7 +557,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     if (inDisallowedDomains(baseUrl)) {
                         this.setState({
                             userInputError: true,
-                            userInputErrorMessage: `Signing in with an account from ${baseUrl} isn't supported.`
+                            userInputErrorMessage: `Signing in with an account from ${baseUrl} isn't supported.`,
                         });
                         return true;
                     } else {
@@ -566,8 +568,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                                     baseUrl,
                                 {
                                     headers: {
-                                        Authorization: `Bearer ${instancesBearerKey}`
-                                    }
+                                        Authorization: `Bearer ${instancesBearerKey}`,
+                                    },
                                 }
                             )
                             .catch((err: Error) => {
@@ -576,14 +578,14 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                                     "Instance name is invalid.";
                                 this.setState({
                                     userInputError,
-                                    userInputErrorMessage
+                                    userInputErrorMessage,
                                 });
                                 return true;
                             });
                     }
                 } else if (
                     username.includes(
-                        this.state.registerBase ?? "mastodon.social"
+                        this.state.registerBase ?? "mastodon.online"
                     )
                 ) {
                     this.setState({ userInputError, userInputErrorMessage });
@@ -658,8 +660,9 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         })
                         .catch((err: Error) => {
                             this.props.enqueueSnackbar(
-                                `Couldn't authorize ${this.state.brandName ??
-                                    "Hyperspace"}: ${err.name}`,
+                                `Couldn't authorize ${
+                                    this.state.brandName ?? "Hyperspace"
+                                }: ${err.name}`,
                                 { variant: "error" }
                             );
                             console.error(err.message);
@@ -770,13 +773,15 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     label="Username"
                     fullWidth
                     placeholder="example@mastodon.example"
-                    onChange={event => this.updateUserInfo(event.target.value)}
-                    onKeyDown={event => this.watchUsernameField(event)}
+                    onChange={(event) =>
+                        this.updateUserInfo(event.target.value)
+                    }
+                    onKeyDown={(event) => this.watchUsernameField(event)}
                     error={this.state.userInputError}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">@</InputAdornment>
-                        )
+                        ),
                     }}
                 />
                 {this.state.userInputError ? (
@@ -917,10 +922,10 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         variant="outlined"
                         label="Authorization code"
                         fullWidth
-                        onChange={event =>
+                        onChange={(event) =>
                             this.updateAuthCode(event.target.value)
                         }
-                        onKeyDown={event => this.watchAuthField(event)}
+                        onKeyDown={(event) => this.watchAuthField(event)}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -972,8 +977,9 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 <div
                     className={classes.root}
                     style={{
-                        backgroundImage: `url(${this.state.backgroundUrl ??
-                            "background.png"})`
+                        backgroundImage: `url(${
+                            this.state.backgroundUrl ?? "background.png"
+                        })`,
                     }}
                 >
                     <Paper className={classes.paper}>
