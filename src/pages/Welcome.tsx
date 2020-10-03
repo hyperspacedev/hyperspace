@@ -392,9 +392,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 this.setState({ user: newUser });
                 return "https://" + newUser.split("@")[1];
             } else {
-                let newUser = `${user}@${
-                    this.state.registerBase ?? "mastodon.online"
-                }`;
+                let newUser = `${user}@${this.state.registerBase ?? "mastodon.online"
+                    }`;
                 this.setState({ user: newUser });
                 return (
                     "https://" + (this.state.registerBase ?? "mastodon.online")
@@ -404,9 +403,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
 
         // Otherwise, treat them as if they're from the server
         else {
-            let newUser = `${user}@${
-                this.state.registerBase ?? "mastodon.online"
-            }`;
+            let newUser = `${user}@${this.state.registerBase ?? "mastodon.online"
+                }`;
             this.setState({ user: newUser });
             return "https://" + (this.state.registerBase ?? "mastodon.online");
         }
@@ -513,7 +511,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
     authorizeEmergencyLogin() {
         let redirAddress =
             this.state.defaultRedirectAddress === "desktop"
-                ? "hyperspace://hyperspace/app"
+                ? "hyperspace://hyperspace/app/"
                 : this.state.defaultRedirectAddress;
         window.location.href = `${redirAddress}/?code=${this.state.authCode}#/`;
     }
@@ -565,7 +563,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         axios
                             .get(
                                 "https://instances.social/api/1.0/instances/show?name=" +
-                                    baseUrl,
+                                baseUrl,
                                 {
                                     headers: {
                                         Authorization: `Bearer ${instancesBearerKey}`,
@@ -635,9 +633,9 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
 
                     let redirectUrl: string | undefined =
                         this.state.emergencyMode ||
-                        clientLoginSession.authUrl.includes(
-                            "urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
-                        )
+                            clientLoginSession.authUrl.includes(
+                                "urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
+                            )
                             ? undefined
                             : getRedirectAddress(conf.location);
 
@@ -660,8 +658,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         })
                         .catch((err: Error) => {
                             this.props.enqueueSnackbar(
-                                `Couldn't authorize ${
-                                    this.state.brandName ?? "Hyperspace"
+                                `Couldn't authorize ${this.state.brandName ?? "Hyperspace"
                                 }: ${err.name}`,
                                 { variant: "error" }
                             );
@@ -678,10 +675,10 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
     redirectToApp() {
         window.location.href =
             window.location.protocol === "hyperspace:"
-                ? "hyperspace://hyperspace/app"
+                ? "hyperspace://hyperspace/app/"
                 : this.state.redirectAddressIsDynamic
-                ? `https://${window.location.host}/#/`
-                : this.state.defaultRedirectAddress + "/#/";
+                    ? `https://${window.location.host}/#/`
+                    : this.state.defaultRedirectAddress + "/#/";
     }
 
     /**
@@ -977,9 +974,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 <div
                     className={classes.root}
                     style={{
-                        backgroundImage: `url(${
-                            this.state.backgroundUrl ?? "background.png"
-                        })`,
+                        backgroundImage: `url(${this.state.backgroundUrl ?? "background.png"
+                            })`,
                     }}
                 >
                     <Paper className={classes.paper}>
@@ -993,17 +989,17 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             {this.state.authorizing
                                 ? this.showAuthorizationLoader()
                                 : this.state.proceedToGetCode
-                                ? this.showLoginAuth()
-                                : getAccountRegistry().length > 0 &&
-                                  !this.state.willAddAccount
-                                ? this.showMultiAccount()
-                                : this.showLanding()}
+                                    ? this.showLoginAuth()
+                                    : getAccountRegistry().length > 0 &&
+                                        !this.state.willAddAccount
+                                        ? this.showMultiAccount()
+                                        : this.showLanding()}
                         </Fade>
                         <br />
                         <Typography variant="caption">
                             &copy; {new Date().getFullYear()}{" "}
                             {this.state.brandName &&
-                            this.state.brandName !== "Hyperspace"
+                                this.state.brandName !== "Hyperspace"
                                 ? `${this.state.brandName} developers and the `
                                 : ""}{" "}
                             <Link
@@ -1058,7 +1054,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             {this.state.brandName ?? "Hypersapce"} v.
                             {this.state.version}{" "}
                             {this.state.brandName &&
-                            this.state.brandName !== "Hyperspace"
+                                this.state.brandName !== "Hyperspace"
                                 ? "(Hyperspace-like)"
                                 : null}
                         </Typography>
