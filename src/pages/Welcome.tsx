@@ -19,7 +19,7 @@ import {
     ListItemAvatar,
     ListItemSecondaryAction,
     IconButton,
-    InputAdornment,
+    InputAdornment
 } from "@material-ui/core";
 import { styles } from "./WelcomePage.styles";
 import Mastodon from "megalodon";
@@ -28,7 +28,7 @@ import {
     createHyperspaceApp,
     getRedirectAddress,
     inDisallowedDomains,
-    instancesBearerKey,
+    instancesBearerKey
 } from "../utilities/login";
 import { parseUrl } from "query-string";
 import { getConfig } from "../utilities/settings";
@@ -39,7 +39,7 @@ import { Config } from "../types/Config";
 import {
     getAccountRegistry,
     loginWithAccount,
-    removeAccountFromRegistry,
+    removeAccountFromRegistry
 } from "../utilities/accounts";
 import { MultiAccount } from "../types/Account";
 
@@ -210,7 +210,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             authCode: "",
             emergencyMode: false,
             version: "",
-            willAddAccount: false,
+            willAddAccount: false
         };
 
         // Read the configuration data and update the state
@@ -253,7 +253,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                                 ? config.location
                                 : `https://${window.location.host}`,
                         redirectAddressIsDynamic: config.location === "dynamic",
-                        version: config.version,
+                        version: config.version
                     });
                 }
             })
@@ -274,7 +274,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         if (localStorage.getItem("login")) {
             this.getSavedSession();
             this.setState({
-                foundSavedLogin: true,
+                foundSavedLogin: true
             });
             this.checkForToken();
         }
@@ -334,7 +334,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             clientId: session.clientId,
             clientSecret: session.clientSecret,
             authUrl: session.authUrl,
-            emergencyMode: session.emergency,
+            emergencyMode: session.emergency
         });
     }
 
@@ -392,8 +392,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 this.setState({ user: newUser });
                 return "https://" + newUser.split("@")[1];
             } else {
-                let newUser = `${user}@${this.state.registerBase ?? "mastodon.online"
-                    }`;
+                let newUser = `${user}@${this.state.registerBase ??
+                    "mastodon.online"}`;
                 this.setState({ user: newUser });
                 return (
                     "https://" + (this.state.registerBase ?? "mastodon.online")
@@ -403,8 +403,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
 
         // Otherwise, treat them as if they're from the server
         else {
-            let newUser = `${user}@${this.state.registerBase ?? "mastodon.online"
-                }`;
+            let newUser = `${user}@${this.state.registerBase ??
+                "mastodon.online"}`;
             this.setState({ user: newUser });
             return "https://" + (this.state.registerBase ?? "mastodon.online");
         }
@@ -413,10 +413,11 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
     /**
      * Check the user string for any errors and then create a client with an
      * ID and secret to start the authorization process.
+     * @param bypassChecks Whether to bypass the checks in place.
      */
-    startLogin() {
+    startLogin(bypassChecks: boolean = false) {
         // Check if we have errored
-        let error = this.checkForErrors(this.state.user);
+        let error = this.checkForErrors(this.state.user, bypassChecks);
 
         // If we didn't, create the Hyperspace app to register onto that Mastodon
         // server.
@@ -439,7 +440,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         clientId: resp.clientId,
                         clientSecret: resp.clientSecret,
                         authUrl: resp.url,
-                        emergency: false,
+                        emergency: false
                     };
                     localStorage.setItem(
                         "login",
@@ -451,8 +452,17 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         clientId: resp.clientId,
                         clientSecret: resp.clientSecret,
                         authUrl: resp.url,
-                        proceedToGetCode: true,
+                        proceedToGetCode: true
                     });
+                })
+                .catch((err: Error) => {
+                    this.props.enqueueSnackbar(
+                        `Failed to register app at ${baseurl.replace(
+                            "https://",
+                            ""
+                        )}`
+                    );
+                    console.error(err);
                 });
         }
     }
@@ -475,7 +485,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
         Mastodon.registerApp(
             this.state.brandName ?? "Hyperspace",
             {
-                scopes: scopes,
+                scopes: scopes
             },
             baseurl
         )
@@ -485,7 +495,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     clientId: appData.clientId,
                     clientSecret: appData.clientSecret,
                     authUrl: appData.url,
-                    emergency: true,
+                    emergency: true
                 };
                 localStorage.setItem(
                     "login",
@@ -496,7 +506,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 this.setState({
                     clientId: appData.clientId,
                     clientSecret: appData.clientSecret,
-                    authUrl: appData.url,
+                    authUrl: appData.url
                 });
             });
     }
@@ -528,15 +538,21 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 clientSecret: session.clientSecret,
                 authUrl: session.authUrl,
                 emergencyMode: session.emergency,
-                proceedToGetCode: true,
+                proceedToGetCode: true
             });
         }
     }
 
     /**
      * Check the user input string for any possible errors
+     * @param username The username to read and check for errors
+     * @param bypassesInstanceNameCheck Whether to bypass the instance name validation process. Defaults to false.
+     * @return Whether an error has occured in the validation.
      */
-    checkForErrors(username: string): boolean {
+    checkForErrors(
+        username: string,
+        bypassesInstanceNameCheck: boolean = false
+    ): boolean {
         let userInputError = false;
         let userInputErrorMessage = "";
 
@@ -555,28 +571,31 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     if (inDisallowedDomains(baseUrl)) {
                         this.setState({
                             userInputError: true,
-                            userInputErrorMessage: `Signing in with an account from ${baseUrl} isn't supported.`,
+                            userInputErrorMessage: `Signing in with an account from ${baseUrl} isn't supported.`
                         });
                         return true;
                     } else {
+                        if (bypassesInstanceNameCheck) {
+                            return false;
+                        }
                         // Are we unable to ping the server?
                         axios
                             .get(
                                 "https://instances.social/api/1.0/instances/show?name=" +
-                                baseUrl,
+                                    baseUrl,
                                 {
                                     headers: {
-                                        Authorization: `Bearer ${instancesBearerKey}`,
-                                    },
+                                        Authorization: `Bearer ${instancesBearerKey}`
+                                    }
                                 }
                             )
                             .catch((err: Error) => {
                                 let userInputError = true;
                                 let userInputErrorMessage =
-                                    "Instance name is invalid.";
+                                    "We couldn't recognize this instance.";
                                 this.setState({
                                     userInputError,
-                                    userInputErrorMessage,
+                                    userInputErrorMessage
                                 });
                                 return true;
                             });
@@ -633,9 +652,9 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
 
                     let redirectUrl: string | undefined =
                         this.state.emergencyMode ||
-                            clientLoginSession.authUrl.includes(
-                                "urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
-                            )
+                        clientLoginSession.authUrl.includes(
+                            "urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
+                        )
                             ? undefined
                             : getRedirectAddress(conf.location);
 
@@ -658,8 +677,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         })
                         .catch((err: Error) => {
                             this.props.enqueueSnackbar(
-                                `Couldn't authorize ${this.state.brandName ?? "Hyperspace"
-                                }: ${err.name}`,
+                                `Couldn't authorize ${this.state.brandName ??
+                                    "Hyperspace"}: ${err.name}`,
                                 { variant: "error" }
                             );
                             console.error(err.message);
@@ -677,8 +696,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
             window.location.protocol === "hyperspace:"
                 ? "hyperspace://hyperspace/app/"
                 : this.state.redirectAddressIsDynamic
-                    ? `https://${window.location.host}/#/`
-                    : this.state.defaultRedirectAddress + "/#/";
+                ? `https://${window.location.host}/#/`
+                : this.state.defaultRedirectAddress + "/#/";
     }
 
     /**
@@ -770,20 +789,30 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                     label="Username"
                     fullWidth
                     placeholder="example@mastodon.example"
-                    onChange={(event) =>
-                        this.updateUserInfo(event.target.value)
-                    }
-                    onKeyDown={(event) => this.watchUsernameField(event)}
+                    onChange={event => this.updateUserInfo(event.target.value)}
+                    onKeyDown={event => this.watchUsernameField(event)}
                     error={this.state.userInputError}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">@</InputAdornment>
-                        ),
+                        )
                     }}
                 />
                 {this.state.userInputError ? (
                     <Typography color="error">
                         {this.state.userInputErrorMessage}
+                        {this.state.userInputErrorMessage ===
+                        "We couldn't recognize this instance." ? (
+                            <span>
+                                <br />
+                                <Link
+                                    // className={classes.welcomeLink}
+                                    onClick={() => this.startLogin(true)}
+                                >
+                                    Try anyway
+                                </Link>
+                            </span>
+                        ) : null}
                     </Typography>
                 ) : null}
                 <br />
@@ -919,10 +948,10 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                         variant="outlined"
                         label="Authorization code"
                         fullWidth
-                        onChange={(event) =>
+                        onChange={event =>
                             this.updateAuthCode(event.target.value)
                         }
-                        onKeyDown={(event) => this.watchAuthField(event)}
+                        onKeyDown={event => this.watchAuthField(event)}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -974,8 +1003,8 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                 <div
                     className={classes.root}
                     style={{
-                        backgroundImage: `url(${this.state.backgroundUrl ?? "background.png"
-                            })`,
+                        backgroundImage: `url(${this.state.backgroundUrl ??
+                            "background.png"})`
                     }}
                 >
                     <Paper className={classes.paper}>
@@ -989,17 +1018,17 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             {this.state.authorizing
                                 ? this.showAuthorizationLoader()
                                 : this.state.proceedToGetCode
-                                    ? this.showLoginAuth()
-                                    : getAccountRegistry().length > 0 &&
-                                        !this.state.willAddAccount
-                                        ? this.showMultiAccount()
-                                        : this.showLanding()}
+                                ? this.showLoginAuth()
+                                : getAccountRegistry().length > 0 &&
+                                  !this.state.willAddAccount
+                                ? this.showMultiAccount()
+                                : this.showLanding()}
                         </Fade>
                         <br />
                         <Typography variant="caption">
                             &copy; {new Date().getFullYear()}{" "}
                             {this.state.brandName &&
-                                this.state.brandName !== "Hyperspace"
+                            this.state.brandName !== "Hyperspace"
                                 ? `${this.state.brandName} developers and the `
                                 : ""}{" "}
                             <Link
@@ -1040,7 +1069,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             >
                                 License
                             </Link>{" "}
-                            |
+                            |{" "}
                             <Link
                                 className={classes.welcomeLink}
                                 href="https://github.com/hyperspacedev/hyperspace/issues/new"
@@ -1054,7 +1083,7 @@ class WelcomePage extends Component<IWelcomeProps, IWelcomeState> {
                             {this.state.brandName ?? "Hypersapce"} v.
                             {this.state.version}{" "}
                             {this.state.brandName &&
-                                this.state.brandName !== "Hyperspace"
+                            this.state.brandName !== "Hyperspace"
                                 ? "(Hyperspace-like)"
                                 : null}
                         </Typography>

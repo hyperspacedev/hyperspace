@@ -20,7 +20,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogActions,
-    TextField,
+    TextField
 } from "@material-ui/core";
 import { withSnackbar } from "notistack";
 
@@ -53,7 +53,7 @@ class Blocked extends Component<any, IBlockedState> {
             viewIsLoading: true,
             viewDidLoad: false,
             viewDidError: false,
-            blockTextField: "",
+            blockTextField: ""
         };
     }
 
@@ -64,14 +64,14 @@ class Blocked extends Component<any, IBlockedState> {
                 this.setState({
                     blockedServers: resp.data,
                     viewDidLoad: true,
-                    viewIsLoading: false,
+                    viewIsLoading: false
                 });
             })
             .catch((err: Error) => {
                 console.error(err);
                 this.setState({
                     viewIsLoading: false,
-                    viewDidError: true,
+                    viewDidError: true
                 });
             });
     }
@@ -90,7 +90,7 @@ class Blocked extends Component<any, IBlockedState> {
             this.setState({
                 blockTextField: "",
                 addBlockOpen: false,
-                blockedServers,
+                blockedServers
             });
         });
     }
@@ -105,7 +105,7 @@ class Blocked extends Component<any, IBlockedState> {
                     blockedServers.splice(blockedServers.indexOf(domain), 1);
                 }
                 this.setState({
-                    blockedServers,
+                    blockedServers
                 });
             })
             .catch((err: Error) => {
@@ -118,7 +118,7 @@ class Blocked extends Component<any, IBlockedState> {
 
     updateTextField(value: string) {
         this.setState({
-            blockTextField: value,
+            blockTextField: value
         });
     }
 
@@ -140,7 +140,7 @@ class Blocked extends Component<any, IBlockedState> {
                         fullWidth
                         value={this.state.blockTextField}
                         placeholder="mastodon.online"
-                        onChange={(e) => this.updateTextField(e.target.value)}
+                        onChange={e => this.updateTextField(e.target.value)}
                     ></TextField>
                 </DialogContent>
                 <DialogActions>
@@ -153,9 +153,7 @@ class Blocked extends Component<any, IBlockedState> {
                     </Button>
                     <Button
                         color="primary"
-                        onClick={(e) =>
-                            this.addBlock(this.state.blockTextField)
-                        }
+                        onClick={e => this.addBlock(this.state.blockTextField)}
                     >
                         Add
                     </Button>
