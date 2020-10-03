@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="desktop/app.iconset/icon_512@2x.png" width="128" max-width="25%" alt="Hyperspace Desktop icon" />
+<img src="desktop/app.iconset/icon_512x512@2x.png" width="128" max-width="25%" alt="Hyperspace Desktop icon" />
 
 # Hyperspace Desktop
 
