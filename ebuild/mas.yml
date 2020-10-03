@@ -21,7 +21,8 @@ directories:
 # version match accordingly, except in cases where the app version is the same version as an
 # older Mac App Store build.
 mac:
-    bundleVersion: "1.1.6"
+    # Bundle version will reflect the build number (i.e., the release number).
+    bundleVersion: "28"
     bundleShortVersion: "1.1.4"
     category: public.app-category.social-networking
     icon: desktop/app.icns
