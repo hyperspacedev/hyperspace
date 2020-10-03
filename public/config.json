@@ -13,7 +13,7 @@
         "enablePublicTimeline": true
     },
     "registration": {
-        "defaultInstance": "mastodon.social"
+        "defaultInstance": "mastodon.online"
     },
     "admin": {
         "name": "Hyperspace Developers",
