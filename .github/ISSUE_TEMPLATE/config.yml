@@ -1,5 +1,8 @@
 blank_issues_enabled: true
 contact_links:
+    - name: Request a feature
+      url: "https://github.com/hyperspacedev/hyperspace/discussions/new"
+      about: Suggest a new idea here.
     - name: Discord
       url: "https://discord.gg/c69AXwk"
       about: Chat with us here.
