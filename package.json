@@ -18,7 +18,7 @@
         "@types/react-dom": "16.8.3",
         "@types/react-router-dom": "^4.3.5",
         "@types/react-swipeable-views": "latest",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "electron": "^9.0.5",
         "electron-builder": "^22.7.0",
         "emoji-mart": "^2.11.2",
