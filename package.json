@@ -19,7 +19,7 @@
         "@types/react-router-dom": "^4.3.5",
         "@types/react-swipeable-views": "latest",
         "axios": "^0.21.1",
-        "electron": "^9.0.5",
+        "electron": "^13.6.6",
         "electron-builder": "^22.7.0",
         "emoji-mart": "^2.11.2",
         "file-dialog": "^0.0.7",
